@@ -1,17 +1,17 @@
-# SMM-Tool Backend
-This folder contains an implementation of the API for the SMM-Tool in
-[Go](https://golang.org/). It is the same API as provided by the 
+# USEEIO API
+This projects contains an implementation of the USEEIO API in
+[Go](https://golang.org/). It is the same RESTful API as provided by the 
 [iomb.webapi](https://github.com/USEPA/IO-Model-Builder/tree/master/iomb/webapi)
-package. However, the implementation in Go can be compiled to a single static
-binary file that is very easy to deploy. It just uses the `http` package from
-standard library which directly contains an HTTP server that is ready for
-[production](https://stackoverflow.com/questions/30832195/using-gos-http-server-for-production).
+package. However, the implementation in Go can be compiled to a single binary
+file which is a full HTTP server that provides the data from one or more
+input-output models and optionally static files. All data that is is stored in
+files in a specific folder structure (see also the
+[documentation of the file format](./doc/data_format.md)).
 
-## Running the Backend Server
-The backend server is just a single executable file. You should be able to start
-it with a double click. The folder with the data files, the server port, and the
-location of the static files (HTML, JavaScript, CSS) of the application can be
-specified via command line arguments
+## Running the Server
+The server application is just a single executable file. The folder with the
+data files, the server port, and the location of the static files (HTML,
+JavaScript, CSS) of the application can be specified via command line arguments:
 
 ```bash
 app -data <folder with data files> -static <folder with static files> -port <server port>
@@ -33,7 +33,10 @@ cd backend
 make.bat
 ```
 
-On Linux (and macOS?) ... coming soon
+TODO: On Linux (and macOS) ... Building a Docker image  ...
 
-## Building a Docker Image
-... coming soon
+## License
+This project is in the worldwide public domain, released under the 
+[CC0 1.0 Universal Public Domain Dedication](https://creativecommons.org/publicdomain/zero/1.0/).
+
+![Public Domain Dedication](https://licensebuttons.net/p/zero/1.0/88x31.png)
