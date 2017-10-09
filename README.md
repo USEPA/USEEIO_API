@@ -16,6 +16,7 @@ JavaScript, CSS) of the application can be specified via command line arguments:
 ```bash
 app -data <folder with data files> -static <folder with static files> -port <server port>
 ```
+
 All arguments are optional and the defaults are the same like starting the
 application in the following way:
 
