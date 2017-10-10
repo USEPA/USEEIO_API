@@ -4,6 +4,103 @@ The path to this folder is a start parameter of the server...
 
 ## File Formats
 
+### Matrix Files
+The web-service of the USEEIO API uses pre-calculated matrices and
+meta-information that are exported from an `iomb` model. The pre-calculated
+matrices are derived from the direct requirements matrix `A`, the satellite
+matrix `B`, and the matrix with the characterization factors `C`.
+
+The matrix `A` is a `sector x sector` matrix and contains in each column `i` the
+direct sector inputs that are required to produce 1 USD dollar of output from
+sector `i`:
+
+```
+         sectors
+        +-------+
+sectors |       |
+        |     A |
+        +-------+
+```
+
+The satellite matrix `B` is an `elementary flow x sector` matrix and contains in
+each column `i` the amounts of emissions and resources - given in the reference
+units of the respective elementary flows - that are directly related to 1 USD
+output from sector `i`:
+
+```
+       sectors
+      +-------+
+flows |       |
+      |     B |
+      +-------+
+```
+
+In the matrix `C`, each column `k` contains the **c**haracterization factors of 
+the different LCIA categories related to one reference unit of flow `k`:
+
+```
+                  flows
+                +-------+
+LCIA categories |       |
+                |     C |
+                +-------+
+```
+
+From the matrices `B` and `C` the **d**irect impact matrix `D` can be calculated
+via:
+
+```
+D = C * B
+``` 
+
+The matrix `D` contains in each column `i` the impact assessment result that is
+related to the direct emissions and resources for 1 USD output from sector `i`:
+
+```
+                 sectors
+                +-------+
+LCIA categories |       |
+                |     D |
+                +-------+
+```
+
+The **L**eontief inverse `L` is calculated via:
+
+```
+L = (I - A)^-1
+```
+
+`L` is also a `sector x sector` matrix and contains in each column `i` the
+total requirements of the respective sectors inputs to produce 1 USD of output
+from sector `i`:
+
+```
+         sectors
+        +-------+
+sectors |       |
+        |     L |
+        +-------+
+```
+
+With the direct impacts `D` and the total requirements `L` the matrix `U` which
+contains the **u**pstream totals can be calculated via:
+
+```
+U = D * L
+```
+
+The matrix `U` is a `LCIA category x sector` matrix and contains in each column
+`i` the total impact assessment result related to the direct and indirect 
+emissions and resources that are required to produce 1 USD output of sector `i`:
+
+```
+                 sectors
+                +-------+
+LCIA categories |       |
+                |     U |
+                +-------+
+```
+
 ### CSV Files
 Indicators, sectors, flows, and other meta-data are stored in plain CSV files.
 In general, these CSV files should have the following format:
@@ -18,9 +115,6 @@ In general, these CSV files should have the following format:
 * The file encoding is UTF-8 without byte-order mark
 
 The columns of these files are specified in the respective sections below.
-
-### Matrix Files
-...
 
 ## Meta-Data
 
