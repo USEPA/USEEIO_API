@@ -118,6 +118,20 @@ The columns of these files are specified in the respective sections below.
 
 ## Meta-Data
 
+### models.csv
+The file `models.csv` which is located in the root folder of the data directory
+contains the meta-data of the available IO models and should have the following
+columns:
+
+```
+Column   Field     Description
+0        ID            The ID of the model. This is also the name of the folder
+                       that contains the model data.
+1        Name          A user friendly name of the model.
+2        Location      The location code of the model.
+3        Description   A description of the model
+```
+
 ### indicators.csv
 The file `indicators.csv` contains the meta-data of the indicators in the tools.
 It should have the following columns:

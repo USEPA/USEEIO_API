@@ -2,6 +2,7 @@ package main
 
 import (
 	"encoding/csv"
+	"log"
 	"os"
 	"path/filepath"
 )
@@ -10,6 +11,7 @@ import (
 type Model struct {
 	ID          string `json:"id"`
 	Name        string `json:"name"`
+	Location    string `json:"location"`
 	Description string `json:"description,omitempty"`
 
 	Folder      string        `json:"-"`
@@ -22,37 +24,60 @@ type Model struct {
 	dqiCache  map[string][][]string
 }
 
-// NewModel creates a new model from the given folder (which should be a
-// sub-folder of the data directory).
-func NewModel(id, folder string) (*Model, error) {
-	sectors, err := ReadSectors(folder)
+// InitModels initializes the models from the given data folder.
+func InitModels(dataDir string) map[string]*Model {
+	models := make(map[string]*Model)
+	rows, err := ReadCSV(filepath.Join(dataDir, "models.csv"))
 	if err != nil {
-		return nil, err
+		log.Fatal("failed to read models.csv", err)
+	}
+	for i, row := range rows {
+		if i == 0 {
+			continue
+		}
+		model := &Model{
+			ID:          row[0],
+			Name:        row[1],
+			Location:    row[2],
+			Description: row[3]}
+		model.Folder = filepath.Join(dataDir, model.ID)
+		err = model.Init()
+		if err != nil {
+			log.Println("failed to load model in", model.Folder, err)
+			continue
+		}
+		models[model.ID] = model
+		log.Println("loaded model", model.Name)
+	}
+	return models
+}
+
+// Init initializes the model
+func (m *Model) Init() error {
+	sectors, err := ReadSectors(m.Folder)
+	if err != nil {
+		return err
 	}
 	sectorMap := make(map[string]*Sector)
 	for i := range sectors {
 		s := sectors[i]
 		sectorMap[s.ID] = s
 	}
-	indicators, err := ReadIndicators(folder)
+	indicators, err := ReadIndicators(m.Folder)
 	if err != nil {
-		return nil, err
+		return err
 	}
-	demands, err := ReadDemandInfos(folder)
+	demands, err := ReadDemandInfos(m.Folder)
 	if err != nil {
-		return nil, err
+		return err
 	}
-	m := Model{
-		ID:          id,
-		Name:        id,
-		Folder:      folder,
-		Sectors:     sectors,
-		Indicators:  indicators,
-		DemandInfos: demands,
-		sectorMap:   sectorMap,
-		numCache:    make(map[string]*Matrix),
-		dqiCache:    make(map[string][][]string)}
-	return &m, nil
+	m.Sectors = sectors
+	m.Indicators = indicators
+	m.DemandInfos = demands
+	m.sectorMap = sectorMap
+	m.numCache = make(map[string]*Matrix)
+	m.dqiCache = make(map[string][][]string)
+	return nil
 }
 
 // Sector returns the sector with the given ID.

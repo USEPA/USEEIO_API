@@ -2,10 +2,8 @@ package main
 
 import (
 	"encoding/json"
-	"io/ioutil"
 	"log"
 	"net/http"
-	"path/filepath"
 )
 
 var models map[string]*Model
@@ -14,7 +12,7 @@ func main() {
 	args := GetArgs()
 
 	log.Println("load data from folder:", args.DataDir)
-	initModels(args.DataDir)
+	models = InitModels(args.DataDir)
 
 	log.Println("Create server with static files from:", args.StaticDir)
 	h := http.NewServeMux()
@@ -25,28 +23,6 @@ func main() {
 
 	log.Println("Starting server at port:", args.Port)
 	http.ListenAndServe(":"+args.Port, h)
-}
-
-func initModels(dataDir string) {
-	files, err := ioutil.ReadDir(dataDir)
-	if err != nil {
-		log.Fatal("failed to read data dir.:", err)
-	}
-	models = make(map[string]*Model)
-	for _, f := range files {
-		if !f.IsDir() {
-			continue
-		}
-		fName := f.Name()
-		path := filepath.Join(dataDir, fName)
-		m, err := NewModel(fName, path)
-		if err != nil {
-			log.Println("failed to load model in", fName, err)
-			continue
-		}
-		models[m.ID] = m
-		log.Println("loaded model", m.Name)
-	}
 }
 
 // GetModels returns the a of models.
