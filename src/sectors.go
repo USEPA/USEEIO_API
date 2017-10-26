@@ -7,11 +7,12 @@ import (
 
 // Sector describes an industry sector in the input-output model.
 type Sector struct {
-	ID       string `json:"id"`
-	Index    int    `json:"index"`
-	Name     string `json:"name"`
-	Code     string `json:"code"`
-	Location string `json:"location"`
+	ID          string `json:"id"`
+	Index       int    `json:"index"`
+	Name        string `json:"name"`
+	Code        string `json:"code"`
+	Location    string `json:"location"`
+	Description string `json:"description"`
 }
 
 // ReadSectors reads the sectors from the CSV file in the data folder. It
@@ -37,6 +38,7 @@ func ReadSectors(folder string) ([]*Sector, error) {
 		s.Name = row[2]
 		s.Code = row[3]
 		s.Location = row[4]
+		s.Description = row[5]
 		sectors[s.Index] = &s
 	}
 	return sectors, nil
