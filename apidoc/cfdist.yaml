@@ -1,6 +1,6 @@
 ---
 applications:
-  - name: smm-apidoc
+  - name: useeio-apidoc
     memory: 128M
     instances: 1
     random-route: true

@@ -1,88 +1,90 @@
-swagger: "2.0"
+swagger: '2.0'
 info:
-  description: "TODO: description ... "
-  version: "0.2.0"
-  title: SMM Web API
+  description: >-
+    A RESTful API that provides access to versions of the USEEIO models. Results
+    are returned as JSON objects.
+  version: 0.2.0
+  title: USEEIO-API
 basePath: /api
 schemes:
-- http
+  - http
 paths:
   /models:
     get:
       summary: Get the available models from the server.
       produces:
-      - application/json
+        - application/json
       responses:
-        200:
+        '200':
           description: TODO...
           schema:
             type: array
             items:
-              $ref: "#/definitions/Model"
-  /{model}/calculate:
+              $ref: '#/definitions/Model'
+  '/{model}/calculate':
     post:
       summary: Calculate the result for a given demand and perspective.
       consumes:
-      - application/json
+        - application/json
       produces:
-      - application/json
+        - application/json
       parameters:
-      - in: path
-        name: model
-        type: string
-        required: true
-        description: The ID of the input-output model to use.
-      - in: body
-        name: body
-        description: The demand vector and perspective for the calculation.
-        schema:
-          $ref: "#/definitions/Demand"
+        - in: path
+          name: model
+          type: string
+          required: true
+          description: The ID of the input-output model to use.
+        - in: body
+          name: body
+          description: The demand vector and perspective for the calculation.
+          schema:
+            $ref: '#/definitions/Demand'
       responses:
-        200:
+        '200':
           description: TODO...
           schema:
-            $ref: "#/definitions/Result"
-  /{model}/demands:
+            $ref: '#/definitions/Result'
+  '/{model}/demands':
     get:
       summary: Returns a list with all available demand vectors from a model
       produces:
-      - application/json
+        - application/json
       parameters:
-      - in: path
-        name: model
-        type: string
-        required: true
-        description: The ID of the input-output model to use.
+        - in: path
+          name: model
+          type: string
+          required: true
+          description: The ID of the input-output model to use.
       responses:
-        200:
+        '200':
           description: TODO...
           schema:
             type: array
             items:
-              $ref: "#/definitions/DemandInfo"
-  /{model}/demands/{demandID}:
+              $ref: '#/definitions/DemandInfo'
+  '/{model}/demands/{demandID}':
     get:
       summary: Returns a demand vector from the model
       produces:
-      - application/json
+        - application/json
       parameters:
-      - in: path
-        name: model
-        type: string
-        required: true
-        description: The ID of the input-output model to use.
-      - in: path
-        name: demandID
-        required: true
-        description: The ID of the demand vector
+        - in: path
+          name: model
+          type: string
+          required: true
+          description: The ID of the input-output model to use.
+        - in: path
+          name: demandID
+          required: true
+          description: The ID of the demand vector
       responses:
-        200:
+        '200':
           description: TODO...
           schema:
             type: array
             items:
-              $ref: "#/definitions/DemandEntry"
-  /{model}/matrix/A:
+              $ref: '#/definitions/DemandEntry'
+  '/{model}/matrix/A':
     get:
       summary: Get the direct requirements matrix of the IO model.
       description: >
@@ -90,15 +92,15 @@ paths:
         `i` the direct sector inputs that are required to produce 1 USD dollar
         of output from sector `i`.
       produces:
-      - application/json
+        - application/json
       parameters:
-      - in: path
-        name: model
-        type: string
-        required: true
-        description: The ID of the input-output model to use.
+        - in: path
+          name: model
+          type: string
+          required: true
+          description: The ID of the input-output model to use.
       responses:
-        200:
+        '200':
           description: TODO...
           schema:
             type: array
@@ -106,9 +108,9 @@ paths:
               type: array
               items:
                 type: number
-        500:
+        '500':
           description: if the server failed to load the matrix file
-  /{model}/matrix/B:
+  '/{model}/matrix/B':
     get:
       summary: Get the satellite matrix of the IO model.
       description: >
@@ -117,15 +119,15 @@ paths:
         given in the reference units of the respective elementary flows - that
         are directly related to 1 USD output from sector `i`.
       produces:
-      - application/json
+        - application/json
       parameters:
-      - in: path
-        name: model
-        type: string
-        required: true
-        description: The ID of the input-output model to use.
+        - in: path
+          name: model
+          type: string
+          required: true
+          description: The ID of the input-output model to use.
       responses:
-        200:
+        '200':
           description: TODO...
           schema:
             type: array
@@ -133,24 +135,24 @@ paths:
               type: array
               items:
                 type: number
-        500:
+        '500':
           description: if the server failed to load the matrix file
-  /{model}/matrix/B_dqi:
+  '/{model}/matrix/B_dqi':
     get:
       summary: Get the data quality entries of the satellite matrix.
       description: >
         The matrix `B_dqi` contains the corresponding data quality entries of
         the satellite matrix `B`.
       produces:
-      - application/json
+        - application/json
       parameters:
-      - in: path
-        name: model
-        type: string
-        required: true
-        description: The ID of the input-output model to use.
+        - in: path
+          name: model
+          type: string
+          required: true
+          description: The ID of the input-output model to use.
       responses:
-        200:
+        '200':
           description: TODO...
           schema:
             type: array
@@ -158,9 +160,9 @@ paths:
               type: array
               items:
                 type: string
-        500:
+        '500':
           description: if the server failed to load the matrix file
-  /{model}/matrix/C:
+  '/{model}/matrix/C':
     get:
       summary: Get the characterization factors.
       description: >
@@ -168,15 +170,15 @@ paths:
         of the different LCIA categories related to one reference unit of flow
         `k`.
       produces:
-      - application/json
+        - application/json
       parameters:
-      - in: path
-        name: model
-        type: string
-        required: true
-        description: The ID of the input-output model to use.
+        - in: path
+          name: model
+          type: string
+          required: true
+          description: The ID of the input-output model to use.
       responses:
-        200:
+        '200':
           description: TODO...
           schema:
             type: array
@@ -184,9 +186,9 @@ paths:
               type: array
               items:
                 type: number
-        500:
+        '500':
           description: if the server failed to load the matrix file
-  /{model}/matrix/D:
+  '/{model}/matrix/D':
     get:
       summary: Get the direct impact assessment results.
       description: >
@@ -195,15 +197,15 @@ paths:
         from sector `i`. From the matrices `B` and `C` the direct impact matrix
         can be calculated via: `D = C * B`
       produces:
-      - application/json
+        - application/json
       parameters:
-      - in: path
-        name: model
-        type: string
-        required: true
-        description: The ID of the input-output model to use.
+        - in: path
+          name: model
+          type: string
+          required: true
+          description: The ID of the input-output model to use.
       responses:
-        200:
+        '200':
           description: TODO...
           schema:
             type: array
@@ -211,23 +213,23 @@ paths:
               type: array
               items:
                 type: number
-        500:
+        '500':
           description: if the server failed to load the matrix file
-  /{model}/matrix/D_dqi:
+  '/{model}/matrix/D_dqi':
     get:
       summary: Get the data quality results of the direct impact assessment results.
-      description: >
+      description: |
         TODO ...
       produces:
-      - application/json
+        - application/json
       parameters:
-      - in: path
-        name: model
-        type: string
-        required: true
-        description: The ID of the input-output model to use.
+        - in: path
+          name: model
+          type: string
+          required: true
+          description: The ID of the input-output model to use.
       responses:
-        200:
+        '200':
           description: TODO...
           schema:
             type: array
@@ -235,9 +237,9 @@ paths:
               type: array
               items:
                 type: string
-        500:
+        '500':
           description: if the server failed to load the matrix file
-  /{model}/matrix/L:
+  '/{model}/matrix/L':
     get:
       summary: Get the Leontief inverse of the IO model.
       description: >
@@ -246,15 +248,15 @@ paths:
         requirements of the respective sectors inputs to produce 1 USD of output
         from sector `i`.
       produces:
-      - application/json
+        - application/json
       parameters:
-      - in: path
-        name: model
-        type: string
-        required: true
-        description: The ID of the input-output model to use.
+        - in: path
+          name: model
+          type: string
+          required: true
+          description: The ID of the input-output model to use.
       responses:
-        200:
+        '200':
           description: TODO...
           schema:
             type: array
@@ -262,9 +264,9 @@ paths:
               type: array
               items:
                 type: number
-        500:
+        '500':
           description: if the server failed to load the matrix file
-  /{model}/matrix/U:
+  '/{model}/matrix/U':
     get:
       summary: Get the upstream impact assessment results.
       description: >
@@ -274,15 +276,15 @@ paths:
         output of sector `i`. With the direct impacts `D` and the total
         requirements `L` the matrix `U` can be calculated via `U = D * L`.
       produces:
-      - application/json
+        - application/json
       parameters:
-      - in: path
-        name: model
-        type: string
-        required: true
-        description: The ID of the input-output model to use.
+        - in: path
+          name: model
+          type: string
+          required: true
+          description: The ID of the input-output model to use.
       responses:
-        200:
+        '200':
           description: TODO...
           schema:
             type: array
@@ -290,23 +292,23 @@ paths:
               type: array
               items:
                 type: number
-        500:
+        '500':
           description: if the server failed to load the matrix file
-  /{model}/matrix/U_dqi:
+  '/{model}/matrix/U_dqi':
     get:
       summary: Get the data quality results of the upstream impact assessment results.
-      description: >
+      description: |
         TODO ...
       produces:
-      - application/json
+        - application/json
       parameters:
-      - in: path
-        name: model
-        type: string
-        required: true
-        description: The ID of the input-output model to use.
+        - in: path
+          name: model
+          type: string
+          required: true
+          description: The ID of the input-output model to use.
       responses:
-        200:
+        '200':
           description: TODO...
           schema:
             type: array
@@ -314,9 +316,9 @@ paths:
               type: array
               items:
                 type: string
-        500:
+        '500':
           description: if the server failed to load the matrix file
-  /{model}/matrix/{name}?col={index}:
+  '/{model}/matrix/{name}?col={index}':
     get:
       summary: Get the column of a matrix.
       description: >
@@ -324,30 +326,30 @@ paths:
         other matrix descriptions. (TODO this function is currently only 
         available for numeric matrices)
       produces:
-      - application/json
+        - application/json
       parameters:
-      - in: path
-        name: model
-        type: string
-        required: true
-        description: The ID of the input-output model to use.
-      - in: query
-        name: col
-        type: integer
-        required: true
-        description: The zero-based index of the column.
+        - in: path
+          name: model
+          type: string
+          required: true
+          description: The ID of the input-output model to use.
+        - in: query
+          name: col
+          type: integer
+          required: true
+          description: The zero-based index of the column.
       responses:
-        200:
+        '200':
           description: TODO...
           schema:
             type: array
             items:
               type: number
-        400:
+        '400':
           description: if the column is not a valid integer
-        500:
+        '500':
           description: if the server failed to load the matrix file or column
-  /{model}/matrix/{name}?row={index}:
+  '/{model}/matrix/{name}?row={index}':
     get:
       summary: Get the row of a matrix.
       description: >
@@ -355,105 +357,105 @@ paths:
         other matrix descriptions. (TODO this function is currently only 
         available for numeric matrices)
       produces:
-      - application/json
+        - application/json
       parameters:
-      - in: path
-        name: model
-        type: string
-        required: true
-        description: The ID of the input-output model to use.
-      - in: query
-        name: row
-        type: integer
-        required: true
-        description: The zero-based index of the row.
+        - in: path
+          name: model
+          type: string
+          required: true
+          description: The ID of the input-output model to use.
+        - in: query
+          name: row
+          type: integer
+          required: true
+          description: The zero-based index of the row.
       responses:
-        200:
+        '200':
           description: TODO...
           schema:
             type: array
             items:
               type: number
-        400:
+        '400':
           description: if the row is not a valid integer
-        500:
+        '500':
           description: if the server failed to load the matrix file or row
-  /{model}/sectors:
+  '/{model}/sectors':
     get:
       summary: Get all industry sectors of the IO model.
       produces:
-      - application/json
+        - application/json
       parameters:
-      - in: path
-        name: model
-        type: string
-        required: true
-        description: The ID of the input-output model to use.
+        - in: path
+          name: model
+          type: string
+          required: true
+          description: The ID of the input-output model to use.
       responses:
-        200:
+        '200':
           description: TODO...
           schema:
             type: array
             items:
-              $ref: "#/definitions/Sector"
-  /{model}/sectors/{sectorID}:
+              $ref: '#/definitions/Sector'
+  '/{model}/sectors/{sectorID}':
     get:
       summary: Get the information of the sector with the given ID.
       produces:
-      - application/json
+        - application/json
       parameters:
-      - in: path
-        name: model
-        type: string
-        required: true
-        description: The ID of the input-output model to use.
+        - in: path
+          name: model
+          type: string
+          required: true
+          description: The ID of the input-output model to use.
       responses:
-        200:
+        '200':
           description: TODO...
           schema:
-            $ref: "#/definitions/Sector"
-        404:
+            $ref: '#/definitions/Sector'
+        '404':
           description: Sector not found.
-  /{model}/indicators:
+  '/{model}/indicators':
     get:
       summary: Get all indicators of the model.
       produces:
-      - application/json
+        - application/json
       parameters:
-      - in: path
-        name: model
-        type: string
-        required: true
-        description: The ID of the input-output model to use.
+        - in: path
+          name: model
+          type: string
+          required: true
+          description: The ID of the input-output model to use.
       responses:
-        200:
+        '200':
           description: TODO...
           schema:
             type: array
             items:
-              $ref: "#/definitions/Indicator"
-  /{model}/indicators/{indicatorID}:
+              $ref: '#/definitions/Indicator'
+  '/{model}/indicators/{indicatorID}':
     get:
       summary: Get indicator information by ID.
       produces:
-      - application/json
+        - application/json
       parameters:
-      - in: path
-        name: model
-        type: string
-        required: true
-        description: The ID of the input-output model to use.
-      - name: indicatorID
-        in: path
-        description: The ID of the indicator.
-        required: true
-        type: string
+        - in: path
+          name: model
+          type: string
+          required: true
+          description: The ID of the input-output model to use.
+        - name: indicatorID
+          in: path
+          description: The ID of the indicator.
+          required: true
+          type: string
       responses:
-        200:
+        '200':
           description: TODO...
           schema:
-            $ref: "#/definitions/Indicator"
-        404:
+            $ref: '#/definitions/Indicator'
+        '404':
           description: Indicator not found.
 definitions:
   Model:
@@ -495,7 +497,9 @@ definitions:
         description: Display name of the indicator
       code:
         type: string
-        description: 3 or 4 letter indicator code which is also as label in the user interface
+        description: >-
+          3 or 4 letter indicator code which is also as label in the user
+          interface
       unit:
         type: string
         description: The reference unit of the indicator.
@@ -505,13 +509,13 @@ definitions:
       perspective:
         type: string
         enum:
-        - direct
-        - intermediate
-        - final
+          - direct
+          - intermediate
+          - final
       demand:
         type: array
         items:
-          $ref: "#/definitions/DemandEntry"
+          $ref: '#/definitions/DemandEntry'
   DemandEntry:
     type: object
     properties:
@@ -521,7 +525,7 @@ definitions:
       amount:
         type: number
     example:
-      sector: '112120/dairies/us'
+      sector: 112120/dairies/us
       amount: 42.42
   DemandInfo:
     type: object
