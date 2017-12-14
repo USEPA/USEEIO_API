@@ -1,5 +1,5 @@
 ## Deploying to Cloud Foundry
-Once the application is [built](https://github.com/USEPA/USEEIO_API), it can be deployed in a [Cloud Foundry](https://cloudfoundry.org/)
+The application can be deployed in a [Cloud Foundry](https://cloudfoundry.org/)
 instance using the [binary build pack](https://docs.cloudfoundry.org/buildpacks/binary/index.html).
 The script `apidoc/cfdist.bat` compiles the back-end for Linux and packages all the
 resources into the folder `apidoc/cfdist` that can be then deployed using the
@@ -7,7 +7,7 @@ resources into the folder `apidoc/cfdist` that can be then deployed using the
 Thus, you need to have [Go](https://golang.org/) installed in order to run the
 script.
 
-The `cfdist.bat` script expects that the `build` folder exists within the 'apidoc' directory and that
+The `cfdist.bat` script expects that the `build` folder exists and that
 you put the data that should be deployed with the server into the folder
 `build/data`, otherwise it will exit with an error message. You should
 then be able to run the script. You probably need to change the meta-data in the
