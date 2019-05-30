@@ -14,10 +14,10 @@ func main() {
 	log.Println("load data from folder:", args.DataDir)
 	models = InitModels(args.DataDir)
 
-	log.Println("Create server with static files from:", args.StaticDir)
+	// log.Println("Create server with static files from:", args.StaticDir)
 	h := http.NewServeMux()
-	fs := http.FileServer(http.Dir(args.StaticDir))
-	h.Handle("/", NoCache(fs))
+	// fs := http.FileServer(http.Dir(args.StaticDir))
+	// h.Handle("/", NoCache(fs))
 	h.HandleFunc("/api/models", GetModels)
 	h.HandleFunc("/api/", ModelDispatch)
 

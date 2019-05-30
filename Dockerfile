@@ -1,8 +1,5 @@
-FROM scratch
-
-COPY app /opt/smm-tool
-WORKDIR /opt/smm-tool
-
-EXPOSE 5000
-
-CMD [ "./app" ]
+FROM golang
+ADD ./src /go/src/epa/useeio-api
+RUN go install epa/useeio-api
+EXPOSE 80
+ENTRYPOINT /go/bin/useeio-api -data "/go/src/epa/useeio-api/data" -port 80
