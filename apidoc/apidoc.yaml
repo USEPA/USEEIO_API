@@ -75,8 +75,9 @@ paths:
           description: The ID of the input-output model to use.
         - in: path
           name: demandID
+          type: string
           required: true
-          description: The ID of the demand vector
+          description: The ID of the demand vector.
       responses:
         '200':
           description: TODO...
@@ -318,7 +319,7 @@ paths:
                 type: string
         '500':
           description: if the server failed to load the matrix file
-  '/{model}/matrix/{name}?col={index}':
+  '/{model}/matrix/{name}':
     get:
       summary: Get the column of a matrix.
       description: >
@@ -333,37 +334,16 @@ paths:
           type: string
           required: true
           description: The ID of the input-output model to use.
+        - in: path
+          name: name
+          type: string
+          required: true
+          description: The name of the matrix.
         - in: query
           name: col
           type: integer
           required: true
           description: The zero-based index of the column.
-      responses:
-        '200':
-          description: TODO...
-          schema:
-            type: array
-            items:
-              type: number
-        '400':
-          description: if the column is not a valid integer
-        '500':
-          description: if the server failed to load the matrix file or column
-  '/{model}/matrix/{name}?row={index}':
-    get:
-      summary: Get the row of a matrix.
-      description: >
-        Returns the row with the given index from the given matrix. See the
-        other matrix descriptions. (TODO this function is currently only 
-        available for numeric matrices)
-      produces:
-        - application/json
-      parameters:
-        - in: path
-          name: model
-          type: string
-          required: true
-          description: The ID of the input-output model to use.
         - in: query
           name: row
           type: integer
@@ -377,9 +357,9 @@ paths:
             items:
               type: number
         '400':
-          description: if the row is not a valid integer
+          description: if the column or row index is not a valid integer
         '500':
-          description: if the server failed to load the matrix file or row
+          description: if the server failed to load the matrix file or column
   '/{model}/sectors':
     get:
       summary: Get all industry sectors of the IO model.
@@ -409,6 +389,11 @@ paths:
           type: string
           required: true
           description: The ID of the input-output model to use.
+        - in: path
+          name: sectorID
+          type: string
+          required: true
+          description: The ID of the sector.
       responses:
         '200':
           description: TODO...
