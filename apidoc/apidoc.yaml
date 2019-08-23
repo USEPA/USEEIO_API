@@ -16,7 +16,7 @@ paths:
         - application/json
       responses:
         '200':
-          description: TODO...
+          description: Successfully returned an array of model names.
           schema:
             type: array
             items:
@@ -41,7 +41,7 @@ paths:
             $ref: '#/definitions/Demand'
       responses:
         '200':
-          description: TODO...
+          description: Successfully returned a calculation result.
           schema:
             $ref: '#/definitions/Result'
   '/{model}/demands':
@@ -57,7 +57,7 @@ paths:
           description: The ID of the input-output model to use.
       responses:
         '200':
-          description: TODO...
+          description: Successfully returned an array of available demand vectors.
           schema:
             type: array
             items:
@@ -80,7 +80,7 @@ paths:
           description: The ID of the demand vector.
       responses:
         '200':
-          description: TODO...
+          description: Successfully returned a demand vector for the given model.
           schema:
             type: array
             items:
@@ -102,7 +102,7 @@ paths:
           description: The ID of the input-output model to use.
       responses:
         '200':
-          description: TODO...
+          description: Successfully returned the direct requirements matrix for the given model.
           schema:
             type: array
             items:
@@ -129,7 +129,7 @@ paths:
           description: The ID of the input-output model to use.
       responses:
         '200':
-          description: TODO...
+          description: Successfully returned the satellite matrix for the given model.
           schema:
             type: array
             items:
@@ -154,7 +154,7 @@ paths:
           description: The ID of the input-output model to use.
       responses:
         '200':
-          description: TODO...
+          description: Successfully returned the data quality entries for the satellite matrix for the given model.
           schema:
             type: array
             items:
@@ -180,7 +180,7 @@ paths:
           description: The ID of the input-output model to use.
       responses:
         '200':
-          description: TODO...
+          description: Successfully returned the characterization factor matrix for the given model.
           schema:
             type: array
             items:
@@ -207,7 +207,7 @@ paths:
           description: The ID of the input-output model to use.
       responses:
         '200':
-          description: TODO...
+          description: Successfully returned a matrix of direct impact results for the given model.
           schema:
             type: array
             items:
@@ -231,7 +231,7 @@ paths:
           description: The ID of the input-output model to use.
       responses:
         '200':
-          description: TODO...
+          description: Successfully returned a matrix of data quality entries for the direct impact results for the given model.
           schema:
             type: array
             items:
@@ -258,7 +258,7 @@ paths:
           description: The ID of the input-output model to use.
       responses:
         '200':
-          description: TODO...
+          description: Successfully returned the Leontief inverse matrix of the given model.
           schema:
             type: array
             items:
@@ -269,7 +269,7 @@ paths:
           description: if the server failed to load the matrix file
   '/{model}/matrix/U':
     get:
-      summary: Get the upstream impact assessment results.
+      summary: Get the total (direct+indirect) impact assessment results.
       description: >
         The matrix `U` is a `LCIA category x sector` matrix and contains in each
         column `i` the total impact assessment result related to the direct and
@@ -286,7 +286,7 @@ paths:
           description: The ID of the input-output model to use.
       responses:
         '200':
-          description: TODO...
+          description: Successfully returned the total impact results matrix.
           schema:
             type: array
             items:
@@ -297,7 +297,7 @@ paths:
           description: if the server failed to load the matrix file
   '/{model}/matrix/U_dqi':
     get:
-      summary: Get the data quality results of the upstream impact assessment results.
+      summary: Get the data quality results of the total impact assessment results.
       description: |
         TODO ...
       produces:
@@ -310,7 +310,7 @@ paths:
           description: The ID of the input-output model to use.
       responses:
         '200':
-          description: TODO...
+          description: Successfully returned a matrix of data quality entries for the total impact results for the given model.
           schema:
             type: array
             items:
@@ -324,8 +324,8 @@ paths:
       summary: Get the column of a matrix.
       description: >
         Returns the column with the given index from the given matrix. See the
-        other matrix descriptions. (TODO this function is currently only 
-        available for numeric matrices)
+        other matrix descriptions. This function is currently only
+        available for numeric matrices.
       produces:
         - application/json
       parameters:
@@ -351,7 +351,7 @@ paths:
           description: The zero-based index of the row.
       responses:
         '200':
-          description: TODO...
+          description: Successfully returned an array for the given column or row of the given matrix and given model.
           schema:
             type: array
             items:
@@ -362,7 +362,7 @@ paths:
           description: if the server failed to load the matrix file or column
   '/{model}/sectors':
     get:
-      summary: Get all industry sectors of the IO model.
+      summary: Get all sectors of the IO model.
       produces:
         - application/json
       parameters:
@@ -370,10 +370,10 @@ paths:
           name: model
           type: string
           required: true
-          description: The ID of the input-output model to use.
+          description: The ID of the IO model to use.
       responses:
         '200':
-          description: TODO...
+          description: Successfully returned an array of sectors in the given model.
           schema:
             type: array
             items:
@@ -396,7 +396,7 @@ paths:
           description: The ID of the sector.
       responses:
         '200':
-          description: TODO...
+          description: Successfully returned an array with data on the given sector in the given model.
           schema:
             $ref: '#/definitions/Sector'
         '404':
@@ -414,7 +414,7 @@ paths:
           description: The ID of the input-output model to use.
       responses:
         '200':
-          description: TODO...
+          description: Successfully returned an array of indicators in the given model.
           schema:
             type: array
             items:
@@ -437,7 +437,7 @@ paths:
           type: string
       responses:
         '200':
-          description: TODO...
+          description: Successfully returned an array with data on the given indicator in the given model.
           schema:
             $ref: '#/definitions/Indicator'
         '404':
