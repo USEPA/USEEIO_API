@@ -143,7 +143,12 @@ paths:
       summary: Get the data quality entries of the satellite matrix.
       description: >
         The matrix `B_dqi` contains the corresponding data quality entries of
-        the satellite matrix `B`.
+        the satellite matrix `B` in the same matrix dimensions of flows x sector.
+        These entries are in the form of 5 data quality scores (values for each ranging from 1 to 5) for the five
+        EPA LCA flow data quality indicators in this order: (Data reliability, Temporal correlation, Technological correlation,
+         Technological correlation). For example '(3,1,1,4,5)'. For more information on the data quality indicators and score, see the US EPA 2016 Report
+          'Guidance on Data Quality Assessment for Life Cycle Inventory Data'.
+
       produces:
         - application/json
       parameters:
@@ -219,8 +224,13 @@ paths:
   '/{model}/matrix/D_dqi':
     get:
       summary: Get the data quality results of the direct impact assessment results.
-      description: |
-        TODO ...
+      description:
+        The matrix `D_dqi` contains the corresponding data quality entries of
+        the direct impact results matrix `D` in the same matrix dimensions of impacts x sector. These entries are in the form
+        of 5 data quality scores (values for each ranging from 1 to 5) for the five EPA flow data quality
+        indicators in this order, (Data reliability, Temporal correlation, Technological correlation,
+       Technological correlation). For example '(3,1,1,4,5)'. For more information on the data quality indicators
+        and scores, see the US EPA 2016 Report 'Guidance on Data Quality Assessment for Life Cycle Inventory Data'.
       produces:
         - application/json
       parameters:
@@ -298,8 +308,13 @@ paths:
   '/{model}/matrix/U_dqi':
     get:
       summary: Get the data quality results of the total impact assessment results.
-      description: |
-        TODO ...
+      description:
+        The matrix `U_dqi` contains the corresponding data quality entries of
+                the total impact results matrix `U` in the same matrix dimensions of impacts x sector. These entries are in the form
+                of 5 data quality scores (values for each ranging from 1 to 5) for the five EPA flow data quality
+                indicators in this order, (Data reliability, Temporal correlation, Technological correlation,
+               Technological correlation). For example '(3,1,1,4,5)'. For more information on the data quality indicators
+                and scores, see the US EPA 2016 Report 'Guidance on Data Quality Assessment for Life Cycle Inventory Data'.
       produces:
         - application/json
       parameters:
