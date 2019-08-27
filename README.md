@@ -25,14 +25,12 @@ app -data data -static static -port 5000
 ```
 
 ## Building from Source
-You need to have the Go compiler installed in order to build the backend server.
-On Windows, you then simply run the `make.bat` file in the `backend` folder from
-the command line:
+To build the USEEIO API from source, you must have generated data for the USEEIO models to be provided
+in the specified [format](./doc/data_format.md). This may be performed using the [IO Model Builder
+matio module](https://github.com/USEPA/IO-Model-Builder/blob/master/iomb/matio.py).
 
-```batch
-cd backend
-make.bat
-```
+You need to have the Go compiler installed in order to build the USEEIO API.
+On Windows, you then simply run the `make.bat` file from the command line.
 
 TODO: On Linux (and macOS) ... Building a Docker image  ...
 
