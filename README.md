@@ -30,9 +30,13 @@ in the specified [format](./doc/data_format.md). This may be performed using the
 matio module](https://github.com/USEPA/IO-Model-Builder/blob/master/iomb/matio.py).
 
 You need to have the Go compiler installed in order to build the USEEIO API.
-On Windows, you then simply run the `make.bat` file from the command line.
+On Windows, you then simply run the `make.bat` file from the command line. This will create a `build`
+ folder in the main directory. The model data need to be put into a `data` folder inside the build folder.
+ 
+ A cloud foundry distribution can then be created. See [Deploying to Cloud Foundry](doc/cloud_foundry.md).
 
-TODO: On Linux (and macOS) ... Building a Docker image  ...
+TODO: 
+Building a Docker image  ...
 
 ## License
 This project is in the worldwide public domain, released under the 
