@@ -7,7 +7,7 @@ set GOOS=windows
 
 echo Compile version for %GOOS%_%GOARCH%
 
-cd src
+cd go\useeioapi
 go build -o ..\build\app.exe
 
 
@@ -19,5 +19,5 @@ echo Compile version for %GOOS%_%GOARCH%
 
 go build -o ..\build\app
 
-cd ..
+cd ..\..
 echo ... all done
