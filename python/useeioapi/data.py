@@ -1,9 +1,7 @@
 import csv
-import json
 import os
 
-import iomb.dqi as dqi
-import iomb.matio as matio
+import matio
 import numpy
 
 
@@ -23,7 +21,7 @@ class Sector(object):
             'index': self.index,
             'name': self.name,
             'code': self.code,
-            'location': self.location
+            'location': self.location,
             'description': self.description
         }
 

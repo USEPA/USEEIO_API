@@ -1,3 +1,7 @@
+import struct
+import numpy
+
+
 def read_shape(file_path: str):
     """ Reads and returns the shape (rows, columns) from the matrix stored in
         the given file.
