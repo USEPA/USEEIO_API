@@ -1,7 +1,7 @@
 import csv
 import os
 
-import matio
+import useeioapi.matio as matio
 import numpy
 
 
@@ -51,11 +51,11 @@ class Model(object):
 
     def __init__(self, folder: str):
         self.folder = folder  # type: str
-        self.sectors = read_sectors(folder)  # type: Dict[str, Sector]
+        self.sectors = read_sectors(folder)  # type: dict
         sorted_sectors = [s for s in self.sectors.values()]
         sorted_sectors.sort(key=lambda s: s.index)
         self.sector_ids = [s.id for s in sorted_sectors]
-        self.indicators = read_indicators(folder)  # type: List[Indicator]
+        self.indicators = read_indicators(folder)  # type: list
         self.indicators.sort(key=lambda i: i.index)
         self.indicator_ids = [i.id for i in self.indicators]
         self.matrix_cache = {}
@@ -78,8 +78,11 @@ class Model(object):
         path = '%s/%s.csv' % (self.folder, name)
         if not os.path.isfile(path):
             return None
-        dm = dqi.Matrix.from_csv(path)
-        m = dm.to_string_list()
+        with open(path, 'r', encoding='utf-8', newline='\n') as f:
+            reader = csv.reader(f)
+            rows = []
+            for row in reader:
+                rows.append(row)
         self.matrix_cache[name] = m
         return m
 

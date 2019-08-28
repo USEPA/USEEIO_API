@@ -4,7 +4,7 @@ setup(
     name="useeioapi",
     version="0.1",
     packages=["useeioapi"],
-    install_requires=["numpy"],
+    install_requires=["numpy", "Flask"],
     license="CC0",
     classifiers=[
         "Development Status :: Alpha",

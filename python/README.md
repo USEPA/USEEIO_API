@@ -21,5 +21,5 @@ rem install the useeioapi module
 pip install -e .
 
 rem start the server
+python -m useeioapi -data ..\build\data -port 9999
 ```
-

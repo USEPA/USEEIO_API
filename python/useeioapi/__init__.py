@@ -1,8 +1,6 @@
-import os
-
 from .data import *
 
-from flask import Flask, jsonify, request, send_from_directory, abort
+from flask import Flask, jsonify, request, abort
 
 app = Flask(__name__)
 models = {}
