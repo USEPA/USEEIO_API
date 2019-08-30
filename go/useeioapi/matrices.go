@@ -1,8 +1,10 @@
 package main
 
 import (
+	"encoding/csv"
 	"net/http"
 	"net/url"
+	"os"
 	"path/filepath"
 	"strconv"
 
@@ -76,6 +78,21 @@ func ServeMatrix(matrix *Matrix, row int, col int, w http.ResponseWriter) {
 	ServeJSON(matrix.Slice2d(), w)
 }
 
+// ReadDqiMatrix reads a DQI matrix from the given file.
+func ReadDqiMatrix(file string) ([][]string, error) {
+	f, err := os.Open(file)
+	if err != nil {
+		return nil, err
+	}
+	defer f.Close()
+	reader := csv.NewReader(f)
+	records, err := reader.ReadAll()
+	if err != nil {
+		return nil, err
+	}
+	return records, nil
+}
+
 // ServeDqiMatrix serves the given DQI matrix as JSON object.
 func ServeDqiMatrix(dqis [][]string, row int, col int, w http.ResponseWriter) {
 	// return a single column
@@ -116,5 +133,5 @@ func indexParam(name string, reqURL *url.URL, w http.ResponseWriter) (int, error
 		http.Error(w, "Invalid index: "+name+"="+str, http.StatusBadRequest)
 		return -1, err
 	}
-	return idx, err
+	return idx, nil
 }

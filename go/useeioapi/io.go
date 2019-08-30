@@ -1,8 +1,10 @@
 package main
 
 import (
+	"encoding/csv"
 	"encoding/json"
 	"net/http"
+	"os"
 )
 
 // Write headers for a preflight request in CORS
@@ -36,4 +38,15 @@ func ServeJSONBytes(data []byte, w http.ResponseWriter) {
 	w.Header().Set("Content-Type", "application/json")
 	writeAccessOptions(w)
 	w.Write(data)
+}
+
+// ReadCSV reads all rows from the given CSV file.
+func ReadCSV(file string) ([][]string, error) {
+	f, err := os.Open(file)
+	if err != nil {
+		return nil, err
+	}
+	defer f.Close()
+	reader := csv.NewReader(f)
+	return reader.ReadAll()
 }

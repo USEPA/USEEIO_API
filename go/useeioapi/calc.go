@@ -1,7 +1,11 @@
 package main
 
 import (
-	"log"
+	"encoding/json"
+	"net/http"
+	"path/filepath"
+
+	"github.com/gorilla/mux"
 )
 
 // Demand describes the final demand vector and the perspective for which a
@@ -18,15 +22,6 @@ type DemandEntry struct {
 	Amount   float64 `json:"amount"`
 }
 
-// Calculator holds the data for a calculation.
-type Calculator struct {
-	model *Model
-
-	D *Matrix
-	L *Matrix
-	U *Matrix
-}
-
 // Result contains the result data of a calculation.
 type Result struct {
 	Indicators []string    `json:"indicators"`
@@ -35,73 +30,115 @@ type Result struct {
 	Totals     []float64   `json:"totals"`
 }
 
-// NewCalculator creates a new calculator from the given model.
-func NewCalculator(model *Model) (*Calculator, error) {
-	c := Calculator{model: model}
-	var err error
-	c.D, err = model.Matrix("D")
-	if err != nil {
-		return nil, err
+// HandleCalculate .
+func HandleCalculate(dataDir string) http.HandlerFunc {
+
+	return func(w http.ResponseWriter, r *http.Request) {
+		decoder := json.NewDecoder(r.Body)
+		var d Demand
+		err := decoder.Decode(&d)
+		if err != nil {
+			http.Error(w, err.Error(), http.StatusBadRequest)
+			return
+		}
+		defer r.Body.Close()
+
+		model := mux.Vars(r)["model"]
+		dir := filepath.Join(dataDir, model)
+		result := calculate(dir, &d, w)
+		if result != nil {
+			ServeJSON(result, w)
+		}
 	}
-	c.L, err = model.Matrix("L")
-	if err != nil {
-		return nil, err
-	}
-	c.U, err = model.Matrix("U")
-	if err != nil {
-		return nil, err
-	}
-	return &c, nil
 }
 
-// Calculate calculates the given demand and returns the respective result.
-func (c *Calculator) Calculate(d *Demand) *Result {
-	if c == nil || d == nil {
+func calculate(dir string, d *Demand, w http.ResponseWriter) *Result {
+	if d == nil {
+		http.Error(w, "no demand", http.StatusBadRequest)
 		return nil
 	}
 
-	r := Result{}
-	r.Indicators = c.model.IndicatorIDs()
-	r.Sectors = c.model.SectorIDs()
+	// read the indicators and sectors
+	indicators, err := ReadIndicators(dir)
+	if err != nil {
+		http.Error(w, "invalid model; no indicators", http.StatusBadRequest)
+		return nil
+	}
+	sectors, err := ReadSectors(dir)
+	if err != nil {
+		http.Error(w, "invalid model; no sectors", http.StatusBadRequest)
+		return nil
+	}
+	demand := demandVector(d, sectors, w)
+	if demand == nil {
+		return nil
+	}
 
-	demand := c.demandVector(d)
-	r.Totals = c.U.ScaledColumnSums(demand)
+	// U is used for the total result; thus, always loaded
+	U, err := Load(filepath.Join(dir, "U.bin"))
+	if err != nil {
+		http.Error(w, "could not load matrix U",
+			http.StatusInternalServerError)
+		return nil
+	}
 
+	// calculate the perspective result
 	var data *Matrix
 	switch d.Perspective {
 	case "direct":
-		s := c.L.ScaledColumnSums(demand)
-		data = c.D.ScaleColumns(s)
+		L, err := Load(filepath.Join(dir, "L.bin"))
+		if err == nil {
+			D, err := Load(filepath.Join(dir, "D.bin"))
+			if err == nil {
+				s := L.ScaledColumnSums(demand)
+				data = D.ScaleColumns(s)
+			}
+		}
 	case "intermediate":
-		s := c.L.ScaledColumnSums(demand)
-		data = c.U.ScaleColumns(s)
+		L, err := Load(filepath.Join(dir, "L.bin"))
+		if err == nil {
+			s := L.ScaledColumnSums(demand)
+			data = U.ScaleColumns(s)
+		}
 	case "final":
-		data = c.U.ScaleColumns(demand)
+		data = U.ScaleColumns(demand)
 	default:
-		// TODO: log error
+		http.Error(w, "invalid perspective: "+d.Perspective,
+			http.StatusBadRequest)
 		return nil
 	}
 
-	r.Data = make([][]float64, data.Rows)
-	for row := 0; row < data.Rows; row++ {
-		rowVals := make([]float64, data.Cols)
-		r.Data[row] = rowVals
-		for col := 0; col < data.Cols; col++ {
-			rowVals[col] = data.Get(row, col)
-		}
+	// finally, set the result data
+	r := Result{}
+	r.Totals = U.ScaledColumnSums(demand)
+	if data != nil {
+		r.Data = data.Slice2d()
+	}
+	r.Indicators = make([]string, len(indicators))
+	for i := range indicators {
+		r.Indicators[i] = indicators[i].ID
+	}
+	r.Sectors = make([]string, len(sectors))
+	for i := range sectors {
+		r.Sectors[i] = sectors[i].ID
 	}
 	return &r
 }
 
-func (c *Calculator) demandVector(d *Demand) []float64 {
-	v := make([]float64, c.L.Rows)
+func demandVector(d *Demand, sectors []*Sector, w http.ResponseWriter) []float64 {
+	idx := make(map[string]int)
+	for _, sector := range sectors {
+		idx[sector.ID] = sector.Index
+	}
+	v := make([]float64, len(sectors))
 	for _, e := range d.Entries {
-		sector := c.model.Sector(e.SectorID)
-		if sector == nil {
-			log.Println("failed to get sector", e.SectorID, "for calculation")
-			continue
+		i, ok := idx[e.SectorID]
+		if !ok {
+			http.Error(w, "invalid sector ID "+e.SectorID,
+				http.StatusBadRequest)
+			return nil
 		}
-		v[sector.Index] = e.Amount
+		v[i] = e.Amount
 	}
 	return v
 }

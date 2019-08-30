@@ -20,9 +20,18 @@ func main() {
 
 	r := mux.NewRouter()
 
+	// TODO: serve static files only when the folder exists
 	log.Println("Create server with static files from:", args.StaticDir)
 	fs := http.FileServer(http.Dir(args.StaticDir))
 	r.Handle("/", NoCache(fs))
+
+	// TODO: add an options handler
+	/*
+		if r.Method == "OPTIONS" {
+			writeAccessOptions(w)
+			return
+		}
+	*/
 
 	// model routes
 	r.HandleFunc("/api/models", GetModels)
@@ -40,6 +49,8 @@ func main() {
 		HandleGetIndicator(args.DataDir)).Methods("GET")
 	r.HandleFunc("/api/{model}/matrix/{matrix}",
 		HandleGetMatrix(args.DataDir)).Methods("GET")
+	r.HandleFunc("/api/{model}/calculate",
+		HandleCalculate(args.DataDir)).Methods("POST")
 
 	// register shutdown hook
 	log.Println("Register shutdown routines")
