@@ -36,7 +36,7 @@ func ReadIndicators(folder string) ([]*Indicator, error) {
 		}
 		if len(row) < 6 {
 			return nil, errors.New("error in " + path +
-				": each row should have 8 columns")
+				": each row should have 6 columns")
 		}
 		i := Indicator{}
 		if i.Index, err = strconv.Atoi(row[0]); err != nil {

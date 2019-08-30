@@ -34,6 +34,10 @@ func main() {
 		HandleGetSectors(dataDir)).Methods("GET")
 	r.HandleFunc("/api/{model}/sectors/{id:.+}",
 		HandleGetSector(dataDir)).Methods("GET")
+	r.HandleFunc("/api/{model}/flows",
+		HandleGetFlows(dataDir)).Methods("GET")
+	r.HandleFunc("/api/{model}/flows/{id:.+}",
+		HandleGetFlow(dataDir)).Methods("GET")
 	r.HandleFunc("/api/{model}/indicators",
 		HandleGetIndicators(dataDir)).Methods("GET")
 	r.HandleFunc("/api/{model}/indicators/{id}",
