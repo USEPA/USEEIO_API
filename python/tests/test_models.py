@@ -2,7 +2,7 @@ import logging as log
 import unittest
 
 import requests
-from .config import endpoint
+from config import endpoint
 
 
 class ModelTest(unittest.TestCase):

@@ -23,3 +23,19 @@ pip install -e .
 rem start the server
 python -m useeioapi -data ..\build\data -port 9999
 ```
+
+## Running the test suite
+
+```batch
+cd tests
+python -m unittest discover
+```
+
+Use another endpoint (default is `http://localhost:8080/api`):
+
+```batch
+set USEEIO_API=http://another.end.point/api
+python -m unittest discover
+```
+
+**todo** configure an API key
