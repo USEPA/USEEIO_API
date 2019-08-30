@@ -2,6 +2,7 @@ package main
 
 import (
 	"errors"
+	"io/ioutil"
 	"net/http"
 	"path/filepath"
 	"strconv"
@@ -78,5 +79,22 @@ func HandleGetDemands(dataDir string) http.HandlerFunc {
 			return
 		}
 		ServeJSON(demands, w)
+	}
+}
+
+// HandleGetDemand returns the handler for GET /api/{model}/demands/{id}
+func HandleGetDemand(dataDir string) http.HandlerFunc {
+
+	return func(w http.ResponseWriter, r *http.Request) {
+		model := mux.Vars(r)["model"]
+		id := mux.Vars(r)["id"]
+		file := filepath.Join(dataDir, model, "demands", id+".json")
+		data, err := ioutil.ReadFile(file)
+		if err != nil {
+			http.Error(w, "no demand "+id+" for model "+model+" found",
+				http.StatusNotFound)
+			return
+		}
+		ServeJSONBytes(data, w)
 	}
 }

@@ -28,6 +28,8 @@ func main() {
 	r.HandleFunc("/api/models", GetModels)
 	r.HandleFunc("/api/{model}/demands",
 		HandleGetDemands(args.DataDir)).Methods("GET")
+	r.HandleFunc("/api/{model}/demands/{id}",
+		HandleGetDemand(args.DataDir)).Methods("GET")
 	r.HandleFunc("/api/{model}/sectors",
 		HandleGetSectors(args.DataDir)).Methods("GET")
 	r.HandleFunc("/api/{model}/sectors/{id}",
