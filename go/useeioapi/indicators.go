@@ -2,9 +2,12 @@ package main
 
 import (
 	"errors"
+	"net/http"
 	"path/filepath"
 	"strconv"
 	"strings"
+
+	"github.com/gorilla/mux"
 )
 
 // Indicator describes an impact assessment indicator of the input-output model.
@@ -66,5 +69,46 @@ func mapIndicatorGroup(csvVal string) (string, error) {
 		return "Chemical Releases", nil
 	default:
 		return "", errors.New("Unknown indicator group: " + csvVal)
+	}
+}
+
+// HandleGetIndicators returns the handler for GET /api/{model}/indicators
+func HandleGetIndicators(dataDir string) http.HandlerFunc {
+
+	return func(w http.ResponseWriter, r *http.Request) {
+		model := mux.Vars(r)["model"]
+		folder := filepath.Join(dataDir, model)
+		indicators, err := ReadIndicators(folder)
+		if err != nil {
+			http.Error(w, "no indicators for model "+model+" found",
+				http.StatusNotFound)
+			return
+		}
+		ServeJSON(indicators, w)
+	}
+}
+
+// HandleGetIndicator returns the handler for GET /api/{model}/indicators/{id}
+func HandleGetIndicator(dataDir string) http.HandlerFunc {
+
+	return func(w http.ResponseWriter, r *http.Request) {
+		model := mux.Vars(r)["model"]
+		id := mux.Vars(r)["id"]
+		folder := filepath.Join(dataDir, model)
+		indicators, err := ReadIndicators(folder)
+		if err != nil {
+			http.Error(w, "no indicators for model "+model+" found",
+				http.StatusNotFound)
+			return
+		}
+		for i := range indicators {
+			indicator := indicators[i]
+			if indicator.ID == id {
+				ServeJSON(indicator, w)
+				return
+			}
+		}
+		http.Error(w, "no indicator with id "+id+" for model "+model+" found",
+			http.StatusNotFound)
 	}
 }

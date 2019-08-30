@@ -4,6 +4,9 @@ import (
 	"encoding/json"
 	"log"
 	"net/http"
+	"os"
+	"os/signal"
+	"syscall"
 
 	"github.com/gorilla/mux"
 )
@@ -22,9 +25,29 @@ func main() {
 
 	fs := http.FileServer(http.Dir(args.StaticDir))
 	r.Handle("/", NoCache(fs))
+
 	r.HandleFunc("/api/models", GetModels)
-	r.HandleFunc("/api/{model}/sectors", HandleGetSectors(args.DataDir))
+	r.HandleFunc("/api/{model}/sectors",
+		HandleGetSectors(args.DataDir)).Methods("GET")
+	r.HandleFunc("/api/{model}/sectors/{id}",
+		HandleGetSector(args.DataDir)).Methods("GET")
+	r.HandleFunc("/api/{model}/indicators",
+		HandleGetIndicators(args.DataDir)).Methods("GET")
+	r.HandleFunc("/api/{model}/indicators/{id}",
+		HandleGetIndicator(args.DataDir)).Methods("GET")
+
 	r.HandleFunc("/api/", ModelDispatch)
+
+	// register shutdown hook
+	log.Println("Register shutdown routines")
+	ossignals := make(chan os.Signal)
+	signal.Notify(ossignals, syscall.SIGTERM)
+	signal.Notify(ossignals, syscall.SIGINT)
+	go func() {
+		<-ossignals
+		log.Println("Shutdown server")
+		os.Exit(0)
+	}()
 
 	log.Println("Starting server at port:", args.Port)
 	http.ListenAndServe(":"+args.Port, r)

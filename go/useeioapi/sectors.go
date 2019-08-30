@@ -62,3 +62,28 @@ func HandleGetSectors(dataDir string) http.HandlerFunc {
 		ServeJSON(sectors, w)
 	}
 }
+
+// HandleGetSector returns the handler for GET /api/{model}/sectors/{id}
+func HandleGetSector(dataDir string) http.HandlerFunc {
+
+	return func(w http.ResponseWriter, r *http.Request) {
+		model := mux.Vars(r)["model"]
+		id := mux.Vars(r)["id"]
+		folder := filepath.Join(dataDir, model)
+		sectors, err := ReadSectors(folder)
+		if err != nil {
+			http.Error(w, "no sectors for model "+model+" found",
+				http.StatusNotFound)
+			return
+		}
+		for i := range sectors {
+			s := sectors[i]
+			if s.ID == id {
+				ServeJSON(s, w)
+				return
+			}
+		}
+		http.Error(w, "no sector with id "+id+" for model "+model+" found",
+			http.StatusNotFound)
+	}
+}
