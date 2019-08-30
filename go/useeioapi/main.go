@@ -10,13 +10,11 @@ import (
 	"github.com/gorilla/mux"
 )
 
-var models map[string]*Model
-
 func main() {
 	args := GetArgs()
 
 	log.Println("load data from folder:", args.DataDir)
-	models = InitModels(args.DataDir)
+	// TODO: check if data folder exists
 
 	r := mux.NewRouter()
 
@@ -34,7 +32,8 @@ func main() {
 	*/
 
 	// model routes
-	r.HandleFunc("/api/models", GetModels)
+	r.HandleFunc("/api/models",
+		HandleGetModels(args.DataDir)).Methods("GET")
 	r.HandleFunc("/api/{model}/demands",
 		HandleGetDemands(args.DataDir)).Methods("GET")
 	r.HandleFunc("/api/{model}/demands/{id}",
@@ -65,15 +64,4 @@ func main() {
 
 	log.Println("Starting server at port:", args.Port)
 	http.ListenAndServe(":"+args.Port, r)
-}
-
-// GetModels returns the a of models.
-func GetModels(w http.ResponseWriter, r *http.Request) {
-	list := make([]*Model, len(models))
-	i := 0
-	for key := range models {
-		list[i] = models[key]
-		i++
-	}
-	ServeJSON(list, w)
 }
