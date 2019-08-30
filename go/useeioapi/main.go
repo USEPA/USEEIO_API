@@ -13,15 +13,35 @@ import (
 func main() {
 	args := GetArgs()
 
-	log.Println("load data from folder:", args.DataDir)
-	// TODO: check if data folder exists
+	// check that the data folder exists
+	dataDir := args.DataDir
+	if stat, err := os.Stat(dataDir); err != nil || !stat.IsDir() {
+		log.Println("ERROR:", dataDir, "is not a valid data folder")
+		os.Exit(1)
+	}
+	log.Println("Load data from folder:", dataDir)
 
 	r := mux.NewRouter()
 
-	// TODO: serve static files only when the folder exists
-	log.Println("Create server with static files from:", args.StaticDir)
-	fs := http.FileServer(http.Dir(args.StaticDir))
-	r.Handle("/", NoCache(fs))
+	// mount API routes
+	r.HandleFunc("/api/models",
+		HandleGetModels(dataDir)).Methods("GET")
+	r.HandleFunc("/api/{model}/demands",
+		HandleGetDemands(dataDir)).Methods("GET")
+	r.HandleFunc("/api/{model}/demands/{id}",
+		HandleGetDemand(dataDir)).Methods("GET")
+	r.HandleFunc("/api/{model}/sectors",
+		HandleGetSectors(dataDir)).Methods("GET")
+	r.HandleFunc("/api/{model}/sectors/{id:.+}",
+		HandleGetSector(dataDir)).Methods("GET")
+	r.HandleFunc("/api/{model}/indicators",
+		HandleGetIndicators(dataDir)).Methods("GET")
+	r.HandleFunc("/api/{model}/indicators/{id}",
+		HandleGetIndicator(dataDir)).Methods("GET")
+	r.HandleFunc("/api/{model}/matrix/{matrix}",
+		HandleGetMatrix(dataDir)).Methods("GET")
+	r.HandleFunc("/api/{model}/calculate",
+		HandleCalculate(dataDir)).Methods("POST")
 
 	// handle CORS preflight requests
 	r.PathPrefix("/api").HandlerFunc(
@@ -29,25 +49,17 @@ func main() {
 			WriteAccessOptions(w)
 		}).Methods("OPTIONS")
 
-	// model routes
-	r.HandleFunc("/api/models",
-		HandleGetModels(args.DataDir)).Methods("GET")
-	r.HandleFunc("/api/{model}/demands",
-		HandleGetDemands(args.DataDir)).Methods("GET")
-	r.HandleFunc("/api/{model}/demands/{id}",
-		HandleGetDemand(args.DataDir)).Methods("GET")
-	r.HandleFunc("/api/{model}/sectors",
-		HandleGetSectors(args.DataDir)).Methods("GET")
-	r.HandleFunc("/api/{model}/sectors/{id:.+}",
-		HandleGetSector(args.DataDir)).Methods("GET")
-	r.HandleFunc("/api/{model}/indicators",
-		HandleGetIndicators(args.DataDir)).Methods("GET")
-	r.HandleFunc("/api/{model}/indicators/{id}",
-		HandleGetIndicator(args.DataDir)).Methods("GET")
-	r.HandleFunc("/api/{model}/matrix/{matrix}",
-		HandleGetMatrix(args.DataDir)).Methods("GET")
-	r.HandleFunc("/api/{model}/calculate",
-		HandleCalculate(args.DataDir)).Methods("POST")
+	// check if we have static files to host
+	if args.StaticDir != "" {
+		if stat, err := os.Stat(args.StaticDir); err == nil && stat.IsDir() {
+			log.Println("Host static files from:", args.StaticDir)
+			fs := http.FileServer(http.Dir(args.StaticDir))
+			r.PathPrefix("/").Handler(NoCache(fs))
+		} else {
+			log.Println("WARNING: ", args.StaticDir,
+				"is not a folder; will not host static files")
+		}
+	}
 
 	// register shutdown hook
 	log.Println("Register shutdown routines")
