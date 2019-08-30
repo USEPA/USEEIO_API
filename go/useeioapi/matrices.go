@@ -3,8 +3,11 @@ package main
 import (
 	"net/http"
 	"net/url"
+	"path/filepath"
 	"strconv"
 	"strings"
+
+	"github.com/gorilla/mux"
 )
 
 // GetMatrix returns a matrix as JSON object.
@@ -57,6 +60,37 @@ func indexParam(name string, reqURL *url.URL, w http.ResponseWriter) (int, error
 		return -1, err
 	}
 	return idx, err
+}
+
+// HandleGetMatrix returns the handler for GET /api/{model}/matrix/{matrix}
+func HandleGetMatrix(dataDir string) http.HandlerFunc {
+
+	return func(w http.ResponseWriter, r *http.Request) {
+		model := mux.Vars(r)["model"]
+		name := mux.Vars(r)["matrix"]
+
+		switch name {
+		case "A", "B", "C", "D", "L", "U":
+			file := filepath.Join(dataDir, model, name+".bin")
+			matrix, err := Load(file)
+			if err != nil {
+				http.Error(w, "Failed to load matrix "+name,
+					http.StatusInternalServerError)
+				return
+			}
+			ServeMatrix(matrix, -1, -1, w)
+		case "B_dqi", "D_dqi", "U_dqi":
+			file := filepath.Join(dataDir, model, name+".csv")
+			dqis, err := ReadDqiMatrix(file)
+			if err != nil {
+				http.Error(w, "Failed to load matrix", http.StatusInternalServerError)
+				return
+			}
+			ServeDqiMatrix(dqis, -1, -1, w)
+		default:
+			http.Error(w, "Unknown matrix: "+name, http.StatusNotFound)
+		}
+	}
 }
 
 // ServeMatrix serves the given numeric matrix as JSON object.

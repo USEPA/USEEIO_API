@@ -18,13 +18,13 @@ func main() {
 	log.Println("load data from folder:", args.DataDir)
 	models = InitModels(args.DataDir)
 
-	log.Println("Create server with static files from:", args.StaticDir)
-
 	r := mux.NewRouter()
 
+	log.Println("Create server with static files from:", args.StaticDir)
 	fs := http.FileServer(http.Dir(args.StaticDir))
 	r.Handle("/", NoCache(fs))
 
+	// model routes
 	r.HandleFunc("/api/models", GetModels)
 	r.HandleFunc("/api/{model}/demands",
 		HandleGetDemands(args.DataDir)).Methods("GET")
@@ -39,7 +39,9 @@ func main() {
 	r.HandleFunc("/api/{model}/indicators/{id}",
 		HandleGetIndicator(args.DataDir)).Methods("GET")
 
-	r.HandleFunc("/api/", ModelDispatch)
+	// matrix routes
+	r.HandleFunc("/api/{model}/matrix/{matrix}",
+		HandleGetMatrix(args.DataDir)).Methods("GET")
 
 	// register shutdown hook
 	log.Println("Register shutdown routines")
