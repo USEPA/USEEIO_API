@@ -1,11 +1,14 @@
 package main
 
 import (
+	"net/http"
 	"path/filepath"
 	"strconv"
+
+	"github.com/gorilla/mux"
 )
 
-// Sector describes an industry sector in the input-output model.
+// Sector describes an industry sector in an input-output model.
 type Sector struct {
 	ID          string `json:"id"`
 	Index       int    `json:"index"`
@@ -42,4 +45,20 @@ func ReadSectors(folder string) ([]*Sector, error) {
 		sectors[s.Index] = &s
 	}
 	return sectors, nil
+}
+
+// HandleGetSectors returns the handler for GET /api/{model}/sectors
+func HandleGetSectors(dataDir string) http.HandlerFunc {
+
+	return func(w http.ResponseWriter, r *http.Request) {
+		model := mux.Vars(r)["model"]
+		folder := filepath.Join(dataDir, model)
+		sectors, err := ReadSectors(folder)
+		if err != nil {
+			http.Error(w, "no sectors for model "+model+" found",
+				http.StatusNotFound)
+			return
+		}
+		ServeJSON(sectors, w)
+	}
 }

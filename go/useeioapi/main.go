@@ -4,6 +4,8 @@ import (
 	"encoding/json"
 	"log"
 	"net/http"
+
+	"github.com/gorilla/mux"
 )
 
 var models map[string]*Model
@@ -15,14 +17,17 @@ func main() {
 	models = InitModels(args.DataDir)
 
 	log.Println("Create server with static files from:", args.StaticDir)
-	h := http.NewServeMux()
+
+	r := mux.NewRouter()
+
 	fs := http.FileServer(http.Dir(args.StaticDir))
-	h.Handle("/", NoCache(fs))
-	h.HandleFunc("/api/models", GetModels)
-	h.HandleFunc("/api/", ModelDispatch)
+	r.Handle("/", NoCache(fs))
+	r.HandleFunc("/api/models", GetModels)
+	r.HandleFunc("/api/{model}/sectors", HandleGetSectors(args.DataDir))
+	r.HandleFunc("/api/", ModelDispatch)
 
 	log.Println("Starting server at port:", args.Port)
-	http.ListenAndServe(":"+args.Port, h)
+	http.ListenAndServe(":"+args.Port, r)
 }
 
 // GetModels returns the a of models.
