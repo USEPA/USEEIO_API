@@ -108,6 +108,11 @@ func calculate(dir string, d *Demand, w http.ResponseWriter) *Result {
 		return nil
 	}
 
+	if err != nil || data == nil {
+		http.Error(w, "calculation failed", http.StatusInternalServerError)
+		return nil
+	}
+
 	// finally, set the result data
 	r := Result{}
 	r.Totals = U.ScaledColumnSums(demand)
