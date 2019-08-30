@@ -2,9 +2,12 @@ package main
 
 import (
 	"errors"
+	"net/http"
 	"path/filepath"
 	"strconv"
 	"strings"
+
+	"github.com/gorilla/mux"
 )
 
 // DemandInfo contains the meta-data of a demand vector.
@@ -59,5 +62,21 @@ func mapDemandType(csvVal string) (string, error) {
 		return "Consumption", nil
 	default:
 		return "", errors.New("Unknown demand type: " + csvVal)
+	}
+}
+
+// HandleGetDemands returns the handler for GET /api/{model}/demands
+func HandleGetDemands(dataDir string) http.HandlerFunc {
+
+	return func(w http.ResponseWriter, r *http.Request) {
+		model := mux.Vars(r)["model"]
+		folder := filepath.Join(dataDir, model)
+		demands, err := ReadDemandInfos(folder)
+		if err != nil {
+			http.Error(w, "no demands for model "+model+" found",
+				http.StatusNotFound)
+			return
+		}
+		ServeJSON(demands, w)
 	}
 }

@@ -1,7 +1,6 @@
 package main
 
 import (
-	"encoding/json"
 	"log"
 	"net/http"
 	"os"
@@ -27,6 +26,8 @@ func main() {
 	r.Handle("/", NoCache(fs))
 
 	r.HandleFunc("/api/models", GetModels)
+	r.HandleFunc("/api/{model}/demands",
+		HandleGetDemands(args.DataDir)).Methods("GET")
 	r.HandleFunc("/api/{model}/sectors",
 		HandleGetSectors(args.DataDir)).Methods("GET")
 	r.HandleFunc("/api/{model}/sectors/{id}",
@@ -62,28 +63,4 @@ func GetModels(w http.ResponseWriter, r *http.Request) {
 		i++
 	}
 	ServeJSON(list, w)
-}
-
-// ServeJSON converts the given entity to a JSON string and writes it to the
-// given response.
-func ServeJSON(e interface{}, w http.ResponseWriter) {
-	if e == nil {
-		http.Error(w, "No data", http.StatusInternalServerError)
-		return
-	}
-	data, err := json.Marshal(e)
-	if err != nil {
-		http.Error(w, err.Error(), http.StatusInternalServerError)
-		return
-	}
-	ServeJSONBytes(data, w)
-}
-
-// ServeJSONBytes writes the given data as JSON content to the given writer. It
-// also sets the respective access control headers so that cross domain requests
-// are supported.
-func ServeJSONBytes(data []byte, w http.ResponseWriter) {
-	w.Header().Set("Content-Type", "application/json")
-	writeAccessOptions(w)
-	w.Write(data)
 }
