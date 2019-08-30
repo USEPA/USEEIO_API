@@ -38,8 +38,6 @@ func main() {
 		HandleGetIndicators(args.DataDir)).Methods("GET")
 	r.HandleFunc("/api/{model}/indicators/{id}",
 		HandleGetIndicator(args.DataDir)).Methods("GET")
-
-	// matrix routes
 	r.HandleFunc("/api/{model}/matrix/{matrix}",
 		HandleGetMatrix(args.DataDir)).Methods("GET")
 

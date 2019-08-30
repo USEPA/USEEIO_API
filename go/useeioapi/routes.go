@@ -28,8 +28,6 @@ func ModelDispatch(w http.ResponseWriter, r *http.Request) {
 	}
 	cmd := parts[1]
 	switch cmd {
-	case "matrix":
-		GetMatrix(model, w, r)
 	case "calculate":
 		Calculate(model, w, r)
 	}
