@@ -23,13 +23,11 @@ func main() {
 	fs := http.FileServer(http.Dir(args.StaticDir))
 	r.Handle("/", NoCache(fs))
 
-	// TODO: add an options handler
-	/*
-		if r.Method == "OPTIONS" {
-			writeAccessOptions(w)
-			return
-		}
-	*/
+	// handle CORS preflight requests
+	r.PathPrefix("/api").HandlerFunc(
+		func(w http.ResponseWriter, r *http.Request) {
+			WriteAccessOptions(w)
+		}).Methods("OPTIONS")
 
 	// model routes
 	r.HandleFunc("/api/models",

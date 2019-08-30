@@ -7,9 +7,9 @@ import (
 	"os"
 )
 
-// Write headers for a preflight request in CORS
+// WriteAccessOptions writes headers for a preflight request in CORS
 // https://developer.mozilla.org/de/docs/Web/HTTP/Methods/OPTIONS
-func writeAccessOptions(w http.ResponseWriter) {
+func WriteAccessOptions(w http.ResponseWriter) {
 	w.Header().Set("Access-Control-Allow-Origin", "*")
 	w.Header().Set("Access-Control-Allow-Methods", "POST, GET")
 	w.Header().Set("Access-Control-Allow-Headers",
@@ -36,7 +36,7 @@ func ServeJSON(e interface{}, w http.ResponseWriter) {
 // are supported.
 func ServeJSONBytes(data []byte, w http.ResponseWriter) {
 	w.Header().Set("Content-Type", "application/json")
-	writeAccessOptions(w)
+	WriteAccessOptions(w)
 	w.Write(data)
 }
 

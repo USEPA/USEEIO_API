@@ -31,29 +31,28 @@ func HandleGetMatrix(dataDir string) http.HandlerFunc {
 		switch name {
 		case "A", "B", "C", "D", "L", "U":
 			file := filepath.Join(dataDir, model, name+".bin")
-			matrix, err := Load(file)
+			matrix, err := LoadMatrix(file)
 			if err != nil {
 				http.Error(w, "Failed to load matrix "+name,
 					http.StatusInternalServerError)
 				return
 			}
-			ServeMatrix(matrix, row, col, w)
+			serveMatrix(matrix, row, col, w)
 		case "B_dqi", "D_dqi", "U_dqi":
 			file := filepath.Join(dataDir, model, name+".csv")
-			dqis, err := ReadDqiMatrix(file)
+			dqis, err := readDqiMatrix(file)
 			if err != nil {
 				http.Error(w, "Failed to load matrix", http.StatusInternalServerError)
 				return
 			}
-			ServeDqiMatrix(dqis, row, col, w)
+			serveDqiMatrix(dqis, row, col, w)
 		default:
 			http.Error(w, "Unknown matrix: "+name, http.StatusNotFound)
 		}
 	}
 }
 
-// ServeMatrix serves the given numeric matrix as JSON object.
-func ServeMatrix(matrix *Matrix, row int, col int, w http.ResponseWriter) {
+func serveMatrix(matrix *Matrix, row int, col int, w http.ResponseWriter) {
 	// return a single column
 	if col > -1 {
 		if col >= matrix.Cols {
@@ -78,8 +77,7 @@ func ServeMatrix(matrix *Matrix, row int, col int, w http.ResponseWriter) {
 	ServeJSON(matrix.Slice2d(), w)
 }
 
-// ReadDqiMatrix reads a DQI matrix from the given file.
-func ReadDqiMatrix(file string) ([][]string, error) {
+func readDqiMatrix(file string) ([][]string, error) {
 	f, err := os.Open(file)
 	if err != nil {
 		return nil, err
@@ -93,8 +91,7 @@ func ReadDqiMatrix(file string) ([][]string, error) {
 	return records, nil
 }
 
-// ServeDqiMatrix serves the given DQI matrix as JSON object.
-func ServeDqiMatrix(dqis [][]string, row int, col int, w http.ResponseWriter) {
+func serveDqiMatrix(dqis [][]string, row int, col int, w http.ResponseWriter) {
 	// return a single column
 	if col > -1 {
 		vals := make([]string, len(dqis))

@@ -75,7 +75,7 @@ func calculate(dir string, d *Demand, w http.ResponseWriter) *Result {
 	}
 
 	// U is used for the total result; thus, always loaded
-	U, err := Load(filepath.Join(dir, "U.bin"))
+	U, err := LoadMatrix(filepath.Join(dir, "U.bin"))
 	if err != nil {
 		http.Error(w, "could not load matrix U",
 			http.StatusInternalServerError)
@@ -86,16 +86,16 @@ func calculate(dir string, d *Demand, w http.ResponseWriter) *Result {
 	var data *Matrix
 	switch d.Perspective {
 	case "direct":
-		L, err := Load(filepath.Join(dir, "L.bin"))
+		L, err := LoadMatrix(filepath.Join(dir, "L.bin"))
 		if err == nil {
-			D, err := Load(filepath.Join(dir, "D.bin"))
+			D, err := LoadMatrix(filepath.Join(dir, "D.bin"))
 			if err == nil {
 				s := L.ScaledColumnSums(demand)
 				data = D.ScaleColumns(s)
 			}
 		}
 	case "intermediate":
-		L, err := Load(filepath.Join(dir, "L.bin"))
+		L, err := LoadMatrix(filepath.Join(dir, "L.bin"))
 		if err == nil {
 			s := L.ScaledColumnSums(demand)
 			data = U.ScaleColumns(s)
