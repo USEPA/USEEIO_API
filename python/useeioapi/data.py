@@ -5,47 +5,14 @@ import useeioapi.matio as matio
 import numpy
 
 
-class Sector(object):
-
-    def __init__(self):
-        self.id = ''
-        self.index = 0
-        self.name = ''
-        self.code = ''
-        self.location = ''
-        self.description = ''
-
-    def as_json_dict(self):
-        return {
-            'id': self.id,
-            'index': self.index,
-            'name': self.name,
-            'code': self.code,
-            'location': self.location,
-            'description': self.description
-        }
-
-
-class Indicator(object):
-
-    def __init__(self):
-        self.id = ''
-        self.index = 0
-        self.group = ''
-        self.code = ''
-        self.unit = ''
-        self.name = ''
-
-    def as_json_dict(self):
-        return {
-            'id': self.id,
-            'index': self.index,
-            'group': self.group,
-            'code': self.code,
-            'unit': self.unit,
-            'name': self.name
-        }
-
+def scale_columns(matrix: numpy.ndarray, v: numpy.ndarray) -> numpy.ndarray:
+    result = numpy.zeros(matrix.shape, dtype=numpy.float64)
+    for i in range(0, v.shape[0]):
+        s = v[i]
+        if s == 0:
+            continue
+        result[:, i] = s * matrix[:, i]
+    return result
 
 class Model(object):
 
@@ -196,16 +163,6 @@ def read_indicators(folder: str, model_id: str):
     return indicators
 
 
-def scale_columns(matrix: numpy.ndarray, v: numpy.ndarray) -> numpy.ndarray:
-    result = numpy.zeros(matrix.shape, dtype=numpy.float64)
-    for i in range(0, v.shape[0]):
-        s = v[i]
-        if s == 0:
-            continue
-        result[:, i] = s * matrix[:, i]
-    return result
-
-
 def read_model_infos(data_folder: str):
     infos = []
     for row in read_csv(data_folder + '/models.csv'):
@@ -241,7 +198,7 @@ def read_csv(path, skip_header=True) -> list:
             yield row
 
 
-def read_matrix(data_folder: str, model_id: str, name: str):
+def read_matrix(data_folder: str, model_id: str, name: str) -> numpy.ndarray:
     path = data_folder + '/' + model_id + '/' + name + '.bin'
     if not os.path.isfile(path):
         return None

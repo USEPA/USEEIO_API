@@ -1,5 +1,6 @@
 import os
 import useeioapi.data as data
+import useeioapi.calc as calc
 
 from flask import Flask, jsonify, request, abort
 
@@ -89,13 +90,14 @@ def get_indicator(model: str, indicator_id: str):
     abort(404)
 
 
-@app.route('/api/<model>/calculate', methods=['POST'])
-def calculate(model: str):
-    m = models.get(model)  # type: data.Model
-    if m is None:
-        abort(404)
-    demand = request.get_json()
-    result = m.calculate(demand)
+@app.route('/api/<model_id>/calculate', methods=['POST'])
+def calculate(model_id: str):
+    # we set force true here, because otherwise `get_json`
+    # returns None when the request header
+    # `Content-Type: application/json` was not set
+    # see https://stackoverflow.com/a/20001283
+    demand = request.get_json(force=True)
+    result = calc.calculate(data_dir, model_id, demand)
     return jsonify(result)
 
 
