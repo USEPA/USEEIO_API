@@ -49,9 +49,9 @@ class Indicator(object):
 
 class Model(object):
 
-    def __init__(self, folder: str):
+    def __init__(self, folder: str, name: str):
         self.folder = folder  # type: str
-        self.sectors = read_sectors(folder)  # type: dict
+        self.sectors = read_sectors(folder, name)  # type: dict
         sorted_sectors = [s for s in self.sectors.values()]
         sorted_sectors.sort(key=lambda s: s.index)
         self.sector_ids = [s.id for s in sorted_sectors]
@@ -147,22 +147,36 @@ class Model(object):
         return s
 
 
-def read_sectors(folder: str):
-    m = {}
-    path = '%s/sectors.csv' % folder
-    with open(path, 'r', encoding='utf-8', newline='\n') as f:
-        reader = csv.reader(f)
-        next(reader)
-        for row in reader:
-            s = Sector()
-            s.index = int(row[0])
-            s.id = row[1]
-            s.name = row[2]
-            s.code = row[3]
-            s.location = row[4]
-            s.description = row[5]
-            m[s.id] = s
-    return m
+def read_sectors(folder: str, model_id: str) -> list:
+    path = folder + '/' + model_id + '/sectors.csv'
+    sectors = []
+    for row in read_csv(path):
+        sectors.append({
+            'index': int(row[0]),
+            'id': row[1],
+            'name': row[2],
+            'code': row[3],
+            'location': row[4],
+            'description': row[5],
+        })
+    sectors.sort(key=lambda s: s['index'])
+    return sectors
+
+
+def read_flows(folder: str, model_id: str) -> list:
+    path = folder + '/' + model_id + '/flows.csv'
+    flows = []
+    for row in read_csv(path):
+        flows.append({
+            'index': int(row[0]),
+            'id': row[1],
+            'name': row[2],
+            'category': row[3],
+            'subCategory': row[4],
+            'unit': row[5],
+            'uuid': row[6],
+        })
+    return flows
 
 
 def read_indicators(folder: str):

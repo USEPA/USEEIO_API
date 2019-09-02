@@ -40,7 +40,7 @@ func ReadDemandInfos(folder string) ([]*DemandInfo, error) {
 		}
 
 		d := DemandInfo{}
-		d.ID = row[0] // TODO: check file exists
+		d.ID = row[0]
 		if d.Year, err = strconv.Atoi(row[1]); err != nil {
 			return nil, err
 		}

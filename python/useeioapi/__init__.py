@@ -1,4 +1,5 @@
-from .data import *
+import os
+import useeioapi.data as data
 
 from flask import Flask, jsonify, request, abort
 
@@ -23,19 +24,19 @@ def add_header(r):
 
 @app.route('/api/models')
 def get_models():
-    infos = read_model_infos(data_dir)
+    infos = data.read_model_infos(data_dir)
     return jsonify(infos)
 
 
 @app.route('/api/<model>/demands')
 def get_demands(model: str):
-    demands = read_demand_infos(data_dir, model)
+    demands = data.read_demand_infos(data_dir, model)
     return jsonify(demands)
 
 
 @app.route('/api/<model>/demands/<demand_id>')
 def get_demand(model: str, demand_id: str):
-    demands = read_demand_infos(data_dir, model)
+    demands = data.read_demand_infos(data_dir, model)
     for demand in demands:
         did = demand.get('id')
         if did == demand_id:
@@ -45,18 +46,37 @@ def get_demand(model: str, demand_id: str):
 
 @app.route('/api/<model>/sectors')
 def get_sectors(model: str):
-    m = models.get(model)  # type: Model
-    if m is None:
-        abort(404)
-    l = []
-    for s in m.sectors.values():
-        l.append(s.as_json_dict())
-    return jsonify(l)
+    sectors = data.read_sectors(data_dir, model)
+    return jsonify(sectors)
+
+
+@app.route('/api/<model>/sectors/<path:sector_id>')
+def get_sector(model: str, sector_id: str):
+    sectors = data.read_sectors(data_dir, model)
+    for s in sectors:
+        if s.get('id') == sector_id:
+            return jsonify(s)
+    abort(404)
+
+
+@app.route('/api/<model>/flows')
+def get_flows(model: str):
+    flows = data.read_flows(data_dir, model)
+    return jsonify(flows)
+
+
+@app.route('/api/<model>/flows/<path:flow_id>')
+def get_flow(model: str, flow_id: str):
+    flows = data.read_flows(data_dir, model)
+    for flow in flows:
+        if flow.get('id') == flow_id:
+            return jsonify(flow)
+    abort(404)
 
 
 @app.route('/api/<model>/indicators')
 def get_indicators(model: str):
-    m = models.get(model)  # type: Model
+    m = models.get(model)  # type: data.Model
     if m is None:
         abort(404)
     l = []
@@ -67,7 +87,7 @@ def get_indicators(model: str):
 
 @app.route('/api/<model>/calculate', methods=['POST'])
 def calculate(model: str):
-    m = models.get(model)  # type: Model
+    m = models.get(model)  # type: data.Model
     if m is None:
         abort(404)
     demand = request.get_json()
@@ -77,7 +97,7 @@ def calculate(model: str):
 
 @app.route('/api/<model>/matrix/<name>')
 def get_matrix(model: str, name: str):
-    m = models.get(model)  # type: Model
+    m = models.get(model)  # type: data.Model
     if m is None:
         abort(404)
     if name in ('A', 'B', 'C', 'D', 'L', 'U'):
@@ -88,7 +108,7 @@ def get_matrix(model: str, name: str):
         abort(404)
 
 
-def __get_numeric_matrix(m: Model, name: str):
+def __get_numeric_matrix(m: data.Model, name: str):
     mat = m.get_matrix(name)
     if mat is None:
         abort(404)
@@ -101,7 +121,7 @@ def __get_numeric_matrix(m: Model, name: str):
     return jsonify(mat.tolist())
 
 
-def __get_dqi_matrix(m: Model, name: str):
+def __get_dqi_matrix(m: data.Model, name: str):
     mat = m.get_dqi_matrix(name)
     if mat is None:
         abort(404)
@@ -136,7 +156,8 @@ def serve(data_folder: str, port='5000'):
     for name in os.listdir(data_folder):
         f = os.path.join(data_folder, name)
         if os.path.isdir(f):
+            pass
             # TODO: check model folder (all data present etc.)
-            model = Model(f)
-            models[name] = model
+            # model = Model(f, name)
+            # models[name] = model
     app.run('0.0.0.0', port)
