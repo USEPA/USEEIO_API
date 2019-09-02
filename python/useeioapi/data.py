@@ -176,24 +176,23 @@ def read_flows(folder: str, model_id: str) -> list:
             'unit': row[5],
             'uuid': row[6],
         })
+    flows.sort(key=lambda s: s['index'])
     return flows
 
 
-def read_indicators(folder: str):
+def read_indicators(folder: str, model_id: str):
+    path = folder + '/' + model_id + '/indicators.csv'
     indicators = []
-    path = '%s/indicators.csv' % folder
-    with open(path, 'r', encoding='utf-8', newline='\n') as f:
-        reader = csv.reader(f)
-        next(reader)
-        for row in reader:
-            i = Indicator()
-            i.index = int(row[0])
-            i.id = row[3]
-            i.name = row[2]
-            i.code = row[3]
-            i.unit = row[4]
-            i.group = row[5]
-            indicators.append(i)
+    for row in read_csv(path):
+        indicators.append({
+            'index': int(row[0]),
+            'id': row[3],
+            'name': row[2],
+            'code': row[3],
+            'unit': row[4],
+            'group': row[5]
+        })
+    indicators.sort(key=lambda s: s['index'])
     return indicators
 
 

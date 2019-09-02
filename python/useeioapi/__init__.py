@@ -69,20 +69,24 @@ def get_flows(model: str):
 def get_flow(model: str, flow_id: str):
     flows = data.read_flows(data_dir, model)
     for flow in flows:
-        if flow.get('id') == flow_id:
+        if flow.get('id') == flow_id or flow.get('uuid') == flow_id:
             return jsonify(flow)
     abort(404)
 
 
 @app.route('/api/<model>/indicators')
 def get_indicators(model: str):
-    m = models.get(model)  # type: data.Model
-    if m is None:
-        abort(404)
-    l = []
-    for i in m.indicators:
-        l.append(i.as_json_dict())
-    return jsonify(l)
+    indicators = data.read_indicators(data_dir, model)
+    return jsonify(indicators)
+
+
+@app.route('/api/<model>/indicators/<path:indicator_id>')
+def get_indicator(model: str, indicator_id: str):
+    indicators = data.read_indicators(data_dir, model)
+    for indicator in indicators:
+        if indicator.get('id') == indicator_id:
+            return jsonify(indicator)
+    abort(404)
 
 
 @app.route('/api/<model>/calculate', methods=['POST'])
