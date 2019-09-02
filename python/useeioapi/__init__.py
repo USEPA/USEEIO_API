@@ -101,19 +101,16 @@ def calculate(model: str):
 
 @app.route('/api/<model>/matrix/<name>')
 def get_matrix(model: str, name: str):
-    m = models.get(model)  # type: data.Model
-    if m is None:
-        abort(404)
     if name in ('A', 'B', 'C', 'D', 'L', 'U'):
-        return __get_numeric_matrix(m, name)
+        return __get_numeric_matrix(model, name)
     elif name in ('B_dqi', 'D_dqi', 'U_dqi'):
-        return __get_dqi_matrix(m, name)
+        return __get_dqi_matrix(model, name)
     else:
         abort(404)
 
 
-def __get_numeric_matrix(m: data.Model, name: str):
-    mat = m.get_matrix(name)
+def __get_numeric_matrix(model: str, name: str):
+    mat = data.read_matrix(data_dir, model, name)
     if mat is None:
         abort(404)
     col = __get_index_param('col', mat.shape[1])
@@ -125,8 +122,8 @@ def __get_numeric_matrix(m: data.Model, name: str):
     return jsonify(mat.tolist())
 
 
-def __get_dqi_matrix(m: data.Model, name: str):
-    mat = m.get_dqi_matrix(name)
+def __get_dqi_matrix(model: str, name: str):
+    mat = data.read_dqi_matrix(data_dir, model, name)
     if mat is None:
         abort(404)
     if len(mat) == 0:

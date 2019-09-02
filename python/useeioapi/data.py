@@ -239,3 +239,20 @@ def read_csv(path, skip_header=True) -> list:
             next(r)
         for row in r:
             yield row
+
+
+def read_matrix(data_folder: str, model_id: str, name: str):
+    path = data_folder + '/' + model_id + '/' + name + '.bin'
+    if not os.path.isfile(path):
+        return None
+    return matio.read_matrix(path)
+
+
+def read_dqi_matrix(data_folder: str, model_id: str, name: str):
+    path = data_folder + '/' + model_id + '/' + name + '.csv'
+    if not os.path.isfile(path):
+        return None
+    dqi = []
+    for row in read_csv(path, skip_header=False):
+        dqi.append(row)
+    return dqi
