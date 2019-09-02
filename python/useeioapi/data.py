@@ -205,6 +205,20 @@ def read_model_infos(data_folder: str):
     return infos
 
 
+def read_demand_infos(data_folder: str, model_id: str):
+    path = data_folder + '/' + model_id + '/demands.csv'
+    infos = []
+    for row in read_csv(path):
+        infos.append({
+            'id': row[0],
+            'year': int(row[1]),
+            'type': row[2],
+            'system': row[3],
+            'location': row[4],
+        })
+    return infos
+
+
 def read_csv(path, skip_header=True) -> list:
     with open(path, 'r', encoding='utf-8', newline='\n') as f:
         r = csv.reader(f)

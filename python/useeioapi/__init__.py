@@ -27,6 +27,22 @@ def get_models():
     return jsonify(infos)
 
 
+@app.route('/api/<model>/demands')
+def get_demands(model: str):
+    demands = read_demand_infos(data_dir, model)
+    return jsonify(demands)
+
+
+@app.route('/api/<model>/demands/<demand_id>')
+def get_demand(model: str, demand_id: str):
+    demands = read_demand_infos(data_dir, model)
+    for demand in demands:
+        did = demand.get('id')
+        if did == demand_id:
+            return jsonify(demand)
+    return abort(404)
+
+
 @app.route('/api/<model>/sectors')
 def get_sectors(model: str):
     m = models.get(model)  # type: Model
