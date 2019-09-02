@@ -1,11 +1,9 @@
-import os
 import useeioapi.data as data
 import useeioapi.calc as calc
 
 from flask import Flask, jsonify, request, abort
 
 app = Flask(__name__)
-models = {}
 data_dir = 'data'
 
 
@@ -156,11 +154,4 @@ def __get_index_param(name: str, size: int) -> int:
 def serve(data_folder: str, port='5000'):
     global data_dir, app
     data_dir = data_folder
-    for name in os.listdir(data_folder):
-        f = os.path.join(data_folder, name)
-        if os.path.isdir(f):
-            pass
-            # TODO: check model folder (all data present etc.)
-            # model = Model(f, name)
-            # models[name] = model
     app.run('0.0.0.0', port)
