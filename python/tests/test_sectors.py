@@ -26,7 +26,7 @@ class SectorTest(unittest.TestCase):
         for model in client.get_models():
             model_id = model['id']
             sectors = client.get_sectors(model_id)
-            i = random.randint(0, len(sectors))
+            i = random.randint(0, len(sectors) - 1)
             log.info('check sector %i in model %s', i, model_id)
             sector = sectors[i]  # type: dict
             same = client.get_sector(model_id, sector['id'])

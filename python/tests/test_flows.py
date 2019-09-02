@@ -28,7 +28,7 @@ class FlowTest(unittest.TestCase):
         for model in client.get_models():
             model_id = model['id']
             flows = client.get_flows(model_id)
-            i = random.randint(0, len(flows))
+            i = random.randint(0, len(flows) - 1)
             log.info('check flow %i in model %s', i, model_id)
             flow = flows[i]  # type: dict
             same = client.get_flow(model_id, flow['id'])

@@ -28,7 +28,7 @@ class IndicatorTest(unittest.TestCase):
         for model in client.get_models():
             model_id = model['id']
             indicators = client.get_indicators(model_id)
-            i = random.randint(0, len(indicators))
+            i = random.randint(0, len(indicators) - 1)
             log.info('check indicator %i in model %s', i, model_id)
             indicator = indicators[i]  # type: dict
             same = client.get_indicator(model_id, indicator['id'])
