@@ -7,8 +7,9 @@ from urllib.parse import quote
 
 class Client(object):
 
-    def __init__(self, endpoint: str):
+    def __init__(self, endpoint: str, apikey=None):
         self.endpoint = endpoint
+        self.apikey = apikey
 
     def get_models(self) -> list:
         return self.__get_json('/models')
@@ -58,5 +59,8 @@ class Client(object):
     def __get_json(self, path):
         url = self.endpoint + path
         log.debug("GET " + url)
-        with requests.get(url) as r:
+        headers = {}
+        if self.apikey is not None:
+            headers['x-api-key'] = self.apikey
+        with requests.get(url, headers=headers) as r:
             return r.json()
