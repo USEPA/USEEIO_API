@@ -2,8 +2,8 @@ import csv
 import json
 import os
 
-CSV_FILE = 'USEEIOv1.1_FinalDemand.csv'
-MODEL = 'USEEIO'
+CSV_FILE = 'GAUSEEIOv1.2_FinalDemand.csv'
+MODEL_PATH = '..\data\GAUSEEIO'
 
 COL_CODE = 0
 COL_NAME = 1
@@ -15,49 +15,49 @@ class DemandInfo(object):
 
     def __init__(self, column_header: str):
         parts = column_header.split('_')
-        self.location = parts[0]
-        self.year = int(parts[1])
-        self.perspective = parts[2].lower()
-        self.system = parts[3] if len(parts) > 3 else 'complete'
-        self.id = ('%s_%s_%s' % (
-            self.year, self.location, self.perspective)).lower()
-        if self.system != 'complete':
-            self.id += '_' + self.system.lower()
+        self.year = int(parts[0])
+        self.location = parts[1]
+        self.perspective = parts[2]
+        self.system = parts[3] if len(parts) > 3 else 'Full System'
+        if self.system == 'food':
+            self.system = 'Food System'
+        self.id = column_header.lower()
 
-    def to_json_obj(self) -> dict:
-        obj = {
-            'id': self.id,
-            'year': self.year,
-            'location': self.location,
-            'system': self.system,
-            'type': self.perspective,
-            'isDefault': False
-        }
-        if self.perspective == 'consumption':
-            obj['consumer'] = 'all'
-        return obj
+    def to_csv_row(self):
+        return [self.id, self.year, self.perspective, self.system,
+                self.location]
 
 
 def main():
     prepare_folders()
-    rows = read_rows()
+    rows = read_csv_rows()
     infos = []
     for col in range(COL_FIRST_DEMAND, len(rows[0])):
         header = rows[0][col]
         info = DemandInfo(header)
-        infos.append(info.to_json_obj())
-        entries = read_entries(rows, col)
-        dump_json(entries, os.path.join(MODEL, 'demands', info.id + '.json'))
-    dump_json(infos, os.path.join(MODEL, 'demands.json'))
+        infos.append(info.to_csv_row())
+        entries = read_demand_entries(rows, col)
+        dump_json(entries, os.path.join(
+            MODEL_PATH, 'demands', info.id + '.json'))
+    write_infos(infos)
 
 
 def prepare_folders():
-    folder = os.path.join(MODEL, 'demands')
+    folder = os.path.join(MODEL_PATH, 'demands')
     if not os.path.exists(folder):
         os.makedirs(folder)
 
 
-def read_rows():
+def write_infos(infos):
+    path = os.path.join(MODEL_PATH, 'demands.csv')
+    with open(path, 'w', encoding='utf-8', newline='\n') as f:
+        writer = csv.writer(f)
+        writer.writerow(['ID', 'Year', 'Type', 'System', 'Location'])
+        for row in infos:
+            writer.writerow(row)
+
+
+def read_csv_rows():
     rows = []
     with open(CSV_FILE, 'r', encoding='utf-8', newline='\n') as f:
         reader = csv.reader(f)
@@ -66,7 +66,7 @@ def read_rows():
     return rows
 
 
-def read_entries(rows, col_idx):
+def read_demand_entries(rows, col_idx):
     entries = []
     for row_idx in range(1, len(rows)):
         amount = float(rows[row_idx][col_idx])
