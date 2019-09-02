@@ -1,5 +1,6 @@
 import logging as log
 import requests
+import numpy as np
 
 from urllib.parse import quote
 
@@ -39,6 +40,20 @@ class Client(object):
     def get_flow(self, model_id: str, flow_id: str):
         fid = quote(flow_id)
         return self.__get_json('/%s/flows/%s' % (model_id, flow_id))
+
+    def get_matrix(self, model_id: str, name: str) -> np.ndarray:
+        data = self.__get_json('/%s/matrix/%s' % (model_id, name))
+        return np.asarray(data, dtype=np.float)
+
+    def get_matrix_column(self, model_id: str, name: str, col: int) \
+            -> np.ndarray:
+        data = self.__get_json('/%s/matrix/%s?col=%i' % (model_id, name, col))
+        return np.asarray(data, dtype=np.float)
+
+    def get_matrix_row(self, model_id: str, name: str, row: int) \
+            -> np.ndarray:
+        data = self.__get_json('/%s/matrix/%s?row=%i' % (model_id, name, row))
+        return np.asarray(data, dtype=np.float)
 
     def __get_json(self, path):
         url = self.endpoint + path
