@@ -191,3 +191,24 @@ def scale_columns(matrix: numpy.ndarray, v: numpy.ndarray) -> numpy.ndarray:
             continue
         result[:, i] = s * matrix[:, i]
     return result
+
+
+def read_model_infos(data_folder: str):
+    infos = []
+    for row in read_csv(data_folder + '/models.csv'):
+        infos.append({
+            'id': row[0],
+            'name': row[1],
+            'location': row[2],
+            'description': row[3]
+        })
+    return infos
+
+
+def read_csv(path, skip_header=True) -> list:
+    with open(path, 'r', encoding='utf-8', newline='\n') as f:
+        r = csv.reader(f)
+        if skip_header:
+            next(r)
+        for row in r:
+            yield row

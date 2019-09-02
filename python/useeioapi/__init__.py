@@ -4,6 +4,7 @@ from flask import Flask, jsonify, request, abort
 
 app = Flask(__name__)
 models = {}
+data_dir = 'data'
 
 
 # no caching -> just for dev ...
@@ -13,19 +14,17 @@ def add_header(r):
     Add headers to both force latest IE rendering engine or Chrome Frame,
     and also to cache the rendered page for 10 minutes.
     """
-    r.headers["Cache-Control"] = "no-cache, no-store, must-revalidate"
-    r.headers["Pragma"] = "no-cache"
-    r.headers["Expires"] = "0"
+    r.headers['Cache-Control'] = 'no-cache, no-store, must-revalidate'
+    r.headers['Pragma'] = 'no-cache'
+    r.headers['Expires'] = '0'
     r.headers['Cache-Control'] = 'public, max-age=0'
     return r
 
 
 @app.route('/api/models')
 def get_models():
-    l = []
-    for model_id in models.keys():
-        l.append({'id': model_id})
-    return jsonify(l)
+    infos = read_model_infos(data_dir)
+    return jsonify(infos)
 
 
 @app.route('/api/<model>/sectors')
@@ -116,6 +115,8 @@ def __get_index_param(name: str, size: int) -> int:
 
 
 def serve(data_folder: str, port='5000'):
+    global data_dir, app
+    data_dir = data_folder
     for name in os.listdir(data_folder):
         f = os.path.join(data_folder, name)
         if os.path.isdir(f):
