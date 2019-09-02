@@ -1,10 +1,21 @@
 import logging as log
 import os
+import sys
 
 import requests
+import useeioapi.client
 
 _endpoint = None
-log.basicConfig(level=log.INFO)
+_client = None
+log.basicConfig(level=log.INFO, stream=sys.stdout)
+
+
+def getclient() -> useeioapi.client.Client:
+    global _client
+    if _client is not None:
+        return _client
+    _client = useeioapi.client.Client(endpoint())
+    return _client
 
 
 def endpoint() -> str:

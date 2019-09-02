@@ -5,7 +5,7 @@ gulp.task('build', (cb) => {
     require('bootprint')
         .load(require('bootprint-openapi'))
         .merge({ /* Any other configuration */ })
-        .build('apidoc.yaml', 'build')
+        .build('apidoc.yaml', '../build/static')
         .generate()
         .done(console.log);
     if (cb) {
@@ -14,7 +14,7 @@ gulp.task('build', (cb) => {
 });
 
 gulp.task('clean', () => {
-    return gulp.src('build', {
+    return gulp.src('../build/static', {
         read: false,
         allowEmpty: true,
     }).pipe(clean({ force: true }));
