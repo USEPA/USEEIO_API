@@ -56,9 +56,15 @@ class Client(object):
         data = self.__get_json('/%s/matrix/%s?row=%i' % (model_id, name, row))
         return np.asarray(data, dtype=np.float)
 
+    def calculate(self, model_id: str, demand: dict) -> dict:
+        url = self.endpoint + '/' + model_id + "/calculate"
+        log.debug("POST %", url)
+        with requests.post(url, json=demand) as r:
+            return r.json()
+
     def __get_json(self, path):
         url = self.endpoint + path
-        log.debug("GET " + url)
+        log.debug("GET %", url)
         headers = {}
         if self.apikey is not None:
             headers['x-api-key'] = self.apikey
