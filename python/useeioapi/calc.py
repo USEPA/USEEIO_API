@@ -56,7 +56,7 @@ def _demand_vector(demand: dict, sectors: list) -> numpy.ndarray:
     for sector in sectors:
         idx[sector['id']] = sector['index']
     v = numpy.zeros(len(sectors))
-    entries = demand.get('entries')
+    entries = demand.get('demand')
     if entries is None:
         return v
     for e in entries:

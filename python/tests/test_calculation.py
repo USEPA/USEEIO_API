@@ -145,7 +145,7 @@ class CalculationTest(unittest.TestCase):
                 'sector': sector['id'],
                 'amount': sector['index'] + 1.0
             })
-        return {'entries': entries}
+        return {'demand': entries}
 
     def compare_matrices(self, M1: np.ndarray, M2: np.ndarray):
         m, n = M1.shape
