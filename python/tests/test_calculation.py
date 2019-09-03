@@ -66,7 +66,77 @@ class CalculationTest(unittest.TestCase):
             r = client.calculate(model_id, demand)
             self.compare_matrices(R, np.asarray(r['data'], dtype=np.float))
 
+    def test_intermediate_perspective(self):
+        """Test the calculation of a result of the intermediate perspecitve."""
+        client = getclient()
+        for model in client.get_models():
+            model_id = model['id']
+            log.info('test the intermediate perspective calculation in model %s',
+                     model_id)
+            # first, calculate the expected result matrix R
+            L = client.get_matrix(model_id, "L")
+            _, n = L.shape
+            s = np.zeros(n)
+            for j in range(0, n):
+                s += L[:, j] * (j + 1.0)
+            U = client.get_matrix(model_id, "U")
+            R = U @ np.diag(s)
+
+            # compare this with the result from the API
+            demand = self.build_test_demand(model_id)
+            demand['perspective'] = 'intermediate'
+            r = client.calculate(model_id, demand)
+            self.compare_matrices(R, np.asarray(r['data'], dtype=np.float))
+
+    def test_final_perspective(self):
+        """Test the calculation of a result of the final perspecitve."""
+        client = getclient()
+        for model in client.get_models():
+            model_id = model['id']
+            log.info('test the final perspective calculation in model %s',
+                     model_id)
+
+            # first, calculate the expected result matrix R
+            U = client.get_matrix(model_id, "U")
+            _, n = U.shape
+            d = np.zeros(n)
+            for j in range(0, n):
+                d[j] = j + 1.0
+            R = U @ np.diag(d)
+
+            # compare this with the result from the API
+            demand = self.build_test_demand(model_id)
+            demand['perspective'] = 'final'
+            r = client.calculate(model_id, demand)
+            self.compare_matrices(R, np.asarray(r['data'], dtype=np.float))
+
+    def test_total_results(self):
+        """All perspectives should give the same total result."""
+        client = getclient()
+        for model in client.get_models():
+            model_id = model['id']
+            log.info('test the total results in the perspectives calculation'
+                     ' of model %s', model_id)
+
+            # first, calculate the expected total result t
+            U = client.get_matrix(model_id, "U")
+            m, n = U.shape
+            t = np.zeros(m)
+            for j in range(0, n):
+                t += U[:, j] * (j + 1.0)
+
+            # compare this with the result from the API
+            demand = self.build_test_demand(model_id)
+            for p in ['direct', 'intermediate', 'final']:
+                demand['perspective'] = p
+                r = client.calculate(model_id, demand)
+                totals = r['totals']
+                for i in range(0, m):
+                    self.assertAlmostEqual(t[i], totals[i])
+
     def build_test_demand(self, model_id: str):
+        """Creates a test demand for the given model. For each sector with
+           index i, the demand vector d gets an entry of d[i] = i + 1.0."""
         client = getclient()
         sectors = client.get_sectors(model_id)
         entries = []
