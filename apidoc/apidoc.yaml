@@ -16,7 +16,7 @@ paths:
         - application/json
       responses:
         '200':
-          description: TODO...
+          description: An array of available USEEIO models
           schema:
             type: array
             items:
@@ -33,7 +33,7 @@ paths:
           name: model
           type: string
           required: true
-          description: The ID of the input-output model to use.
+          description: The ID of the input-output model to use
         - in: body
           name: body
           description: The demand vector and perspective for the calculation.
@@ -57,7 +57,7 @@ paths:
           description: The ID of the input-output model to use.
       responses:
         '200':
-          description: TODO...
+          description: An array of available demand vectors.
           schema:
             type: array
             items:
