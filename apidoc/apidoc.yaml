@@ -16,7 +16,7 @@ paths:
         - application/json
       responses:
         '200':
-          description: An array of available USEEIO models
+          description: Successfully returned an array of model names.
           schema:
             type: array
             items:
@@ -41,7 +41,7 @@ paths:
             $ref: '#/definitions/Demand'
       responses:
         '200':
-          description: TODO...
+          description: Successfully returned a calculation result.
           schema:
             $ref: '#/definitions/Result'
   '/{model}/demands':
@@ -57,7 +57,7 @@ paths:
           description: The ID of the input-output model to use.
       responses:
         '200':
-          description: An array of available demand vectors.
+          description: Successfully returned an array of available demand vectors.
           schema:
             type: array
             items:
@@ -75,11 +75,12 @@ paths:
           description: The ID of the input-output model to use.
         - in: path
           name: demandID
+          type: string
           required: true
-          description: The ID of the demand vector
+          description: The ID of the demand vector.
       responses:
         '200':
-          description: TODO...
+          description: Successfully returned a demand vector for the given model.
           schema:
             type: array
             items:
@@ -101,7 +102,7 @@ paths:
           description: The ID of the input-output model to use.
       responses:
         '200':
-          description: TODO...
+          description: Successfully returned the direct requirements matrix for the given model.
           schema:
             type: array
             items:
@@ -128,7 +129,7 @@ paths:
           description: The ID of the input-output model to use.
       responses:
         '200':
-          description: TODO...
+          description: Successfully returned the satellite matrix for the given model.
           schema:
             type: array
             items:
@@ -142,7 +143,12 @@ paths:
       summary: Get the data quality entries of the satellite matrix.
       description: >
         The matrix `B_dqi` contains the corresponding data quality entries of
-        the satellite matrix `B`.
+        the satellite matrix `B` in the same matrix dimensions of flows x sector.
+        These entries are in the form of 5 data quality scores (values for each ranging from 1 to 5) for the five
+        EPA LCA flow data quality indicators in this order: (Data reliability, Temporal correlation, Technological correlation,
+         Technological correlation). For example '(3,1,1,4,5)'. For more information on the data quality indicators and score, see the US EPA 2016 Report
+          'Guidance on Data Quality Assessment for Life Cycle Inventory Data'.
+
       produces:
         - application/json
       parameters:
@@ -153,7 +159,7 @@ paths:
           description: The ID of the input-output model to use.
       responses:
         '200':
-          description: TODO...
+          description: Successfully returned the data quality entries for the satellite matrix for the given model.
           schema:
             type: array
             items:
@@ -179,7 +185,7 @@ paths:
           description: The ID of the input-output model to use.
       responses:
         '200':
-          description: TODO...
+          description: Successfully returned the characterization factor matrix for the given model.
           schema:
             type: array
             items:
@@ -206,7 +212,7 @@ paths:
           description: The ID of the input-output model to use.
       responses:
         '200':
-          description: TODO...
+          description: Successfully returned a matrix of direct impact results for the given model.
           schema:
             type: array
             items:
@@ -218,8 +224,13 @@ paths:
   '/{model}/matrix/D_dqi':
     get:
       summary: Get the data quality results of the direct impact assessment results.
-      description: |
-        TODO ...
+      description:
+        The matrix `D_dqi` contains the corresponding data quality entries of
+        the direct impact results matrix `D` in the same matrix dimensions of impacts x sector. These entries are in the form
+        of 5 data quality scores (values for each ranging from 1 to 5) for the five EPA flow data quality
+        indicators in this order, (Data reliability, Temporal correlation, Technological correlation,
+       Technological correlation). For example '(3,1,1,4,5)'. For more information on the data quality indicators
+        and scores, see the US EPA 2016 Report 'Guidance on Data Quality Assessment for Life Cycle Inventory Data'.
       produces:
         - application/json
       parameters:
@@ -230,7 +241,7 @@ paths:
           description: The ID of the input-output model to use.
       responses:
         '200':
-          description: TODO...
+          description: Successfully returned a matrix of data quality entries for the direct impact results for the given model.
           schema:
             type: array
             items:
@@ -257,7 +268,7 @@ paths:
           description: The ID of the input-output model to use.
       responses:
         '200':
-          description: TODO...
+          description: Successfully returned the Leontief inverse matrix of the given model.
           schema:
             type: array
             items:
@@ -268,7 +279,7 @@ paths:
           description: if the server failed to load the matrix file
   '/{model}/matrix/U':
     get:
-      summary: Get the upstream impact assessment results.
+      summary: Get the total (direct+indirect) impact assessment results.
       description: >
         The matrix `U` is a `LCIA category x sector` matrix and contains in each
         column `i` the total impact assessment result related to the direct and
@@ -285,7 +296,7 @@ paths:
           description: The ID of the input-output model to use.
       responses:
         '200':
-          description: TODO...
+          description: Successfully returned the total impact results matrix.
           schema:
             type: array
             items:
@@ -296,9 +307,14 @@ paths:
           description: if the server failed to load the matrix file
   '/{model}/matrix/U_dqi':
     get:
-      summary: Get the data quality results of the upstream impact assessment results.
-      description: |
-        TODO ...
+      summary: Get the data quality results of the total impact assessment results.
+      description:
+        The matrix `U_dqi` contains the corresponding data quality entries of
+                the total impact results matrix `U` in the same matrix dimensions of impacts x sector. These entries are in the form
+                of 5 data quality scores (values for each ranging from 1 to 5) for the five EPA flow data quality
+                indicators in this order, (Data reliability, Temporal correlation, Technological correlation,
+               Technological correlation). For example '(3,1,1,4,5)'. For more information on the data quality indicators
+                and scores, see the US EPA 2016 Report 'Guidance on Data Quality Assessment for Life Cycle Inventory Data'.
       produces:
         - application/json
       parameters:
@@ -309,7 +325,7 @@ paths:
           description: The ID of the input-output model to use.
       responses:
         '200':
-          description: TODO...
+          description: Successfully returned a matrix of data quality entries for the total impact results for the given model.
           schema:
             type: array
             items:
@@ -318,13 +334,13 @@ paths:
                 type: string
         '500':
           description: if the server failed to load the matrix file
-  '/{model}/matrix/{name}?col={index}':
+  '/{model}/matrix/{name}':
     get:
       summary: Get the column of a matrix.
       description: >
         Returns the column with the given index from the given matrix. See the
-        other matrix descriptions. (TODO this function is currently only 
-        available for numeric matrices)
+        other matrix descriptions. This function is currently only
+        available for numeric matrices.
       produces:
         - application/json
       parameters:
@@ -333,37 +349,16 @@ paths:
           type: string
           required: true
           description: The ID of the input-output model to use.
+        - in: path
+          name: name
+          type: string
+          required: true
+          description: The name of the matrix.
         - in: query
           name: col
           type: integer
           required: true
           description: The zero-based index of the column.
-      responses:
-        '200':
-          description: TODO...
-          schema:
-            type: array
-            items:
-              type: number
-        '400':
-          description: if the column is not a valid integer
-        '500':
-          description: if the server failed to load the matrix file or column
-  '/{model}/matrix/{name}?row={index}':
-    get:
-      summary: Get the row of a matrix.
-      description: >
-        Returns the row with the given index from the given matrix. See the
-        other matrix descriptions. (TODO this function is currently only 
-        available for numeric matrices)
-      produces:
-        - application/json
-      parameters:
-        - in: path
-          name: model
-          type: string
-          required: true
-          description: The ID of the input-output model to use.
         - in: query
           name: row
           type: integer
@@ -371,18 +366,18 @@ paths:
           description: The zero-based index of the row.
       responses:
         '200':
-          description: TODO...
+          description: Successfully returned an array for the given column or row of the given matrix and given model.
           schema:
             type: array
             items:
               type: number
         '400':
-          description: if the row is not a valid integer
+          description: if the column or row index is not a valid integer
         '500':
-          description: if the server failed to load the matrix file or row
+          description: if the server failed to load the matrix file or column
   '/{model}/sectors':
     get:
-      summary: Get all industry sectors of the IO model.
+      summary: Get all sectors of the IO model.
       produces:
         - application/json
       parameters:
@@ -390,10 +385,10 @@ paths:
           name: model
           type: string
           required: true
-          description: The ID of the input-output model to use.
+          description: The ID of the IO model to use.
       responses:
         '200':
-          description: TODO...
+          description: Successfully returned an array of sectors in the given model.
           schema:
             type: array
             items:
@@ -409,9 +404,14 @@ paths:
           type: string
           required: true
           description: The ID of the input-output model to use.
+        - in: path
+          name: sectorID
+          type: string
+          required: true
+          description: The ID of the sector.
       responses:
         '200':
-          description: TODO...
+          description: Successfully returned an array with data on the given sector in the given model.
           schema:
             $ref: '#/definitions/Sector'
         '404':
@@ -429,7 +429,7 @@ paths:
           description: The ID of the input-output model to use.
       responses:
         '200':
-          description: TODO...
+          description: Successfully returned an array of indicators in the given model.
           schema:
             type: array
             items:
@@ -452,7 +452,7 @@ paths:
           type: string
       responses:
         '200':
-          description: TODO...
+          description: Successfully returned an array with data on the given indicator in the given model.
           schema:
             $ref: '#/definitions/Indicator'
         '404':

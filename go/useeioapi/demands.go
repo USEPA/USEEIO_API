@@ -2,9 +2,13 @@ package main
 
 import (
 	"errors"
+	"io/ioutil"
+	"net/http"
 	"path/filepath"
 	"strconv"
 	"strings"
+
+	"github.com/gorilla/mux"
 )
 
 // DemandInfo contains the meta-data of a demand vector.
@@ -36,7 +40,7 @@ func ReadDemandInfos(folder string) ([]*DemandInfo, error) {
 		}
 
 		d := DemandInfo{}
-		d.ID = row[0] // TODO: check file exists
+		d.ID = row[0]
 		if d.Year, err = strconv.Atoi(row[1]); err != nil {
 			return nil, err
 		}
@@ -59,5 +63,38 @@ func mapDemandType(csvVal string) (string, error) {
 		return "Consumption", nil
 	default:
 		return "", errors.New("Unknown demand type: " + csvVal)
+	}
+}
+
+// HandleGetDemands returns the handler for GET /api/{model}/demands
+func HandleGetDemands(dataDir string) http.HandlerFunc {
+
+	return func(w http.ResponseWriter, r *http.Request) {
+		model := mux.Vars(r)["model"]
+		folder := filepath.Join(dataDir, model)
+		demands, err := ReadDemandInfos(folder)
+		if err != nil {
+			http.Error(w, "no demands for model "+model+" found",
+				http.StatusNotFound)
+			return
+		}
+		ServeJSON(demands, w)
+	}
+}
+
+// HandleGetDemand returns the handler for GET /api/{model}/demands/{id}
+func HandleGetDemand(dataDir string) http.HandlerFunc {
+
+	return func(w http.ResponseWriter, r *http.Request) {
+		model := mux.Vars(r)["model"]
+		id := mux.Vars(r)["id"]
+		file := filepath.Join(dataDir, model, "demands", id+".json")
+		data, err := ioutil.ReadFile(file)
+		if err != nil {
+			http.Error(w, "no demand "+id+" for model "+model+" found",
+				http.StatusNotFound)
+			return
+		}
+		ServeJSONBytes(data, w)
 	}
 }

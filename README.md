@@ -1,43 +1,19 @@
 # USEEIO API
-This projects contains an implementation of the USEEIO API in
-[Go](https://golang.org/). It is the same RESTful API as provided by the 
-[iomb.webapi](https://github.com/USEPA/IO-Model-Builder/tree/master/iomb/webapi)
-package. However, the implementation in Go can be compiled to a single binary
+This project contains versions of the USEEIO API in the 
+[Go](https://golang.org/) and Python 3 languages, as well as a test suite. 
+ However, the implementation in Go can be compiled to a single binary
 file which is a full HTTP server that provides the data from one or more
 input-output models and optionally static files. All data that is is stored in
 files in a specific folder structure (see also the
 [documentation of the file format](./doc/data_format.md)).
+ 
+See the [Wiki](https://github.com/USEPA/USEEIO_API/wiki/) for instructions to build, test, deploy and use the USEEIO API.
 
-## Running the Server
-The server application is just a single executable file. The folder with the
-data files, the server port, and the location of the static files (HTML,
-JavaScript, CSS) of the application can be specified via command line arguments:
-
-```bash
-app -data <folder with data files> -static <folder with static files> -port <server port>
-```
-
-All arguments are optional and the defaults are the same like starting the
-application in the following way:
-
-```bash
-app -data data -static static -port 5000
-```
-
-## Building from Source
-You need to have the Go compiler installed in order to build the backend server.
-On Windows, you then simply run the `make.bat` file in the `backend` folder from
-the command line:
-
-```batch
-cd backend
-make.bat
-```
-
-TODO: On Linux (and macOS) ... Building a Docker image  ...
-
-## License
-This project is in the worldwide public domain, released under the 
-[CC0 1.0 Universal Public Domain Dedication](https://creativecommons.org/publicdomain/zero/1.0/).
-
-![Public Domain Dedication](https://licensebuttons.net/p/zero/1.0/88x31.png)
+## Disclaimer
+The United States Environmental Protection Agency (EPA) GitHub project code is provided on an "as is" basis
+ and the user assumes responsibility for its use.  EPA has relinquished control of the information and no longer
+  has responsibility to protect the integrity , confidentiality, or availability of the information.  Any
+   reference to specific commercial products, processes, or services by service mark, trademark, manufacturer,
+    or otherwise, does not constitute or imply their endorsement, recommendation or favoring by EPA.  The EPA seal
+     and logo shall not be used in any manner to imply endorsement of any commercial product or activity by EPA or
+      the United States Government.
