@@ -1,15 +1,16 @@
-# Data Storage Format
-The server-side data is stored as plain files in a specific folder structure.
-The path to this folder is a start parameter of the server... 
+## Data formats
 
-## File Formats
+The data required for serving USEEIO models via the USEEIO API are matrix files and metadata files.
 
 ### Matrix Files
-The web-service of the USEEIO API uses pre-calculated matrices and
-meta-information that are exported from an `iomb` model. The pre-calculated
-matrices are derived from the direct requirements matrix `A`, the satellite
-matrix `B`, and the matrix with the characterization factors `C`.
+The web service of the USEEIO API uses matrices and
+meta-information that are exported from an `iomb` model.
 
+
+ The series of matrices
+include Data matrices and Data quality matrices.
+
+#### Data matrices
 The matrix `A` is a `sector x sector` matrix and contains in each column `i` the
 direct sector inputs that are required to produce 1 USD dollar of output from
 sector `i`:
@@ -35,7 +36,7 @@ flows |       |
       +-------+
 ```
 
-In the matrix `C`, each column `k` contains the **c**haracterization factors of 
+In the matrix `C`, each column `k` contains the characterization factors of
 the different LCIA categories related to one reference unit of flow `k`:
 
 ```
@@ -46,7 +47,7 @@ LCIA categories |       |
                 +-------+
 ```
 
-From the matrices `B` and `C` the **d**irect impact matrix `D` can be calculated
+From the matrices `B` and `C` the direct impact matrix `D` can be calculated
 via:
 
 ```
@@ -64,7 +65,7 @@ LCIA categories |       |
                 +-------+
 ```
 
-The **L**eontief inverse `L` is calculated via:
+The Leontief inverse `L` is calculated via:
 
 ```
 L = (I - A)^-1
@@ -83,7 +84,7 @@ sectors |       |
 ```
 
 With the direct impacts `D` and the total requirements `L` the matrix `U` which
-contains the **u**pstream totals can be calculated via:
+contains the upstream totals can be calculated via:
 
 ```
 U = D * L
@@ -100,6 +101,20 @@ LCIA categories |       |
                 |     U |
                 +-------+
 ```
+
+#### Data quality matrices
+There are also 3 data quality matrices associated with three of the matrices above.
+Each matrix consists of data quality etnries for values in the same position of its associated matrix.
+ These entries are in the form of 5 data quality scores (values for each ranging from 1 to 5) for the five
+ EPA LCA flow data quality indicators in this order: (Data reliability, Temporal correlation, Technological correlation,
+         Technological correlation). For example '(3,1,1,4,5)'.
+
+`B_dqi` provides data quality scores for the `B` matrix.
+
+`D_dqi` provides data quality scores for the `D` matrix.
+
+`U_dqi` provides data quality scores for the `U` matrix.
+
 
 ### CSV Files
 Indicators, sectors, flows, and other meta-data are stored in plain CSV files.
