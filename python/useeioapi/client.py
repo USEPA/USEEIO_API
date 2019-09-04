@@ -59,7 +59,10 @@ class Client(object):
     def calculate(self, model_id: str, demand: dict) -> dict:
         url = self.endpoint + '/' + model_id + "/calculate"
         log.debug("POST %", url)
-        with requests.post(url, json=demand) as r:
+        headers = {}
+        if self.apikey is not None:
+            headers['x-api-key'] = self.apikey
+        with requests.post(url, json=demand, headers=headers) as r:
             return r.json()
 
     def __get_json(self, path):
