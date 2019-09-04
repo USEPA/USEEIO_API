@@ -20,8 +20,11 @@ def getclient() -> useeioapi.client.Client:
     endpoint = os.environ.get('USEEIO_API')
     if endpoint is None or endpoint == '':
         endpoint = 'http://localhost:8080/api'
+    log.info('use API endpoint %s', endpoint)
     apikey = os.environ.get('USEEIO_API_KEY')
     if apikey == '':
         apikey = None
+    if apikey is not None:
+        log.info('use API key %s', apikey[0] + '...' + apikey[-1])
     _client = useeioapi.client.Client(endpoint, apikey)
     return _client
