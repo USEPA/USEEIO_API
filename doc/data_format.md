@@ -1,10 +1,13 @@
 ## Data formats
 
-The data required for USEEIO models are matrix files and metadata files.
+The data required for serving USEEIO models via the USEEIO API are matrix files and metadata files.
 
 ### Matrix Files
-The web-service of the USEEIO API uses matrices and
-meta-information that are exported from an `iomb` model. The series of matrices
+The web service of the USEEIO API uses matrices and
+meta-information that are exported from an `iomb` model.
+
+
+ The series of matrices
 include Data matrices and Data quality matrices.
 
 #### Data matrices
