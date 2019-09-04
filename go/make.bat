@@ -14,7 +14,7 @@ if "%~1" == "clean" goto END
 rem check the data & static folders
 if not exist "..\build\data" (
     echo WARNING: The data folder build^\data does not exists
-    echo You may want to put the API data there.
+    echo ... You may want to put the API data there.
 )
 if not exist "..\build\static" (
     echo WARNING: The data folder build^\static does not exists
@@ -38,7 +38,7 @@ if "%~1" == "linux64" goto LINUX
 
 rem Cloud Foundry
 if "%~1" == "CF" goto CF
-if "%~1" == "cf" goto cf
+if "%~1" == "cf" goto CF
 
 rem unknown build target
 echo ERROR: unknown build target: %1
@@ -96,5 +96,6 @@ echo 1. Switch to the build folder: cd ..^\build
 echo 2. Login, e.g.: cf login -a api.run.pivotal.io
 echo 3. Push the app with the binary build pack:
 echo 4. cf push -b https://github.com/cloudfoundry/binary-buildpack.git
+goto END
 
 :END
