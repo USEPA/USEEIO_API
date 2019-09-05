@@ -1,38 +1,19 @@
 package main
 
 import (
+	"encoding/csv"
 	"encoding/json"
 	"net/http"
+	"os"
 )
 
-var models map[string]*Model
-
-func main() {
-	args := GetArgs()
-
-	log.Println("load data from folder:", args.DataDir)
-	models = InitModels(args.DataDir)
-
-	log.Println("Create server with static files from:", args.StaticDir)
-	h := http.NewServeMux()
-	fs := http.FileServer(http.Dir(args.StaticDir))
-	h.Handle("/", NoCache(fs))
-	h.HandleFunc("/api/models", GetModels)
-	h.HandleFunc("/api/", ModelDispatch)
-
-	log.Println("Starting server at port:", args.Port)
-	http.ListenAndServe(":"+args.Port, h)
-}
-
-// GetModels returns the a of models.
-func GetModels(w http.ResponseWriter, r *http.Request) {
-	list := make([]*Model, len(models))
-	i := 0
-	for key := range models {
-		list[i] = models[key]
-		i++
-	}
-	ServeJSON(list, w)
+// WriteAccessOptions writes headers for a preflight request in CORS
+// https://developer.mozilla.org/de/docs/Web/HTTP/Methods/OPTIONS
+func WriteAccessOptions(w http.ResponseWriter) {
+	w.Header().Set("Access-Control-Allow-Origin", "*")
+	w.Header().Set("Access-Control-Allow-Methods", "POST, GET")
+	w.Header().Set("Access-Control-Allow-Headers",
+		"Content-Type, Access-Control-Allow-Headers")
 }
 
 // ServeJSON converts the given entity to a JSON string and writes it to the
