@@ -5,7 +5,6 @@ import (
 	"net/http"
 	"path/filepath"
 	"strconv"
-	"strings"
 
 	"github.com/gorilla/mux"
 )
@@ -46,30 +45,10 @@ func ReadIndicators(folder string) ([]*Indicator, error) {
 		i.Name = row[2]
 		i.Code = row[3]
 		i.Unit = row[4]
-		if i.Group, err = mapIndicatorGroup(row[5]); err != nil {
-			return nil, err
-		}
+		i.Group = row[5]
 		indicators[i.Index] = &i
 	}
 	return indicators, nil
-}
-
-func mapIndicatorGroup(csvVal string) (string, error) {
-	s := strings.ToLower(strings.TrimSpace(csvVal))
-	switch s {
-	case "impact potential":
-		return "Impact Potential", nil
-	case "resource use":
-		return "Resource Use", nil
-	case "waste generated":
-		return "Waste Generated", nil
-	case "economic & social":
-		return "Economic & Social", nil
-	case "chemical releases":
-		return "Chemical Releases", nil
-	default:
-		return "", errors.New("Unknown indicator group: " + csvVal)
-	}
 }
 
 // HandleGetIndicators returns the handler for GET /api/{model}/indicators

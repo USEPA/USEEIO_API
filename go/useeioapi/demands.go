@@ -44,26 +44,12 @@ func ReadDemandInfos(folder string) ([]*DemandInfo, error) {
 		if d.Year, err = strconv.Atoi(row[1]); err != nil {
 			return nil, err
 		}
-		if d.Type, err = mapDemandType(row[2]); err != nil {
-			return nil, err
-		}
+		d.Type = strings.TrimSpace(row[2])
 		d.System = strings.TrimSpace(row[3])
 		d.Location = strings.TrimSpace(row[4])
 		demands[idx-1] = &d
 	}
 	return demands, nil
-}
-
-func mapDemandType(csvVal string) (string, error) {
-	t := strings.ToLower(strings.TrimSpace(csvVal))
-	switch t {
-	case "production":
-		return "Production", nil
-	case "consumption":
-		return "Consumption", nil
-	default:
-		return "", errors.New("Unknown demand type: " + csvVal)
-	}
 }
 
 // HandleGetDemands returns the handler for GET /api/{model}/demands
