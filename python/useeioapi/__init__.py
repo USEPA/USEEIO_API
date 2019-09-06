@@ -33,14 +33,12 @@ def get_demands(model: str):
     return jsonify(demands)
 
 
-@app.route('/api/<model>/demands/<demand_id>')
-def get_demand(model: str, demand_id: str):
-    demands = data.read_demand_infos(data_dir, model)
-    for demand in demands:
-        did = demand.get('id')
-        if did == demand_id:
-            return jsonify(demand)
-    return abort(404)
+@app.route('/api/<model_id>/demands/<demand_id>')
+def get_demand(model_id: str, demand_id: str):
+    demand = data.read_demand(data_dir, model_id, demand_id)
+    if demand is None:
+        abort(404)
+    return jsonify(demand)
 
 
 @app.route('/api/<model>/sectors')

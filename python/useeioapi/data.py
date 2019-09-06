@@ -1,4 +1,5 @@
 import csv
+import json
 import os
 import struct
 
@@ -78,6 +79,14 @@ def read_demand_infos(data_folder: str, model_id: str):
             'location': row[4],
         })
     return infos
+
+
+def read_demand(data_folder: str, model_id: str, demand_id: str):
+    path = os.path.join(data_folder, model_id, 'demands', demand_id + '.json')
+    if not os.path.isfile(path):
+        return None
+    with open(path, 'r', encoding='utf-8') as f:
+        return json.load(f)
 
 
 def read_csv(path, skip_header=True) -> list:
