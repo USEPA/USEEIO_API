@@ -3,9 +3,12 @@ info:
   description: >-
     A RESTful API that provides access to versions of the USEEIO models. Results
     are returned as JSON objects.
-  version: 0.2.0
+  version: 1.0.0
   title: USEEIO-API
 basePath: /api
+externalDocs:
+  description: The USEEIO API Wiki on github provides more information on using the API.
+  url: 'https://github.com/USEPA/USEEIO_API/wiki/'
 schemes:
   - http
 paths:
@@ -338,9 +341,7 @@ paths:
     get:
       summary: Get a row or column of a matrix.
       description:
-        Returns the row or column with the given index passed in the query parameter, from the given matrix. See the
-        other matrix descriptions to understand. This function is currently only available for numeric matrices and not the data
-      quality matrices, B_dqi, D_dqi, and U_dqi.
+        Returns the row or column with the given index passed in the query parameter, from the given matrix. See the other matrix descriptions to understand. This function is currently only available for numeric matrices and not the data quality matrices, B_dqi, D_dqi, and U_dqi.
       produces:
         - application/json
       parameters:
