@@ -336,11 +336,11 @@ paths:
           description: if the server failed to load the matrix file
   '/{model}/matrix/{name}':
     get:
-      summary: Get the column of a matrix.
-      description: >
-        Returns the column with the given index from the given matrix. See the
-        other matrix descriptions. This function is currently only
-        available for numeric matrices.
+      summary: Get a row or column of a matrix.
+      description:
+        Returns the row or column with the given index passed in the query parameter, from the given matrix. See the
+        other matrix descriptions to understand. This function is currently only available for numeric matrices and not the data
+      quality matrices, B_dqi, D_dqi, and U_dqi.
       produces:
         - application/json
       parameters:
