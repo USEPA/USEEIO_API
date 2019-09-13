@@ -1,3 +1,6 @@
+"""
+Extensive unit tests of the {model}/calculation endpoint
+"""
 import logging as log
 import numpy as np
 import unittest
@@ -45,7 +48,7 @@ class CalculationTest(unittest.TestCase):
             self.compare_matrices(U, client.get_matrix(model_id, 'U'))
 
     def test_direct_perspective(self):
-        """Test the calculation of a result of the direct perspecitve."""
+        """Test the calculation of a result of the direct perspective."""
         client = getclient()
         for model in client.get_models():
             model_id = model['id']
@@ -67,7 +70,7 @@ class CalculationTest(unittest.TestCase):
             self.compare_matrices(R, np.asarray(r['data'], dtype=np.float))
 
     def test_intermediate_perspective(self):
-        """Test the calculation of a result of the intermediate perspecitve."""
+        """Test the calculation of a result of the intermediate perspective."""
         client = getclient()
         for model in client.get_models():
             model_id = model['id']
@@ -89,7 +92,7 @@ class CalculationTest(unittest.TestCase):
             self.compare_matrices(R, np.asarray(r['data'], dtype=np.float))
 
     def test_final_perspective(self):
-        """Test the calculation of a result of the final perspecitve."""
+        """Test the calculation of a result of the final perspective."""
         client = getclient()
         for model in client.get_models():
             model_id = model['id']
@@ -148,6 +151,12 @@ class CalculationTest(unittest.TestCase):
         return {'demand': entries}
 
     def compare_matrices(self, M1: np.ndarray, M2: np.ndarray):
+        """Compares all values in two numeric matrices with AlmostEqual
+
+        :param M1: matrix 1, np.ndarray
+        :param M2: matrix 2, np.ndarray
+        :return: pass/fail
+        """
         m, n = M1.shape
         m_, n_ = M2.shape
         self.assertEqual(m, m_)
