@@ -1,3 +1,7 @@
+"""
+Tests {model}/flows and {model}/flows/{flowID} endpoints
+"""
+
 import logging as log
 import random
 import unittest

@@ -1,3 +1,7 @@
+"""
+Tests {model}/{matrix} and {model}/{matrix}?row= and {model}/{matrix}?col= endpoints
+"""
+
 import logging as log
 import random
 import unittest

@@ -1,3 +1,6 @@
+"""
+Tests {model}/sectors/ and {model}/sectors/{sectorID} endpoints
+"""
 import logging as log
 import random
 import unittest

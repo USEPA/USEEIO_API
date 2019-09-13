@@ -1,3 +1,6 @@
+"""
+Tests {model}/demands/ and {model}/demands/{demandID} endpoints
+"""
 import logging as log
 import unittest
 
