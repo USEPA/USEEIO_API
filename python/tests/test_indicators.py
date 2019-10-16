@@ -1,3 +1,6 @@
+"""
+Tests {model}/indicators and {model}/indicators/{indicatorID} endpoints
+"""
 import logging as log
 import random
 import unittest

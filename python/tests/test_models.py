@@ -1,3 +1,6 @@
+"""
+Tests /models endpoint
+"""
 import logging as log
 import unittest
 
