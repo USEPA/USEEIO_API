@@ -11,9 +11,8 @@ import (
 // https://developer.mozilla.org/de/docs/Web/HTTP/Methods/OPTIONS
 func WriteAccessOptions(w http.ResponseWriter) {
 	w.Header().Set("Access-Control-Allow-Origin", "*")
-	w.Header().Set("Access-Control-Allow-Methods", "POST, GET")
-	w.Header().Set("Access-Control-Allow-Headers",
-		"Content-Type, Access-Control-Allow-Headers")
+	w.Header().Set("Access-Control-Allow-Methods", "*")
+	w.Header().Set("Access-Control-Allow-Headers", "*")
 }
 
 // ServeJSON converts the given entity to a JSON string and writes it to the
