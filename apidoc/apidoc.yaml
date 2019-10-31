@@ -3,7 +3,7 @@ info:
   description: >-
     A RESTful API that provides access to versions of the USEEIO models. Results
     are returned as JSON objects.
-  version: 1.0.0
+  version: 1.0.2
   title: USEEIO-API
 basePath: /api
 externalDocs:
