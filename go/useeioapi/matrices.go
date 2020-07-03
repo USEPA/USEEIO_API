@@ -29,7 +29,7 @@ func HandleGetMatrix(dataDir string) http.HandlerFunc {
 		}
 
 		switch name {
-		case "A", "B", "C", "D", "L", "U":
+		case "A", "A_d", "B", "C", "CPI", "D", "L", "M", "q", "U":
 			file := filepath.Join(dataDir, model, name+".bin")
 			matrix, err := LoadMatrix(file)
 			if err != nil {

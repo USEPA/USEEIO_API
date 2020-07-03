@@ -40,6 +40,10 @@ rem Cloud Foundry
 if "%~1" == "CF" goto CF
 if "%~1" == "cf" goto CF
 
+rem AWS
+if "%~1" == "AWS" goto AWS
+if "%~1" == "aws" goto AWS
+
 rem unknown build target
 echo ERROR: unknown build target: %1
 echo Supported build targets are
@@ -55,6 +59,7 @@ echo where the supported platforms are:
 echo * Windows ^(default^)
 echo * Linux
 echo * CF ^(creates a distribution folder for Cloud Foundry^)
+echo * AWS (Linux binary for distribution on AWS)
 echo Note: you need to have a current Go compiler installed
 goto END
 
@@ -90,12 +95,22 @@ cd ..
 echo Copy CF meta data
 copy /Y cfdist\manifest.yaml ..\build\manifest.yaml
 copy /Y cfdist\Procfile ..\build\Procfile
-
 echo You should now be able to push the app to a Cloud Foundry instance
 echo 1. Switch to the build folder: cd ..^\build
 echo 2. Login, e.g.: cf login -a api.run.pivotal.io
 echo 3. Push the app with the binary build pack:
 echo 4. cf push -b https://github.com/cloudfoundry/binary-buildpack.git
+goto END
+
+:AWS
+set CGO_ENABLED=0
+set GOARCH=amd64
+set GOOS=linux
+echo Compile version for AWS: %GOOS%_%GOARCH%
+cd useeioapi
+go build -o ..\awsdist\app
+cd ..
+echo done
 goto END
 
 :END
