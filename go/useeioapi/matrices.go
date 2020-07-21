@@ -7,6 +7,8 @@ import (
 	"os"
 	"path/filepath"
 	"strconv"
+	"strings"
+	"unicode"
 
 	"github.com/gorilla/mux"
 )
@@ -18,6 +20,11 @@ func HandleGetMatrix(dataDir string) http.HandlerFunc {
 		model := mux.Vars(r)["model"]
 		name := mux.Vars(r)["matrix"]
 
+		if !isValidMatrixName(name) {
+			http.Error(w, "invalid matrix name", http.StatusBadRequest)
+			return
+		}
+
 		// get possible row or column
 		col, err := indexParam("col", r.URL, w)
 		if err != nil {
@@ -28,27 +35,40 @@ func HandleGetMatrix(dataDir string) http.HandlerFunc {
 			return
 		}
 
-		switch name {
-		case "A", "A_d", "B", "C", "CPI", "D", "L", "M", "q", "U":
-			file := filepath.Join(dataDir, model, name+".bin")
-			matrix, err := LoadMatrix(file)
+		// if the matrix ends with _dqi we serve it as DQI matrix
+		// from a CSV file
+		if strings.HasSuffix(name, "_dqi") {
+			file := filepath.Join(dataDir, model, name+".csv")
+			if !fileExists(file) {
+				http.Error(w, "DQI matrix "+name+" does not exist",
+					http.StatusNotFound)
+				return
+			}
+			dqis, err := readDqiMatrix(file)
 			if err != nil {
-				http.Error(w, "Failed to load matrix "+name,
+				http.Error(w, "Failed to load DQI matrix "+name,
 					http.StatusInternalServerError)
 				return
 			}
-			serveMatrix(matrix, row, col, w)
-		case "B_dqi", "D_dqi", "U_dqi":
-			file := filepath.Join(dataDir, model, name+".csv")
-			dqis, err := readDqiMatrix(file)
-			if err != nil {
-				http.Error(w, "Failed to load matrix", http.StatusInternalServerError)
-				return
-			}
 			serveDqiMatrix(dqis, row, col, w)
-		default:
-			http.Error(w, "Unknown matrix: "+name, http.StatusNotFound)
+			return
 		}
+
+		// otherwise we try to load it from our binary format
+		file := filepath.Join(dataDir, model, name+".bin")
+		if !fileExists(file) {
+			http.Error(w, "Matrix "+name+" does not exist",
+				http.StatusNotFound)
+			return
+		}
+		matrix, err := LoadMatrix(file)
+		if err != nil {
+			http.Error(w, "Failed to load matrix "+name,
+				http.StatusInternalServerError)
+			return
+		}
+		serveMatrix(matrix, row, col, w)
+
 	}
 }
 
@@ -131,4 +151,24 @@ func indexParam(name string, reqURL *url.URL, w http.ResponseWriter) (int, error
 		return -1, err
 	}
 	return idx, nil
+}
+
+// Checks if the given name is a valid matrix name. A matrix name must start
+// with a letter and can only consist of letters, digits, and underscores.
+func isValidMatrixName(name string) bool {
+	if len(name) == 0 {
+		return false
+	}
+	for i, char := range name {
+		if i == 0 && !unicode.IsLetter(char) {
+			return false
+		}
+		if unicode.IsLetter(char) ||
+			unicode.IsDigit(char) ||
+			char == '_' {
+			continue
+		}
+		return false
+	}
+	return true
 }
