@@ -1,10 +1,12 @@
 package main
 
 import (
+	"io/ioutil"
 	"log"
 	"net/http"
 	"os"
 	"os/signal"
+	"path/filepath"
 	"syscall"
 
 	"github.com/gorilla/mux"
@@ -46,6 +48,30 @@ func main() {
 		HandleGetMatrix(dataDir)).Methods("GET")
 	r.HandleFunc("/api/{model}/calculate",
 		HandleCalculate(dataDir)).Methods("POST")
+
+	// serve the crosswalk.csv file
+	r.HandleFunc("/api/{model}/crosswalk.csv",
+		func(w http.ResponseWriter, r *http.Request) {
+			model := mux.Vars(r)["model"]
+			path := filepath.Join(dataDir, model, "crosswalk.csv")
+			if !fileExists(path) {
+				http.Error(w, "crosswalk.csv does not exist",
+					http.StatusNotFound)
+				return
+			}
+			data, err := ioutil.ReadFile(path)
+			if err != nil {
+				http.Error(w, "failed to read crosswalk.csv from data folder",
+					http.StatusInternalServerError)
+				return
+			}
+			w.Header().Set("Content-Type", "text/csv")
+			WriteAccessOptions(w)
+			if _, err := w.Write(data); err != nil {
+				http.Error(w, "failed to serve crosswalk.csv from data folder",
+					http.StatusInternalServerError)
+			}
+		}).Methods("GET")
 
 	// handle CORS preflight requests
 	r.PathPrefix("/api").HandlerFunc(
