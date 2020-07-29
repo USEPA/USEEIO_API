@@ -3,7 +3,7 @@ info:
   description: >-
     A RESTful API that provides access to versions of the USEEIO models. Results
     are returned as JSON objects.
-  version: 1.0.2
+  version: '1.1'
   title: USEEIO-API
 basePath: /api
 externalDocs:
@@ -24,6 +24,18 @@ paths:
             type: array
             items:
               $ref: '#/definitions/Model'
+  '/sectorcrosswalk.csv':
+    get:
+      summary: Provide a crosswalk of sector codes from the BEA and NAICS schemas. Field names are in a 'SchemaName_Year_SchemaLevel_Code' pattern, e.g. 'BEA_2012_Sector_Code'
+      description: >
+        All models sectors are associated with codes. These codes are derived from the BEA or NAICS. This crosswalk can be used to relate other data using these classifications.
+      produces:
+        - text/csv; charset=utf-8
+      responses:
+        '200':
+          description: Successfully returned the sector crosswalk.
+          schema:
+            type: file
   '/{model}/calculate':
     post:
       summary: Calculate the result for a given demand and perspective.
