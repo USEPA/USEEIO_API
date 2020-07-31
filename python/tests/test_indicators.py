@@ -25,6 +25,8 @@ class IndicatorTest(unittest.TestCase):
                 self.assertIsNotNone(indicator.get('code'))
                 self.assertIsNotNone(indicator.get('unit'))
                 self.assertIsNotNone(indicator.get('group'))
+                self.assertIsNotNone(indicator.get('simpleunit'))
+                self.assertIsNotNone(indicator.get('simplename'))
 
     def test_get_indicator(self):
         client = getclient()
