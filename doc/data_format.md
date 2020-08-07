@@ -39,7 +39,7 @@ flows |       |
 ```
 
 In the matrix `C`, each column `k` contains the characterization factors of
-the different LCIA categories related to one reference unit of flow `k`:
+the different Life Cycle Impact Assessment (LCIA) categories related to one reference unit of flow `k`:
 
 ```
                   flows
