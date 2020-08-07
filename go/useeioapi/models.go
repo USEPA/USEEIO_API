@@ -12,6 +12,7 @@ type ModelInfo struct {
 	Name        string `json:"name"`
 	Location    string `json:"location"`
 	Description string `json:"description,omitempty"`
+	Sector_Schema string `json:"sectorschema,omitempty"`
 }
 
 // ReadModelInfos reads the model information from the data folder.
@@ -23,14 +24,15 @@ func ReadModelInfos(dataDir string) ([]*ModelInfo, error) {
 	}
 	models := make([]*ModelInfo, 0, len(rows)-1)
 	for i, row := range rows {
-		if i == 0 || len(row) < 4 {
+		if i == 0 || len(row) < 5 {
 			continue
 		}
 		models = append(models, &ModelInfo{
-			ID:          row[0],
-			Name:        row[1],
-			Location:    row[2],
-			Description: row[3]})
+			ID:            row[0],
+			Name:          row[1],
+			Location:      row[2],
+			Description:   row[3],
+			Sector_Schema: row[4]})
 	}
 	return models, nil
 }

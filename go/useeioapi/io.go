@@ -49,3 +49,8 @@ func ReadCSV(file string) ([][]string, error) {
 	reader := csv.NewReader(f)
 	return reader.ReadAll()
 }
+
+func fileExists(path string) bool {
+	_, err := os.Stat(path)
+	return err == nil
+}

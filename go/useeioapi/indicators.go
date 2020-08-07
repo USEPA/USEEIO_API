@@ -5,7 +5,6 @@ import (
 	"net/http"
 	"path/filepath"
 	"strconv"
-
 	"github.com/gorilla/mux"
 )
 
@@ -17,6 +16,8 @@ type Indicator struct {
 	Code  string `json:"code"`
 	Unit  string `json:"unit"`
 	Group string `json:"group"`
+	SimpleUnit string `json:"simpleunit"`
+	SimpleName string `json:"simplename"`
 }
 
 // ReadIndicators reads the indicators from the CSV file in the data folder. It
@@ -33,19 +34,21 @@ func ReadIndicators(folder string) ([]*Indicator, error) {
 		if idx == 0 {
 			continue
 		}
-		if len(row) < 6 {
+		if len(row) < 8 {
 			return nil, errors.New("error in " + path +
-				": each row should have 6 columns")
+				": each row should have 8 columns")
 		}
 		i := Indicator{}
 		if i.Index, err = strconv.Atoi(row[0]); err != nil {
 			return nil, err
 		}
-		i.ID = row[3]
+		i.ID = row[1]
 		i.Name = row[2]
 		i.Code = row[3]
 		i.Unit = row[4]
 		i.Group = row[5]
+		i.SimpleUnit = row[6]
+		i.SimpleName = row[7]
 		indicators[i.Index] = &i
 	}
 	return indicators, nil
