@@ -39,7 +39,7 @@ flows |       |
 ```
 
 In the matrix `C`, each column `k` contains the characterization factors of
-the different LCIA categories related to one reference unit of flow `k`:
+the different Life Cycle Impact Assessment (LCIA) categories related to one reference unit of flow `k`:
 
 ```
                   flows
@@ -170,8 +170,8 @@ Column  Field       Description
 5       Group       The indicator group which should be exactly one of these values:
                     Impact Potential, Resource Use, Waste Generated,
                     Economic & Social, Chemical Releases
-6       SimpleUnit  A simplied version of the Unit. 
-7       SimpleName  A simplied version of Name.
+6       SimpleUnit  A simplified version of the Unit. 
+7       SimpleName  A simplified version of Name.
 ```
 
 ### demands.csv
