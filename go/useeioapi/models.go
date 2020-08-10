@@ -8,11 +8,11 @@ import (
 
 // ModelInfo describes an input-output model in the data folder.
 type ModelInfo struct {
-	ID          string `json:"id"`
-	Name        string `json:"name"`
-	Location    string `json:"location"`
-	Description string `json:"description,omitempty"`
-	Sector_Schema string `json:"sectorschema,omitempty"`
+	ID           string `json:"id"`
+	Name         string `json:"name"`
+	Location     string `json:"location"`
+	Description  string `json:"description,omitempty"`
+	SectorSchema string `json:"sectorschema,omitempty"`
 }
 
 // ReadModelInfos reads the model information from the data folder.
@@ -28,11 +28,11 @@ func ReadModelInfos(dataDir string) ([]*ModelInfo, error) {
 			continue
 		}
 		models = append(models, &ModelInfo{
-			ID:            row[0],
-			Name:          row[1],
-			Location:      row[2],
-			Description:   row[3],
-			Sector_Schema: row[4]})
+			ID:           row[0],
+			Name:         row[1],
+			Location:     row[2],
+			Description:  row[3],
+			SectorSchema: row[4]})
 	}
 	return models, nil
 }

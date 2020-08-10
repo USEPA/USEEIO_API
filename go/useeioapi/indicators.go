@@ -5,17 +5,18 @@ import (
 	"net/http"
 	"path/filepath"
 	"strconv"
+
 	"github.com/gorilla/mux"
 )
 
 // Indicator describes an impact assessment indicator of the input-output model.
 type Indicator struct {
-	ID    string `json:"id"`
-	Index int    `json:"index"`
-	Name  string `json:"name"`
-	Code  string `json:"code"`
-	Unit  string `json:"unit"`
-	Group string `json:"group"`
+	ID         string `json:"id"`
+	Index      int    `json:"index"`
+	Name       string `json:"name"`
+	Code       string `json:"code"`
+	Unit       string `json:"unit"`
+	Group      string `json:"group"`
 	SimpleUnit string `json:"simpleunit"`
 	SimpleName string `json:"simplename"`
 }
