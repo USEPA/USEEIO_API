@@ -21,9 +21,8 @@ class FlowTest(unittest.TestCase):
             for f in flows:  # type: dict
                 self.assertIsNotNone(f.get('id'))
                 self.assertIsNotNone(f.get('index'))
-                self.assertIsNotNone(f.get('name'))
-                self.assertIsNotNone(f.get('category'))
-                self.assertIsNotNone(f.get('subCategory'))
+                self.assertIsNotNone(f.get('flowable'))
+                self.assertIsNotNone(f.get('context'))
                 self.assertIsNotNone(f.get('unit'))
                 self.assertIsNotNone(f.get('uuid'))
 
@@ -38,7 +37,7 @@ class FlowTest(unittest.TestCase):
             same = client.get_flow(model_id, flow['id'])
             self.assertEqual(same['id'], flow['id'])
             self.assertEqual(same['index'], flow['index'])
-            self.assertEqual(same['name'], flow['name'])
-            self.assertEqual(same['category'], flow['category'])
+            self.assertEqual(same['flowable'], flow['flowable'])
+            self.assertEqual(same['context'], flow['context'])
             self.assertEqual(same['unit'], flow['unit'])
             self.assertEqual(same['uuid'], flow['uuid'])
