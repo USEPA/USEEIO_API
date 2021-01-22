@@ -42,7 +42,7 @@ func main() {
 		HandleGetFlow(dataDir)).Methods("GET")
 	r.HandleFunc("/api/{model}/indicators",
 		HandleGetIndicators(dataDir)).Methods("GET")
-	r.HandleFunc("/api/{model}/indicators/{id}",
+	r.HandleFunc("/api/{model}/indicators/{id:.+}",
 		HandleGetIndicator(dataDir)).Methods("GET")
 	r.HandleFunc("/api/{model}/matrix/{matrix}",
 		HandleGetMatrix(dataDir)).Methods("GET")
