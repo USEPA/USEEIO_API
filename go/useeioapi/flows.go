@@ -5,17 +5,18 @@ import (
 	"net/http"
 	"path/filepath"
 	"strconv"
+
 	"github.com/gorilla/mux"
 )
 
 // Flow describes an elementary flow an IO model.
 type Flow struct {
-	ID          string `json:"id"`
-	Index       int    `json:"index"`
-	Flowable    string `json:"flowable"`
-	Context     string `json:"context"`
-	Unit        string `json:"unit"`
-	UUID        string `json:"uuid"`
+	ID       string `json:"id"`
+	Index    int    `json:"index"`
+	Flowable string `json:"flowable"`
+	Context  string `json:"context"`
+	Unit     string `json:"unit"`
+	UUID     string `json:"uuid"`
 }
 
 // ReadFlows reads the flows from the CSV file `flows.csv` in the data folder
@@ -33,9 +34,9 @@ func ReadFlows(folder string) ([]*Flow, error) {
 		if idx == 0 {
 			continue
 		}
-		if len(row) < 7 {
+		if len(row) < 5 {
 			return nil, errors.New("error in " + path +
-				": each row should have 7 columns")
+				": each row should have at least 5 columns")
 		}
 		flow := Flow{}
 		if flow.Index, err = strconv.Atoi(row[0]); err != nil {
@@ -45,7 +46,9 @@ func ReadFlows(folder string) ([]*Flow, error) {
 		flow.Flowable = row[2]
 		flow.Context = row[3]
 		flow.Unit = row[4]
-		flow.UUID = row[5]
+		if len(row) > 5 {
+			flow.UUID = row[5]
+		}
 		flows[flow.Index] = &flow
 	}
 	return flows, nil
