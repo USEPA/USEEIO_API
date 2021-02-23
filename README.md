@@ -23,14 +23,16 @@ The web services provide the following USEEIO model components and metadata
 | models | metadata | A list of USEEIO models provided |
 | A | component | The direct requirements matrix for a given model |
 | A_d | component | The direct requirements matrix with only US (domestic)inputs |
-| B | component | The satellite matrix for a given model |
+| B | component | The satellite/flow matrix for a given model |
 | C | component | The characterization factor matrix for a given model |
 | D | component | The direct impact matrix for a given model |
 | L | component | The Leontief inverse matrix for a given model |
-| U | component | The total impact matrix for a given model |
+| L | component | The Leontief inverse matrix for a given model |
+| M | component | The direct + indirect flow per dollar matrix for a given model |
+| N | component | The direct + indirect impact per dollar matrix for a given model |
 | B_dqi | component | Data quality scores for the B matrix for a given model |
 | D_dqi | component | Data quality scores for the D matrix for a given model |
-| U_dqi | component | Data quality scores for the U matrix for a given model |
+| N_dqi | component | Data quality scores for the U matrix for a given model |
 | sectors | metadata | A list of sectors in a given model|
 | flows | metadata | A list of flows in a given model|
 | indicators | metadata | A list of indicators in a given model|

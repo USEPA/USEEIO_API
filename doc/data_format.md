@@ -25,10 +25,9 @@ sectors |       |
 
 A related `A_d` matrix will provide direct sector inputs per dollar output that are only from the US.
 
-The satellite matrix `B` is an `elementary flow x sector` matrix and contains in
-each column `i` the amounts of emissions and resources - given in the reference
-units of the respective elementary flows - that are directly related to 1 USD
-output from sector `i`:
+The satellite matrix `B` is a `flow x sector` matrix and contains in
+each column `i` the amounts of emissions, resources,and wastes - given in the reference
+units of the respective flows per 1 USD output from sector `i`:
 
 ```
        sectors
@@ -39,12 +38,12 @@ flows |       |
 ```
 
 In the matrix `C`, each column `k` contains the characterization factors of
-the different Life Cycle Impact Assessment (LCIA) categories related to one reference unit of flow `k`:
+the different indicators related to one reference unit of flow `k`:
 
 ```
                   flows
                 +-------+
-LCIA categories |       |
+indicators      |       |
                 |     C |
                 +-------+
 ```
@@ -56,13 +55,12 @@ via:
 D = C * B
 ``` 
 
-The matrix `D` contains in each column `i` the impact assessment result that is
-related to the direct emissions and resources for 1 USD output from sector `i`:
+The matrix `D` contains in each column `i` the direct impact result per USD output from sector `i`:
 
 ```
                  sectors
                 +-------+
-LCIA categories |       |
+indicators      |       |
                 |     D |
                 +-------+
 ```
@@ -85,22 +83,40 @@ sectors |       |
         +-------+
 ```
 
-With the direct impacts `D` and the total requirements `L` the matrix `U` which
-contains the upstream totals can be calculated via:
+With the `B` and the total requirements `L`, the matrix `M` which
+contains the direct + indirect flow totals can be calculated via:
 
 ```
-U = D * L
+M = B * L
 ```
 
-The matrix `U` is a `LCIA category x sector` matrix and contains in each column
-`i` the total impact assessment result related to the direct and indirect 
-emissions and resources that are required to produce 1 USD output of sector `i`:
+The matrix `M` is a `flow x sector` matrix and contains in each column
+`i` the direct and indirect emissions and resources per 1 USD output of sector `i`:
 
 ```
                  sectors
                 +-------+
 LCIA categories |       |
-                |     U |
+                |     N |
+                +-------+
+```
+
+
+With the direct impacts `D` and the total requirements `L`, the matrix `N` which
+contains the direct + indirect impact per dollar totals can be calculated via:
+
+```
+N = D * L
+```
+
+The matrix `N` is a `indicator x sector` matrix and contains in each column
+`i` the direct and indirect impact result per 1 USD output of sector `i`:
+
+```
+                 sectors
+                +-------+
+indicators      |       |
+                |     N |
                 +-------+
 ```
 
@@ -115,7 +131,7 @@ Each matrix consists of data quality etnries for values in the same position of 
 
 `D_dqi` provides data quality scores for the `D` matrix.
 
-`U_dqi` provides data quality scores for the `U` matrix.
+`N_dqi` provides data quality scores for the `N` matrix.
 
 
 ### CSV Files

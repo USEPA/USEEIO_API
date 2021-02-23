@@ -74,10 +74,10 @@ func calculate(dir string, d *Demand, w http.ResponseWriter) *Result {
 		return nil
 	}
 
-	// U is used for the total result; thus, always loaded
-	U, err := LoadMatrix(filepath.Join(dir, "U.bin"))
+	// N is used for the total result; thus, always loaded
+	N, err := LoadMatrix(filepath.Join(dir, "N.bin"))
 	if err != nil {
-		http.Error(w, "could not load matrix U",
+		http.Error(w, "could not load matrix N",
 			http.StatusInternalServerError)
 		return nil
 	}
@@ -98,10 +98,10 @@ func calculate(dir string, d *Demand, w http.ResponseWriter) *Result {
 		L, err := LoadMatrix(filepath.Join(dir, "L.bin"))
 		if err == nil {
 			s := L.ScaledColumnSums(demand)
-			data = U.ScaleColumns(s)
+			data = N.ScaleColumns(s)
 		}
 	case "final":
-		data = U.ScaleColumns(demand)
+		data = N.ScaleColumns(demand)
 	default:
 		http.Error(w, "invalid perspective: "+d.Perspective,
 			http.StatusBadRequest)
@@ -115,7 +115,7 @@ func calculate(dir string, d *Demand, w http.ResponseWriter) *Result {
 
 	// finally, set the result data
 	r := Result{}
-	r.Totals = U.ScaledColumnSums(demand)
+	r.Totals = N.ScaledColumnSums(demand)
 	if data != nil {
 		r.Data = data.Slice2d()
 	}
