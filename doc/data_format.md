@@ -23,11 +23,11 @@ sectors |       |
         +-------+
 ```
 
-A related `A_d` matrix will provide direct sector inputs per dollar output that are only from the US.
+The related `A_d` matrix provide direct sector inputs per dollar output that are only from the US.
 
 The satellite matrix `B` is a `flow x sector` matrix and contains in
-each column `i` the amounts of emissions, resources,and wastes - given in the reference
-units of the respective flows per 1 USD output from sector `i`:
+each column `i` the amount of a flow given in the reference
+units of the respective flow per 1 USD output from sector `i`:
 
 ```
        sectors
@@ -72,8 +72,9 @@ L = (I - A)^-1
 ```
 
 `L` is also a `sector x sector` matrix and contains in each column `i` the
-total requirements of the respective sectors inputs to produce 1 USD of output
+total requirements of the respective sectors inputs per 1 USD of output
 from sector `i`:
+
 
 ```
          sectors
@@ -81,6 +82,13 @@ from sector `i`:
 sectors |       |
         |     L |
         +-------+
+```
+
+The related `L_d` matrix provides direct + indirect sector inputs per dollar output that are only from the US.
+
+The domestic Leontief inverse `L_d` is calculated via:
+```
+L_d = (I - A_d)^-1`
 ```
 
 With the `B` and the total requirements `L`, the matrix `M` which

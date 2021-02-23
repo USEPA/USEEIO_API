@@ -126,14 +126,39 @@ paths:
                 type: number
         '500':
           description: if the server failed to load the matrix file
+  '/{model}/matrix/A_d':
+    get:
+      summary: Get the domestic direct requirements matrix of the IO model.
+      description: >
+        The matrix `A_d` is a `sector x sector` matrix and contains in each column
+        `i` the domestic direct sector inputs that are required to produce 1 USD dollar
+        of output from sector `i`.
+      produces:
+        - application/json
+      parameters:
+        - in: path
+          name: model
+          type: string
+          required: true
+          description: The ID of the input-output model to use.
+      responses:
+        '200':
+          description: Successfully returned the direct requirements matrix for the given model.
+          schema:
+            type: array
+            items:
+              type: array
+              items:
+                type: number
+        '500':
+          description: if the server failed to load the matrix file
   '/{model}/matrix/B':
     get:
       summary: Get the satellite matrix of the IO model.
       description: >
-        The satellite matrix `B` is an `elementary flow x sector` matrix and
-        contains in each column `i` the amounts of emissions and resources -
-        given in the reference units of the respective elementary flows - that
-        are directly related to 1 USD output from sector `i`.
+        The satellite matrix `B` is a `flow x sector` matrix and contains in
+        each column `i` the amount of a flow given in the reference
+        unit of the respective flow per 1 USD output from sector `i`.
       produces:
         - application/json
       parameters:
@@ -161,9 +186,7 @@ paths:
         the satellite matrix `B` in the same matrix dimensions of flows x sector.
         These entries are in the form of 5 data quality scores (values for each ranging from 1 to 5) for the five
         EPA LCA flow data quality indicators in this order: (Data reliability, Temporal correlation, Technological correlation,
-         Technological correlation). For example '(3,1,1,4,5)'. For more information on the data quality indicators and score, see the US EPA 2016 Report
-          'Guidance on Data Quality Assessment for Life Cycle Inventory Data'.
-
+         Technological correlation). For example '(3,1,1,4,5)'. For more information on the data quality indicators and score, see the US EPA 2016 Report 'Guidance on Data Quality Assessment for Life Cycle Inventory Data'.
       produces:
         - application/json
       parameters:
@@ -292,15 +315,40 @@ paths:
                 type: number
         '500':
           description: if the server failed to load the matrix file
-  '/{model}/matrix/U':
+  '/{model}/matrix/L_d':
     get:
-      summary: Get the total (direct+indirect) impact assessment results.
+      summary: Get the domestic Leontief inverse of the IO model.
       description: >
-        The matrix `U` is a `LCIA category x sector` matrix and contains in each
-        column `i` the total impact assessment result related to the direct and
-        indirect emissions and resources that are required to produce 1 USD
-        output of sector `i`. With the direct impacts `D` and the total
-        requirements `L` the matrix `U` can be calculated via `U = D * L`.
+        The domestic Leontief inverse `L_d` is calculated via `L_d = (I - A_d)^-1`. `L_d` is also
+        a `sector x sector` matrix and contains in each column `i` the direct + indirect domestic
+        requirements of the respective sectors inputs to produce 1 USD of output from sector `i`.
+      produces:
+        - application/json
+      parameters:
+        - in: path
+          name: model
+          type: string
+          required: true
+          description: The ID of the input-output model to use.
+      responses:
+        '200':
+          description: Successfully returned the Leontief inverse matrix of the given model.
+          schema:
+            type: array
+            items:
+              type: array
+              items:
+                type: number
+        '500':
+          description: if the server failed to load the matrix file
+  '/{model}/matrix/M':
+    get:
+      summary: Get the direct + indirect impact results.
+      description: >
+        The matrix `M` is a `flow x sector` matrix and contains in each column
+        `i` the direct + indirect flow per 1 USD output of sector `i`.
+        With the `B` and the total requirements `L`, the matrix `M` which
+        contains the direct + indirect flow totals can be calculated via `M = B * L`.
       produces:
         - application/json
       parameters:
@@ -320,12 +368,38 @@ paths:
                 type: number
         '500':
           description: if the server failed to load the matrix file
-  '/{model}/matrix/U_dqi':
+  '/{model}/matrix/N':
+    get:
+      summary: Get the direct + indirect impact results.
+      description: >
+        The matrix `N` is a `indicator x sector` matrix and contains in each column
+        `i` the direct and indirect impact result per 1 USD output of sector `i`.
+        With the direct impacts `D` and the total requirements `L`, the matrix `N` can be calculated via `N = D * L`.
+      produces:
+        - application/json
+      parameters:
+        - in: path
+          name: model
+          type: string
+          required: true
+          description: The ID of the input-output model to use.
+      responses:
+        '200':
+          description: Successfully returned the total impact results matrix.
+          schema:
+            type: array
+            items:
+              type: array
+              items:
+                type: number
+        '500':
+          description: if the server failed to load the matrix file
+  '/{model}/matrix/N_dqi':
     get:
       summary: Get the data quality results of the total impact assessment results.
       description:
-        The matrix `U_dqi` contains the corresponding data quality entries of
-                the total impact results matrix `U` in the same matrix dimensions of impacts x sector. These entries are in the form
+        The matrix `N_dqi` contains the corresponding data quality entries of
+                the direct + indirect impact results matrix `N` in the same matrix dimensions of impacts x sector. These entries are in the form
                 of 5 data quality scores (values for each ranging from 1 to 5) for the five EPA flow data quality
                 indicators in this order, (Data reliability, Temporal correlation, Technological correlation,
                Technological correlation). For example '(3,1,1,4,5)'. For more information on the data quality indicators
