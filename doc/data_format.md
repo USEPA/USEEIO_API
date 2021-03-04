@@ -104,8 +104,8 @@ The matrix `M` is a `flow x sector` matrix and contains in each column
 ```
                  sectors
                 +-------+
-LCIA categories |       |
-                |     N |
+flows           |       |
+                |     M |
                 +-------+
 ```
 
