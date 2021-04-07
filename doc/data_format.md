@@ -3,16 +3,12 @@
 The data required for serving USEEIO models via the USEEIO API are matrix files and metadata files.
 
 ### Matrix Files
-The web service of the USEEIO API uses matrices and
-meta-information that are exported from an `iomb` model.
+The web service of the USEEIO API uses matrices and meta-information that are exported from an [useeior](https://github.com/USEPA/useeior) EEIO model.
 
+The series of matrices include model component, result and price adjustment matrices. Optionally, models may also have data quality matrices.
 
- The series of matrices
-include Data matrices and Data quality matrices.
-
-#### Data matrices
-The matrix `A` is a `sector x sector` matrix and contains in each column `i` the
-direct sector inputs that are required to produce 1 USD dollar of output from
+#### Model component matrices
+The matrix `A` is a `sector x sector` matrix and contains in each column `i` the direct sector inputs that are required to produce 1 USD dollar of output from
 sector `i`:
 
 ```
@@ -48,23 +44,6 @@ indicators      |       |
                 +-------+
 ```
 
-From the matrices `B` and `C` the direct impact matrix `D` can be calculated
-via:
-
-```
-D = C * B
-``` 
-
-The matrix `D` contains in each column `i` the direct impact result per USD output from sector `i`:
-
-```
-                 sectors
-                +-------+
-indicators      |       |
-                |     D |
-                +-------+
-```
-
 The Leontief inverse `L` is calculated via:
 
 ```
@@ -89,6 +68,27 @@ The related `L_d` matrix provides direct + indirect sector inputs per dollar out
 The domestic Leontief inverse `L_d` is calculated via:
 ```
 L_d = (I - A_d)^-1`
+```
+
+
+
+#### Model Result Matrices
+
+From the matrices `B` and `C` the direct impact matrix `D` can be calculated
+via:
+
+```
+D = C * B
+``` 
+
+The matrix `D` contains in each column `i` the direct impact result per USD output from sector `i`:
+
+```
+                 sectors
+                +-------+
+indicators      |       |
+                |     D |
+                +-------+
 ```
 
 With the `B` and the total requirements `L`, the matrix `M` which
