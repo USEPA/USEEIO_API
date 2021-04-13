@@ -3,4 +3,6 @@ applications:
   - name: useeio-api
     memory: 128M
     instances: 1
-    random-route: true
+    routes:
+    - route: smmtool.app.cloud.gov
+ 
