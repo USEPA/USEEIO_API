@@ -3,7 +3,7 @@ info:
   description: >-
     A RESTful API that provides access to versions of the USEEIO models. Results
     are returned as JSON objects.
-  version: '1.1'
+  version: '2.0'
   title: USEEIO-API
 basePath: /api
 externalDocs:
@@ -306,7 +306,7 @@ paths:
           description: The ID of the input-output model to use.
       responses:
         '200':
-          description: Successfully returned the Leontief inverse matrix of the given model.
+          description: Successfully returned the matrix.
           schema:
             type: array
             items:
@@ -332,7 +332,7 @@ paths:
           description: The ID of the input-output model to use.
       responses:
         '200':
-          description: Successfully returned the Leontief inverse matrix of the given model.
+          description: Successfully returned the matrix.
           schema:
             type: array
             items:
@@ -359,7 +359,34 @@ paths:
           description: The ID of the input-output model to use.
       responses:
         '200':
-          description: Successfully returned the total impact results matrix.
+          description: Successfully returned the matrix.
+          schema:
+            type: array
+            items:
+              type: array
+              items:
+                type: number
+        '500':
+          description: if the server failed to load the matrix file
+  '/{model}/matrix/M_d':
+    get:
+      summary: Get the direct + indirect domestic impact results.
+      description: >
+        The matrix `M_d` is a `flow x sector` matrix and contains in each column
+        `i` the direct + indirect flow per 1 USD output of sector `i`.
+        With the `B` and the total domestic requirements `L_d`, the matrix `M_d` which
+        contains the direct + indirect flow totals can be calculated via `M_d = B * L_d`.
+      produces:
+        - application/json
+      parameters:
+        - in: path
+          name: model
+          type: string
+          required: true
+          description: The ID of the input-output model to use.
+      responses:
+        '200':
+          description: Successfully returned the matrix.
           schema:
             type: array
             items:
@@ -374,7 +401,7 @@ paths:
       description: >
         The matrix `N` is a `indicator x sector` matrix and contains in each column
         `i` the direct and indirect impact result per 1 USD output of sector `i`.
-        With the direct impacts `D` and the total requirements `L`, the matrix `N` can be calculated via `N = D * L`.
+        With the direct impacts `D` and the total  requirements `L`, the matrix `N` can be calculated via `N = D * L`.
       produces:
         - application/json
       parameters:
@@ -385,7 +412,7 @@ paths:
           description: The ID of the input-output model to use.
       responses:
         '200':
-          description: Successfully returned the total impact results matrix.
+          description: Successfully returned the matrix.
           schema:
             type: array
             items:
@@ -394,6 +421,33 @@ paths:
                 type: number
         '500':
           description: if the server failed to load the matrix file
+  '/{model}/matrix/N_d':
+    get:
+      summary: Get the direct + indirect domestic impact results.
+      description: >
+        The matrix `N_d` is a `indicator x sector` matrix and contains in each column
+        `i` the direct and indirect domestic impact result per 1 USD output of sector `i`.
+        With the direct impacts `D` and the total domestic requirements `L_d`, the matrix `N_d` can be calculated via `N_d = D * L_d`.
+      produces:
+        - application/json
+      parameters:
+        - in: path
+          name: model
+          type: string
+          required: true
+          description: The ID of the input-output model to use.
+      responses:
+        '200':
+          description: Successfully returned the matrix.
+          schema:
+            type: array
+            items:
+              type: array
+              items:
+                type: number
+        '500':
+          description: if the server failed to load the matrix file
+
   '/{model}/matrix/N_dqi':
     get:
       summary: Get the data quality results of the total impact assessment results.
