@@ -477,6 +477,54 @@ paths:
                 type: string
         '500':
           description: if the server failed to load the matrix file
+  '/{model}/matrix/Phi':
+    get:
+      summary: Get the price type adjustment ratios by year.
+      description:
+        The matrix `Phi` is a `sector x year` matrix of producer:purchaser price type adjustment ratios that can be used to put model results in purchaser price. By default, all USEEIO model results are in producer price.
+      produces:
+        - application/json
+      parameters:
+        - in: path
+          name: model
+          type: string
+          required: true
+          description: The ID of the input-output model to use.
+      responses:
+        '200':
+          description: Successfully returned the matrix.
+          schema:
+            type: array
+            items:
+              type: array
+              items:
+                type: string
+        '500':
+          description: if the server failed to load the matrix file  
+  '/{model}/matrix/Rho':
+    get:
+      summary: Get the currency year adjustment factors.
+      description:
+        The matrix `Rho` is a `sector x year` matrix of sector-specific currency deflation ratios that can be used to put results into another currency year.
+      produces:
+        - application/json
+      parameters:
+        - in: path
+          name: model
+          type: string
+          required: true
+          description: The ID of the input-output model to use.
+      responses:
+        '200':
+          description: Successfully returned the matrix.
+          schema:
+            type: array
+            items:
+              type: array
+              items:
+                type: string
+        '500':
+          description: if the server failed to load the matrix file  
   '/{model}/matrix/{name}':
     get:
       summary: Get a row or column of a matrix.
