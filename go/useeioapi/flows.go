@@ -5,17 +5,15 @@ import (
 	"net/http"
 	"path/filepath"
 	"strconv"
-
 	"github.com/gorilla/mux"
 )
 
 // Flow describes an elementary flow an IO model.
 type Flow struct {
-	ID          string `json:"id"`
 	Index       int    `json:"index"`
-	Name        string `json:"name"`
-	Category    string `json:"category"`
-	SubCategory string `json:"subCategory"`
+	ID          string `json:"id"`
+	Flowable    string `json:"flowable"`
+	Context     string `json:"context"`
 	Unit        string `json:"unit"`
 	UUID        string `json:"uuid"`
 }
@@ -35,20 +33,19 @@ func ReadFlows(folder string) ([]*Flow, error) {
 		if idx == 0 {
 			continue
 		}
-		if len(row) < 7 {
+		if len(row) < 6 {
 			return nil, errors.New("error in " + path +
-				": each row should have 7 columns")
+				": each row should have 6 columns")
 		}
 		flow := Flow{}
 		if flow.Index, err = strconv.Atoi(row[0]); err != nil {
 			return nil, err
 		}
 		flow.ID = row[1]
-		flow.Name = row[2]
-		flow.Category = row[3]
-		flow.SubCategory = row[4]
-		flow.Unit = row[5]
-		flow.UUID = row[6]
+		flow.Flowable = row[2]
+		flow.Context = row[3]
+		flow.Unit = row[4]
+		flow.UUID = row[5]
 		flows[flow.Index] = &flow
 	}
 	return flows, nil
