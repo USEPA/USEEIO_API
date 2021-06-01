@@ -1,146 +1,9 @@
 ## Data formats
 
-The data required for serving USEEIO models via the USEEIO API are matrix files and metadata files.
+The data required for serving USEEIO models via the USEEIO API are matrix files and metadata files. These data are exported from an [useeior model](https://github.com/USEPA/useeior/blob/master/format_specs/model.md).
 
 ### Matrix Files
-The web service of the USEEIO API uses matrices and meta-information that are exported from an [useeior](https://github.com/USEPA/useeior) EEIO model.
-
-The series of matrices include model component, result and price adjustment matrices. Optionally, models may also have data quality matrices.
-
-#### Model component matrices
-The matrix `A` is a `sector x sector` matrix and contains in each column `i` the direct sector inputs that are required to produce 1 USD dollar of output from
-sector `i`:
-
-```
-         sectors
-        +-------+
-sectors |       |
-        |     A |
-        +-------+
-```
-
-The related `A_d` matrix provide direct sector inputs per dollar output that are only from the US.
-
-The satellite matrix `B` is a `flow x sector` matrix and contains in
-each column `i` the amount of a flow given in the reference
-units of the respective flow per 1 USD output from sector `i`:
-
-```
-       sectors
-      +-------+
-flows |       |
-      |     B |
-      +-------+
-```
-
-In the matrix `C`, each column `k` contains the characterization factors of
-the different indicators related to one reference unit of flow `k`:
-
-```
-                  flows
-                +-------+
-indicators      |       |
-                |     C |
-                +-------+
-```
-
-The Leontief inverse `L` is calculated via:
-
-```
-L = (I - A)^-1
-```
-
-`L` is also a `sector x sector` matrix and contains in each column `i` the
-total requirements of the respective sectors inputs per 1 USD of output
-from sector `i`:
-
-
-```
-         sectors
-        +-------+
-sectors |       |
-        |     L |
-        +-------+
-```
-
-The related `L_d` matrix provides direct + indirect sector inputs per dollar output that are only from the US.
-
-The domestic Leontief inverse `L_d` is calculated via:
-```
-L_d = (I - A_d)^-1`
-```
-
-
-
-#### Model Result Matrices
-
-From the matrices `B` and `C` the direct impact matrix `D` can be calculated
-via:
-
-```
-D = C * B
-``` 
-
-The matrix `D` contains in each column `i` the direct impact result per USD output from sector `i`:
-
-```
-                 sectors
-                +-------+
-indicators      |       |
-                |     D |
-                +-------+
-```
-
-With the `B` and the total requirements `L`, the matrix `M` which
-contains the direct + indirect flow totals can be calculated via:
-
-```
-M = B * L
-```
-
-The matrix `M` is a `flow x sector` matrix and contains in each column
-`i` the direct and indirect emissions and resources per 1 USD output of sector `i`:
-
-```
-                 sectors
-                +-------+
-flows           |       |
-                |     M |
-                +-------+
-```
-
-
-With the direct impacts `D` and the total requirements `L`, the matrix `N` which
-contains the direct + indirect impact per dollar totals can be calculated via:
-
-```
-N = D * L
-```
-
-The matrix `N` is a `indicator x sector` matrix and contains in each column
-`i` the direct and indirect impact result per 1 USD output of sector `i`:
-
-```
-                 sectors
-                +-------+
-indicators      |       |
-                |     N |
-                +-------+
-```
-
-#### Data quality matrices
-There are also 3 data quality matrices associated with three of the matrices above.
-Each matrix consists of data quality etnries for values in the same position of its associated matrix.
- These entries are in the form of 5 data quality scores (values for each ranging from 1 to 5) for the five
- EPA LCA flow data quality indicators in this order: (Data reliability, Temporal correlation, Technological correlation,
-         Technological correlation). For example '(3,1,1,4,5)'.
-
-`B_dqi` provides data quality scores for the `B` matrix.
-
-`D_dqi` provides data quality scores for the `D` matrix.
-
-`N_dqi` provides data quality scores for the `N` matrix.
-
+ The series of matrices include model component, result and price adjustment matrices. Optionally, models may also have data quality matrices. All matrices are stored as binary data with a `.bin` extension.
 
 ### CSV Files
 Indicators, sectors, flows, and other metadata are stored in plain CSV files.
@@ -156,6 +19,9 @@ In general, these CSV files should have the following format:
 * The file encoding is UTF-8 without byte-order mark
 
 The columns of these files are specified in the respective sections below.
+
+#### Data quality matrices
+The API supports data quality matrices associated with any model result matrix. These matrices are optionally included and not present in all models. Each data quality matrix consists of data quality entries for values in the same position of its associated matrix. These entries are in the form of 5 data quality scores (values for each ranging from 1 to 5) for the five [EPA LCA flow data quality indicators](https://cfpub.epa.gov/si/si_public_record_report.cfm?dirEntryId=321834) in this order: (Data reliability, Temporal correlation, Technological correlation, Technological correlation). For example '(3,1,1,4,5)'.  Each data quality matrix is named with the matrix name followed by `_dqi` like `B_dqi` which provides data quality scores for the `B` matrix. Data quality matrices are stored as [CSV files](#CSV-files).
 
 ## Common metadata for All Models
 
@@ -235,8 +101,18 @@ It should have the following columns:
 ```
 Column  Field         Description
 0       Index         The zero-based matrix index of the sector.
-1       ID            The ID of the flow.
+1       ID            The ID of the sector.
 2       Name          The name of the sector, e.g., 'Wood products'.
 3       Code          The code of the sector in the Sector_Schema.
 4       Location      The location code.
 5       Description   A text description of the sector, optional.
+```
+
+### years.csv
+The file `years.csv` contains the years for model data that is in model [sector-by-year](https://github.com/USEPA/useeior/blob/master/format_specs/model.md#sector-by-year) format. It should have the following columns:
+
+```
+Column  Field         Description
+0       Index         The zero-based matrix index of the sector.
+1       ID            The ID of the flow.
+```
