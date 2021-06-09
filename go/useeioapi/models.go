@@ -13,6 +13,7 @@ type ModelInfo struct {
 	Location     string `json:"location"`
 	Description  string `json:"description,omitempty"`
 	SectorSchema string `json:"sectorschema,omitempty"`
+	Hash         string `json:"hash,omitempty"`
 }
 
 // ReadModelInfos reads the model information from the data folder.
@@ -32,7 +33,8 @@ func ReadModelInfos(dataDir string) ([]*ModelInfo, error) {
 			Name:         row[1],
 			Location:     row[2],
 			Description:  row[3],
-			SectorSchema: row[4]})
+			SectorSchema: row[4],
+			Hash: row[5]})
 	}
 	return models, nil
 }
