@@ -654,8 +654,17 @@ definitions:
         type: string
       name:
         type: string
+      location:
+        type: string
+        description: Model region acryonyms.
       description:
         type: string
+      sectorschema:
+        type: string
+        description: The sector schema name of the model corresponding to schemas in sectorcrosswalk.csv.
+      hash:
+        type: string
+        description: A SHA-256 bit hash of the model used as a model build identifier.
   Sector:
     type: object
     properties:
@@ -724,6 +733,12 @@ definitions:
         type: string
       year:
         type: integer
+      type:
+        type: string
+      system:
+        type: string
+      location:
+        type: string
   Result:
     type: object
     properties:
