@@ -37,15 +37,15 @@ class CalculationTest(unittest.TestCase):
 
     def test_upstream_impacts(self):
         """Test the reproducibility of the upstream impact matrix:
-           U = D L"""
+           N = D L"""
         client = getclient()
         for model in client.get_models():
             model_id = model['id']
             log.info('check the upstream impact matrix U in model %s', model_id)
             D = client.get_matrix(model_id, "D")
             L = client.get_matrix(model_id, "L")
-            U = D @ L
-            self.compare_matrices(U, client.get_matrix(model_id, 'U'))
+            N = D @ L
+            self.compare_matrices(N, client.get_matrix(model_id, 'N'))
 
     def test_direct_perspective(self):
         """Test the calculation of a result of the direct perspective."""
@@ -82,8 +82,8 @@ class CalculationTest(unittest.TestCase):
             s = np.zeros(n)
             for j in range(0, n):
                 s += L[:, j] * (j + 1.0)
-            U = client.get_matrix(model_id, "U")
-            R = U @ np.diag(s)
+            N = client.get_matrix(model_id, "N")
+            R = N @ np.diag(s)
 
             # compare this with the result from the API
             demand = self.build_test_demand(model_id)
@@ -100,12 +100,12 @@ class CalculationTest(unittest.TestCase):
                      model_id)
 
             # first, calculate the expected result matrix R
-            U = client.get_matrix(model_id, "U")
-            _, n = U.shape
+            N = client.get_matrix(model_id, "N")
+            _, n = N.shape
             d = np.zeros(n)
             for j in range(0, n):
                 d[j] = j + 1.0
-            R = U @ np.diag(d)
+            R = N @ np.diag(d)
 
             # compare this with the result from the API
             demand = self.build_test_demand(model_id)
@@ -122,11 +122,11 @@ class CalculationTest(unittest.TestCase):
                      ' of model %s', model_id)
 
             # first, calculate the expected total result t
-            U = client.get_matrix(model_id, "U")
-            m, n = U.shape
+            N = client.get_matrix(model_id, "N")
+            m, n = N.shape
             t = np.zeros(m)
             for j in range(0, n):
-                t += U[:, j] * (j + 1.0)
+                t += N[:, j] * (j + 1.0)
 
             # compare this with the result from the API
             demand = self.build_test_demand(model_id)
