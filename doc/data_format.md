@@ -1,11 +1,11 @@
-## Data formats
+# Data formats
 
-The data required for serving USEEIO models via the USEEIO API are matrix files and metadata files. These data are exported from an [useeior model](https://github.com/USEPA/useeior/blob/master/format_specs/model.md).
+The data required for serving USEEIO models via the USEEIO API are matrix files, demand files, and metadata files. These data can be exported from an [useeior model](https://github.com/USEPA/useeior/blob/master/format_specs/model.md).
 
-### Matrix Files
- The series of matrices include model component, result and price adjustment matrices. Optionally, models may also have data quality matrices. All matrices are stored as binary data with a `.bin` extension.
+## Matrix Files
+ The series of matrices include model component, result and price adjustment matrices. All matrices are stored as binary data with a `.bin` extension.
 
-### CSV Files
+## Metadata Files
 Indicators, sectors, flows, and other metadata are stored in plain CSV files.
 In general, these CSV files should have the following format:
 
@@ -20,12 +20,10 @@ In general, these CSV files should have the following format:
 
 The columns of these files are specified in the respective sections below.
 
-#### Data quality matrices
-The API supports data quality matrices associated with any model result matrix. These matrices are optionally included and not present in all models. Each data quality matrix consists of data quality entries for values in the same position of its associated matrix. These entries are in the form of 5 data quality scores (values for each ranging from 1 to 5) for the five [EPA LCA flow data quality indicators](https://cfpub.epa.gov/si/si_public_record_report.cfm?dirEntryId=321834) in this order: (Data reliability, Temporal correlation, Technological correlation, Technological correlation). For example '(3,1,1,4,5)'.  Each data quality matrix is named with the matrix name followed by `_dqi` like `B_dqi` which provides data quality scores for the `B` matrix. Data quality matrices are stored as [CSV files](#CSV-files).
+### metadata shared by all models
 
-## Common metadata for All Models
+**models.csv**
 
-### models.csv
 The file `models.csv` which is located in the root folder of the data directory
 contains the metadata of the available IO models and should have the following
 columns:
@@ -40,12 +38,14 @@ Column   Field     Description
 4        Sector_Schema The reference schema used for the sector codes, e.g. 'BEA_2012_Summary', which corresponds to a schema in the sectorcrosswalk.csv. Uses model name if the model has a unique set of codes.
 ```
 
-### sectorcrosswalk.csv
+**sectorcrosswalk.csv**
+
 A correspondence file between various reference schemas for sector codes, applicable to all models. Each column has a title of the schema name plus code, e.g., 'BEA_2012_Summary', and values are all available codes in that schema. Currently various [BEA IO](https://www.bea.gov/data/industries/input-output-accounts-data) and [NAICS](https://www.census.gov/cgi-bin/sssd/naics/naicsrch) schemas are represented. 
 
-## metadata Specific to Models
+### metadata specific to a USEEIO model
 
-### indicators.csv
+**indicators.csv**
+
 The file `indicators.csv` contains the metadata of the indicators in the model.
 It should have the following columns:
 
@@ -64,7 +64,8 @@ Column  Field       Description
 7       SimpleName  A simplified version of Name.
 ```
 
-### demands.csv
+**demands.csv**
+
 The file `demands.csv` contains the information of all available demand vectors
 of the model. It should have the following columns:
 
@@ -79,7 +80,8 @@ Column   Field    Description
 4        Location The location code.
 ```
 
-### flows.csv
+**flows.csv**
+
 The file `flows.csv` contains the metadata of the flows in the model.
 It should have the following columns:
 
@@ -94,7 +96,8 @@ Column  Field       Description
 6       UUID        A 36-digit hexadecimal ID for the flow.
 ```
 
-### sectors.csv
+**sectors.csv**
+
 The file `sectors.csv` contains the metadata of the sectors in the model.
 It should have the following columns:
 
@@ -108,7 +111,8 @@ Column  Field         Description
 5       Description   A text description of the sector, optional.
 ```
 
-### years.csv
+**years.csv**
+
 The file `years.csv` contains the years for model data that is in model [sector-by-year](https://github.com/USEPA/useeior/blob/master/format_specs/model.md#sector-by-year) format. It should have the following columns:
 
 ```
