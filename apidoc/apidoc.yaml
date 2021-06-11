@@ -1,8 +1,8 @@
 swagger: '2.0'
 info:
   description: >-
-    A RESTful API that provides access to versions of the USEEIO models. Results
-    are returned as JSON objects.
+    A RESTful API that provides access to versions of the USEEIO model. Results
+    are returned as JSON objects or csv files.
   version: '1.1'
   title: USEEIO-API
 basePath: /api
