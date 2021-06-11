@@ -33,6 +33,7 @@ func ReadFlows(folder string) ([]*Flow, error) {
 		if idx == 0 {
 			continue
 		}
+
 		if len(row) < 6 {
 			return nil, errors.New("error in " + path +
 				": each row should have 6 columns")
