@@ -29,11 +29,10 @@ def read_flows(folder: str, model_id: str) -> list:
         flows.append({
             'index': int(row[0]),
             'id': row[1],
-            'name': row[2],
-            'category': row[3],
-            'subCategory': row[4],
-            'unit': row[5],
-            'uuid': row[6],
+            'flowable': row[2],
+            'context': row[3],
+            'unit': row[4],
+            'uuid': row[5],
         })
     flows.sort(key=lambda s: s['index'])
     return flows

@@ -89,11 +89,10 @@ It should have the following columns:
 Column  Field       Description
 0       Index       The zero-based matrix index of the flow.
 1       ID          The ID of the flow.
-2       Name        The name of the flow, e.g., 'Sulfuric acid'.
-3       Category    The category of the flow, generally the primary environmental compartment, e.g. 'air'.
-4       Sub-Category A sub-category of the category, e.g., 'low-population density'.
-5       Unit        The flow unit, e.g., 'kg'.
-6       UUID        A 36-digit hexadecimal ID for the flow.
+2       Flowable    The name of the flow, e.g., 'Sulfuric acid'.
+3       Context     The directionality and environmental context e.g., 'emissions/air' 
+4       Unit        The flow unit, e.g., 'kg'.
+5       UUID        A 36-digit hexadecimal ID for the flow.
 ```
 
 **sectors.csv**
