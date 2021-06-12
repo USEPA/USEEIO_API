@@ -12,7 +12,7 @@ There are two versions of the USEEIO API web service, a [Go](https://golang.org/
  endpoints (e.g. `api/models`) and serve the results in JSON format.  The Go version can be further containerized
  in Docker container or deployed to a cloud foundry server. These web services can be built and served on a local machine or
  deployed to a remote server. USEEIO models make up the data for the web service. They are not hosted here, but must be built
-  and exported in the [specified formats](./doc/data_format.md) in order to be served by the
+  and exported in the [specified formats](format_specs/data_format.md) in order to be served by the
 web services. See the [instructions](https://github.com/USEPA/USEEIO_API/wiki/Build#export-the-model-files-and-create-the-modelscsv-metadata-file-first)
  on preparing USEEIO models for the web service.
 
