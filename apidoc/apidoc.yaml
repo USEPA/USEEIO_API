@@ -143,7 +143,7 @@ paths:
           description: The ID of the input-output model to use.
       responses:
         '200':
-          description: Successfully returned the direct requirements matrix for the given model.
+          description: Successfully returned the domestic direct requirements matrix for the given model.
           schema:
             type: array
             items:
@@ -151,7 +151,7 @@ paths:
               items:
                 type: number
         '500':
-          description: if the server failed to load the matrix file
+          description: A_d matrix not present for the given model
   '/{model}/matrix/B':
     get:
       summary: Get the satellite matrix of the IO model.
@@ -205,7 +205,7 @@ paths:
               items:
                 type: string
         '500':
-          description: if the server failed to load the matrix file
+          description: B_dqi matrix not present for the given model
   '/{model}/matrix/C':
     get:
       summary: Get the characterization factors.
@@ -287,7 +287,7 @@ paths:
               items:
                 type: string
         '500':
-          description: if the server failed to load the matrix file
+          description: D_dqi matrix not present for the given model
   '/{model}/matrix/L':
     get:
       summary: Get the Leontief inverse of the IO model.
@@ -340,7 +340,7 @@ paths:
               items:
                 type: number
         '500':
-          description: if the server failed to load the matrix file
+          description: L_d matrix not present for the given model
   '/{model}/matrix/M':
     get:
       summary: Get the direct + indirect impact results.
@@ -394,7 +394,7 @@ paths:
               items:
                 type: number
         '500':
-          description: if the server failed to load the matrix file
+          description: M_d matrix not present for the given model
   '/{model}/matrix/N':
     get:
       summary: Get the direct + indirect impact results.
@@ -446,7 +446,7 @@ paths:
               items:
                 type: number
         '500':
-          description: if the server failed to load the matrix file
+          description: M_d matrix not present for the given model
 
   '/{model}/matrix/N_dqi':
     get:
@@ -476,7 +476,7 @@ paths:
               items:
                 type: string
         '500':
-          description: if the server failed to load the matrix file
+          description: N_dqi matrix not present for the given model
   '/{model}/matrix/Phi':
     get:
       summary: Get the price type adjustment ratios by year.
@@ -500,7 +500,7 @@ paths:
               items:
                 type: string
         '500':
-          description: if the server failed to load the matrix file  
+          description: if the server failed to load the matrix file
   '/{model}/matrix/Rho':
     get:
       summary: Get the currency year adjustment factors.
@@ -524,7 +524,31 @@ paths:
               items:
                 type: string
         '500':
-          description: if the server failed to load the matrix file  
+          description: if the server failed to load the matrix file
+  '/{model}/matrix/q':
+    get:
+      summary: Get the commodity output vector
+      description:
+        The matrix `q` is a `sector` indexed single column matrix (or vector) with the annual commodity output in the model dollar year. Available only for commodity models.
+      produces:
+        - application/json
+      parameters:
+        - in: path
+          name: model
+          type: string
+          required: true
+          description: The ID of the input-output model to use.
+      responses:
+        '200':
+          description: Successfully returned the matrix.
+          schema:
+            type: array
+            items:
+              type: array
+              items:
+                type: string
+        '500':
+          description: if the server failed to load the matrix file
   '/{model}/matrix/{name}':
     get:
       summary: Get a row or column of a matrix.
@@ -687,6 +711,24 @@ paths:
             $ref: '#/definitions/Flow'
         '404':
           description: Flow not found.
+  '/{model}/years':
+    get:
+      summary: Get all years with data for Phi and Rho matrices.
+      produces:
+        - application/json
+      parameters:
+        - in: path
+          name: model
+          type: string
+          required: true
+          description: The ID of the input-output model to use.
+      responses:
+        '200':
+          description: Successfully returned an array of years in the given model.
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/Year'
 definitions:
   Model:
     type: object
@@ -730,7 +772,7 @@ definitions:
         type: string
       index:
         type: integer
-        description: The matrix index of the sector.
+        description: The matrix index of the flow.
       flowable:
         type: string
         description: The name of the flow, e.g., 'Sulfuric acid'.
@@ -784,7 +826,7 @@ definitions:
       amount:
         type: number
     example:
-      sector: 112120/dairies/us
+      sector: 112120/US
       amount: 42.42
   DemandInfo:
     type: object
@@ -824,3 +866,11 @@ definitions:
         type: array
         items:
           type: number
+  Year:
+    type: object
+    properties:
+      index:
+        type: integer
+        description: The matrix index of the Year.
+      id:
+        type: string
