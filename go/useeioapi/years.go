@@ -14,8 +14,8 @@ type Year struct {
 	Index       int    `json:"index"`
 }
 
-// ReadSectors reads the sectors from the CSV file in the data folder. It
-// returns them in a slice where the sectors are sorted by their indices.
+// ReadSectors reads the years from the CSV file in the data folder. It
+// returns them in a slice where the years are sorted by their indices.
 func ReadYears(folder string) ([]*Year, error) {
 	path := filepath.Join(folder, "years.csv")
 	records, err := ReadCSV(path)
@@ -39,7 +39,7 @@ func ReadYears(folder string) ([]*Year, error) {
 	return years, nil
 }
 
-// HandleGetSectors returns the handler for GET /api/{model}/sectors
+// HandleGetSectors returns the handler for GET /api/{model}/years
 func HandleGetYears (dataDir string) http.HandlerFunc {
 
 	return func(w http.ResponseWriter, r *http.Request) {
@@ -52,30 +52,5 @@ func HandleGetYears (dataDir string) http.HandlerFunc {
 			return
 		}
 		ServeJSON(years, w)
-	}
-}
-
-// HandleGetSector returns the handler for GET /api/{model}/sectors/{id}
-func HandleGetYear(dataDir string) http.HandlerFunc {
-
-	return func(w http.ResponseWriter, r *http.Request) {
-		model := mux.Vars(r)["model"]
-		id := mux.Vars(r)["id"]
-		folder := filepath.Join(dataDir, model)
-		years, err := ReadYears(folder)
-		if err != nil {
-			http.Error(w, "no years for model "+model+" found",
-				http.StatusNotFound)
-			return
-		}
-		for i := range years {
-			y := years[i]
-			if y.ID == id {
-				ServeJSON(y, w)
-				return
-			}
-		}
-		http.Error(w, "no year with id "+id+" for model "+model+" found",
-			http.StatusNotFound)
 	}
 }
