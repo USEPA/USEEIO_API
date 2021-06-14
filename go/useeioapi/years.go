@@ -39,7 +39,7 @@ func ReadYears(folder string) ([]*Year, error) {
 	return years, nil
 }
 
-// HandleGetSectors returns the handler for GET /api/{model}/years
+// HandleGetYears returns the handler for GET /api/{model}/years
 func HandleGetYears (dataDir string) http.HandlerFunc {
 
 	return func(w http.ResponseWriter, r *http.Request) {
