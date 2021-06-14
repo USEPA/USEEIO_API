@@ -26,8 +26,8 @@ func ReadModelInfos(dataDir string) ([]*ModelInfo, error) {
 	models := make([]*ModelInfo, 0, len(rows)-1)
 	for i, row := range rows {
 		if i == 0 || len(row) < 6 {
-            log.Println("ERROR: Models.csv does not contain all required fields.")
-            return nil
+            log.Println("ERROR: Models.csv does not contain all required fields.",err)
+            return nil, err
 		}
 		models = append(models, &ModelInfo{
 			ID:           row[0],
