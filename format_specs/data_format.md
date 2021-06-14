@@ -112,7 +112,7 @@ Column  Field         Description
 
 **years.csv**
 
-The file `years.csv` contains the years for model data that is in model [sector-by-year](https://github.com/USEPA/useeior/blob/master/format_specs/model.md#sector-by-year) format. It should have the following columns:
+The file `years.csv` contains the years for the Rho and Phi matrices (the columns). It should have the following columns:
 
 ```
 Column  Field         Description
