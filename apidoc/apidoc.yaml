@@ -1,8 +1,8 @@
 swagger: '2.0'
 info:
   description: >-
-    A RESTful API that provides access to versions of the USEEIO models. Results
-    are returned as JSON objects.
+    A RESTful API that provides access to versions of the USEEIO model. Results
+    are returned as JSON objects or csv files.
   version: '1.1'
   title: USEEIO-API
 basePath: /api
@@ -126,14 +126,39 @@ paths:
                 type: number
         '500':
           description: if the server failed to load the matrix file
+  '/{model}/matrix/A_d':
+    get:
+      summary: Get the domestic direct requirements matrix of the IO model.
+      description: >
+        The matrix `A_d` is a `sector x sector` matrix and contains in each column
+        `i` the domestic direct sector inputs that are required to produce 1 USD dollar
+        of output from sector `i`.
+      produces:
+        - application/json
+      parameters:
+        - in: path
+          name: model
+          type: string
+          required: true
+          description: The ID of the input-output model to use.
+      responses:
+        '200':
+          description: Successfully returned the domestic direct requirements matrix for the given model.
+          schema:
+            type: array
+            items:
+              type: array
+              items:
+                type: number
+        '500':
+          description: A_d matrix not present for the given model
   '/{model}/matrix/B':
     get:
       summary: Get the satellite matrix of the IO model.
       description: >
-        The satellite matrix `B` is an `elementary flow x sector` matrix and
-        contains in each column `i` the amounts of emissions and resources -
-        given in the reference units of the respective elementary flows - that
-        are directly related to 1 USD output from sector `i`.
+        The satellite matrix `B` is a `flow x sector` matrix and contains in
+        each column `i` the amount of a flow given in the reference
+        unit of the respective flow per 1 USD output from sector `i`.
       produces:
         - application/json
       parameters:
@@ -161,9 +186,7 @@ paths:
         the satellite matrix `B` in the same matrix dimensions of flows x sector.
         These entries are in the form of 5 data quality scores (values for each ranging from 1 to 5) for the five
         EPA LCA flow data quality indicators in this order: (Data reliability, Temporal correlation, Technological correlation,
-         Technological correlation). For example '(3,1,1,4,5)'. For more information on the data quality indicators and score, see the US EPA 2016 Report
-          'Guidance on Data Quality Assessment for Life Cycle Inventory Data'.
-
+         Technological correlation). For example '(3,1,1,4,5)'. For more information on the data quality indicators and score, see the US EPA 2016 Report 'Guidance on Data Quality Assessment for Life Cycle Inventory Data'.
       produces:
         - application/json
       parameters:
@@ -182,7 +205,7 @@ paths:
               items:
                 type: string
         '500':
-          description: if the server failed to load the matrix file
+          description: B_dqi matrix not present for the given model
   '/{model}/matrix/C':
     get:
       summary: Get the characterization factors.
@@ -264,7 +287,7 @@ paths:
               items:
                 type: string
         '500':
-          description: if the server failed to load the matrix file
+          description: D_dqi matrix not present for the given model
   '/{model}/matrix/L':
     get:
       summary: Get the Leontief inverse of the IO model.
@@ -283,7 +306,7 @@ paths:
           description: The ID of the input-output model to use.
       responses:
         '200':
-          description: Successfully returned the Leontief inverse matrix of the given model.
+          description: Successfully returned the matrix.
           schema:
             type: array
             items:
@@ -292,15 +315,13 @@ paths:
                 type: number
         '500':
           description: if the server failed to load the matrix file
-  '/{model}/matrix/U':
+  '/{model}/matrix/L_d':
     get:
-      summary: Get the total (direct+indirect) impact assessment results.
+      summary: Get the domestic Leontief inverse of the IO model.
       description: >
-        The matrix `U` is a `LCIA category x sector` matrix and contains in each
-        column `i` the total impact assessment result related to the direct and
-        indirect emissions and resources that are required to produce 1 USD
-        output of sector `i`. With the direct impacts `D` and the total
-        requirements `L` the matrix `U` can be calculated via `U = D * L`.
+        The domestic Leontief inverse `L_d` is calculated via `L_d = (I - A_d)^-1`. `L_d` is also
+        a `sector x sector` matrix and contains in each column `i` the direct + indirect domestic
+        requirements of the respective sectors inputs to produce 1 USD of output from sector `i`.
       produces:
         - application/json
       parameters:
@@ -311,7 +332,34 @@ paths:
           description: The ID of the input-output model to use.
       responses:
         '200':
-          description: Successfully returned the total impact results matrix.
+          description: Successfully returned the matrix.
+          schema:
+            type: array
+            items:
+              type: array
+              items:
+                type: number
+        '500':
+          description: L_d matrix not present for the given model
+  '/{model}/matrix/M':
+    get:
+      summary: Get the direct + indirect impact results.
+      description: >
+        The matrix `M` is a `flow x sector` matrix and contains in each column
+        `i` the direct + indirect flow per 1 USD output of sector `i`.
+        With the `B` and the total requirements `L`, the matrix `M` which
+        contains the direct + indirect flow totals can be calculated via `M = B * L`.
+      produces:
+        - application/json
+      parameters:
+        - in: path
+          name: model
+          type: string
+          required: true
+          description: The ID of the input-output model to use.
+      responses:
+        '200':
+          description: Successfully returned the matrix.
           schema:
             type: array
             items:
@@ -320,12 +368,92 @@ paths:
                 type: number
         '500':
           description: if the server failed to load the matrix file
-  '/{model}/matrix/U_dqi':
+  '/{model}/matrix/M_d':
+    get:
+      summary: Get the direct + indirect domestic impact results.
+      description: >
+        The matrix `M_d` is a `flow x sector` matrix and contains in each column
+        `i` the direct + indirect flow per 1 USD output of sector `i`.
+        With the `B` and the total domestic requirements `L_d`, the matrix `M_d` which
+        contains the direct + indirect flow totals can be calculated via `M_d = B * L_d`.
+      produces:
+        - application/json
+      parameters:
+        - in: path
+          name: model
+          type: string
+          required: true
+          description: The ID of the input-output model to use.
+      responses:
+        '200':
+          description: Successfully returned the matrix.
+          schema:
+            type: array
+            items:
+              type: array
+              items:
+                type: number
+        '500':
+          description: M_d matrix not present for the given model
+  '/{model}/matrix/N':
+    get:
+      summary: Get the direct + indirect impact results.
+      description: >
+        The matrix `N` is a `indicator x sector` matrix and contains in each column
+        `i` the direct and indirect impact result per 1 USD output of sector `i`.
+        With the direct impacts `D` and the total  requirements `L`, the matrix `N` can be calculated via `N = D * L`.
+      produces:
+        - application/json
+      parameters:
+        - in: path
+          name: model
+          type: string
+          required: true
+          description: The ID of the input-output model to use.
+      responses:
+        '200':
+          description: Successfully returned the matrix.
+          schema:
+            type: array
+            items:
+              type: array
+              items:
+                type: number
+        '500':
+          description: if the server failed to load the matrix file
+  '/{model}/matrix/N_d':
+    get:
+      summary: Get the direct + indirect domestic impact results.
+      description: >
+        The matrix `N_d` is a `indicator x sector` matrix and contains in each column
+        `i` the direct and indirect domestic impact result per 1 USD output of sector `i`.
+        With the direct impacts `D` and the total domestic requirements `L_d`, the matrix `N_d` can be calculated via `N_d = D * L_d`.
+      produces:
+        - application/json
+      parameters:
+        - in: path
+          name: model
+          type: string
+          required: true
+          description: The ID of the input-output model to use.
+      responses:
+        '200':
+          description: Successfully returned the matrix.
+          schema:
+            type: array
+            items:
+              type: array
+              items:
+                type: number
+        '500':
+          description: M_d matrix not present for the given model
+
+  '/{model}/matrix/N_dqi':
     get:
       summary: Get the data quality results of the total impact assessment results.
       description:
-        The matrix `U_dqi` contains the corresponding data quality entries of
-                the total impact results matrix `U` in the same matrix dimensions of impacts x sector. These entries are in the form
+        The matrix `N_dqi` contains the corresponding data quality entries of
+                the direct + indirect impact results matrix `N` in the same matrix dimensions of impacts x sector. These entries are in the form
                 of 5 data quality scores (values for each ranging from 1 to 5) for the five EPA flow data quality
                 indicators in this order, (Data reliability, Temporal correlation, Technological correlation,
                Technological correlation). For example '(3,1,1,4,5)'. For more information on the data quality indicators
@@ -341,6 +469,78 @@ paths:
       responses:
         '200':
           description: Successfully returned a matrix of data quality entries for the total impact results for the given model.
+          schema:
+            type: array
+            items:
+              type: array
+              items:
+                type: string
+        '500':
+          description: N_dqi matrix not present for the given model
+  '/{model}/matrix/Phi':
+    get:
+      summary: Get the price type adjustment ratios by year.
+      description:
+        The matrix `Phi` is a `sector x year` matrix of producer:purchaser price type adjustment ratios that can be used to put model results in purchaser price. By default, all USEEIO model results are in producer price.
+      produces:
+        - application/json
+      parameters:
+        - in: path
+          name: model
+          type: string
+          required: true
+          description: The ID of the input-output model to use.
+      responses:
+        '200':
+          description: Successfully returned the matrix.
+          schema:
+            type: array
+            items:
+              type: array
+              items:
+                type: string
+        '500':
+          description: if the server failed to load the matrix file
+  '/{model}/matrix/Rho':
+    get:
+      summary: Get the currency year adjustment factors.
+      description:
+        The matrix `Rho` is a `sector x year` matrix of sector-specific currency deflation ratios that can be used to put results into another currency year.
+      produces:
+        - application/json
+      parameters:
+        - in: path
+          name: model
+          type: string
+          required: true
+          description: The ID of the input-output model to use.
+      responses:
+        '200':
+          description: Successfully returned the matrix.
+          schema:
+            type: array
+            items:
+              type: array
+              items:
+                type: string
+        '500':
+          description: if the server failed to load the matrix file
+  '/{model}/matrix/q':
+    get:
+      summary: Get the commodity output vector
+      description:
+        The matrix `q` is a `sector` indexed single column matrix (or vector) with the annual commodity output in the model dollar year. Available only for commodity models.
+      produces:
+        - application/json
+      parameters:
+        - in: path
+          name: model
+          type: string
+          required: true
+          description: The ID of the input-output model to use.
+      responses:
+        '200':
+          description: Successfully returned the matrix.
           schema:
             type: array
             items:
@@ -511,6 +711,24 @@ paths:
             $ref: '#/definitions/Flow'
         '404':
           description: Flow not found.
+  '/{model}/years':
+    get:
+      summary: Get all years with data for Phi and Rho matrices.
+      produces:
+        - application/json
+      parameters:
+        - in: path
+          name: model
+          type: string
+          required: true
+          description: The ID of the input-output model to use.
+      responses:
+        '200':
+          description: Successfully returned an array of years in the given model.
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/Year'
 definitions:
   Model:
     type: object
@@ -519,8 +737,17 @@ definitions:
         type: string
       name:
         type: string
+      location:
+        type: string
+        description: Model region acryonyms.
       description:
         type: string
+      sectorschema:
+        type: string
+        description: The sector schema name of the model corresponding to schemas in sectorcrosswalk.csv.
+      hash:
+        type: string
+        description: A SHA-256 bit hash of the model used as a model build identifier.
   Sector:
     type: object
     properties:
@@ -545,7 +772,7 @@ definitions:
         type: string
       index:
         type: integer
-        description: The matrix index of the sector.
+        description: The matrix index of the flow.
       flowable:
         type: string
         description: The name of the flow, e.g., 'Sulfuric acid'.
@@ -599,7 +826,7 @@ definitions:
       amount:
         type: number
     example:
-      sector: 112120/dairies/us
+      sector: 112120/US
       amount: 42.42
   DemandInfo:
     type: object
@@ -609,6 +836,12 @@ definitions:
         type: string
       year:
         type: integer
+      type:
+        type: string
+      system:
+        type: string
+      location:
+        type: string
   Result:
     type: object
     properties:
@@ -633,3 +866,11 @@ definitions:
         type: array
         items:
           type: number
+  Year:
+    type: object
+    properties:
+      index:
+        type: integer
+        description: The matrix index of the Year.
+      id:
+        type: string

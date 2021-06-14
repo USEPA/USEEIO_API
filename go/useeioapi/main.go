@@ -48,6 +48,8 @@ func main() {
 		HandleGetMatrix(dataDir)).Methods("GET")
 	r.HandleFunc("/api/{model}/calculate",
 		HandleCalculate(dataDir)).Methods("POST")
+	r.HandleFunc("/api/{model}/years",
+		HandleGetYears(dataDir)).Methods("GET")
 
 	// serve the crosswalk.csv file
 	r.HandleFunc("/api/sectorcrosswalk.csv",
