@@ -14,7 +14,7 @@ type Year struct {
 	Index       int    `json:"index"`
 }
 
-// ReadSectors reads the years from the CSV file in the data folder. It
+// ReadYears reads the years from the CSV file in the data folder. It
 // returns them in a slice where the years are sorted by their indices.
 func ReadYears(folder string) ([]*Year, error) {
 	path := filepath.Join(folder, "years.csv")
