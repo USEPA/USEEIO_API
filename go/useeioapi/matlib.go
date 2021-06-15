@@ -36,7 +36,7 @@ func MakeMatrix(data [][]float64) *Matrix {
 func Zeros(rows, cols int) *Matrix {
 	size := rows * cols
 	m := Matrix{Rows: rows, Cols: cols}
-	m.Data = make([]float64, size, size)
+	m.Data = make([]float64, size)
 	return &m
 }
 

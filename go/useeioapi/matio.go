@@ -90,7 +90,7 @@ func readFloat(bin8 []byte, r io.Reader) (float64, error) {
 		return 0, err
 	}
 	if n != 8 {
-		return 0, errors.New("Failed to read float: n != 8")
+		return 0, errors.New("failed to read float: n != 8")
 	}
 	bits := binary.LittleEndian.Uint64(bin8)
 	float := math.Float64frombits(bits)
@@ -103,7 +103,7 @@ func readInt(bin4 []byte, r io.Reader) (int, error) {
 		return 0, err
 	}
 	if n != 4 {
-		return 0, errors.New("Failed to read int: n != 4")
+		return 0, errors.New("failed to read int: n != 4")
 	}
 	return int(binary.LittleEndian.Uint32(bin4)), nil
 }
