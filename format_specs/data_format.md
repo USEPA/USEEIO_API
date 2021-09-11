@@ -1,6 +1,6 @@
 # Data formats
 
-The data required for serving USEEIO models via the USEEIO API are matrix files, demand files, and metadata files. These data can be exported from an [useeior model](https://github.com/USEPA/useeior/blob/master/format_specs/model.md).
+The data required for serving USEEIO models via the USEEIO API are matrix files, demand files, and metadata files. These data can be exported from an [useeior model](https://github.com/USEPA/useeior/blob/master/format_specs/Model.md).
 
 ## Matrix Files
  The series of matrices include model component, result and price adjustment matrices. All matrices are stored as binary data with a `.bin` extension.
