@@ -5,17 +5,18 @@ import (
 	"net/http"
 	"path/filepath"
 	"strconv"
+
 	"github.com/gorilla/mux"
 )
 
 // Flow describes an elementary flow an IO model.
 type Flow struct {
-	Index       int    `json:"index"`
-	ID          string `json:"id"`
-	Flowable    string `json:"flowable"`
-	Context     string `json:"context"`
-	Unit        string `json:"unit"`
-	UUID        string `json:"uuid"`
+	Index    int    `json:"index"`
+	ID       string `json:"id"`
+	Flowable string `json:"flowable"`
+	Context  string `json:"context"`
+	Unit     string `json:"unit"`
+	UUID     string `json:"uuid"`
 }
 
 // ReadFlows reads the flows from the CSV file `flows.csv` in the data folder
@@ -52,33 +53,35 @@ func ReadFlows(folder string) ([]*Flow, error) {
 	return flows, nil
 }
 
-// HandleGetFlows returns the handler for GET /api/{model}/flows
-func HandleGetFlows(dataDir string) http.HandlerFunc {
+func (s *server) getFlows() http.HandlerFunc {
 
 	return func(w http.ResponseWriter, r *http.Request) {
-		model := mux.Vars(r)["model"]
-		folder := filepath.Join(dataDir, model)
-		flows, err := ReadFlows(folder)
+		modelDir := s.getModelDir(w, r)
+		if modelDir == "" {
+			return
+		}
+
+		flows, err := ReadFlows(modelDir)
 		if err != nil {
-			http.Error(w, "no flows for model "+model+" found",
-				http.StatusNotFound)
+			http.Error(w, "no flows found", http.StatusInternalServerError)
 			return
 		}
 		ServeJSON(flows, w)
 	}
 }
 
-// HandleGetFlow returns the handler for GET /api/{model}/flows/{id}
-func HandleGetFlow(dataDir string) http.HandlerFunc {
+func (s *server) getFlow() http.HandlerFunc {
 
 	return func(w http.ResponseWriter, r *http.Request) {
-		model := mux.Vars(r)["model"]
+		modelDir := s.getModelDir(w, r)
+		if modelDir == "" {
+			return
+		}
+
 		id := mux.Vars(r)["id"]
-		folder := filepath.Join(dataDir, model)
-		flows, err := ReadFlows(folder)
+		flows, err := ReadFlows(modelDir)
 		if err != nil {
-			http.Error(w, "no flows for model "+model+" found",
-				http.StatusNotFound)
+			http.Error(w, "no flows found", http.StatusInternalServerError)
 			return
 		}
 		for i := range flows {
@@ -88,7 +91,6 @@ func HandleGetFlow(dataDir string) http.HandlerFunc {
 				return
 			}
 		}
-		http.Error(w, "no flow with id "+id+" for model "+model+" found",
-			http.StatusNotFound)
+		http.Error(w, "no flow with id "+id+" found", http.StatusNotFound)
 	}
 }

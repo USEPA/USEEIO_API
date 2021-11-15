@@ -47,33 +47,34 @@ func ReadSectors(folder string) ([]*Sector, error) {
 	return sectors, nil
 }
 
-// HandleGetSectors returns the handler for GET /api/{model}/sectors
-func HandleGetSectors(dataDir string) http.HandlerFunc {
+func (s *server) getSectors() http.HandlerFunc {
 
 	return func(w http.ResponseWriter, r *http.Request) {
-		model := mux.Vars(r)["model"]
-		folder := filepath.Join(dataDir, model)
-		sectors, err := ReadSectors(folder)
+		modelDir := s.getModelDir(w, r)
+		if modelDir == "" {
+			return
+		}
+		sectors, err := ReadSectors(modelDir)
 		if err != nil {
-			http.Error(w, "no sectors for model "+model+" found",
-				http.StatusNotFound)
+			http.Error(w, "no sectors found", http.StatusInternalServerError)
 			return
 		}
 		ServeJSON(sectors, w)
 	}
 }
 
-// HandleGetSector returns the handler for GET /api/{model}/sectors/{id}
-func HandleGetSector(dataDir string) http.HandlerFunc {
+func (s *server) getSector() http.HandlerFunc {
 
 	return func(w http.ResponseWriter, r *http.Request) {
-		model := mux.Vars(r)["model"]
+		modelDir := s.getModelDir(w, r)
+		if modelDir == "" {
+			return
+		}
+
 		id := mux.Vars(r)["id"]
-		folder := filepath.Join(dataDir, model)
-		sectors, err := ReadSectors(folder)
+		sectors, err := ReadSectors(modelDir)
 		if err != nil {
-			http.Error(w, "no sectors for model "+model+" found",
-				http.StatusNotFound)
+			http.Error(w, "no sectors found", http.StatusInternalServerError)
 			return
 		}
 		for i := range sectors {
@@ -83,7 +84,6 @@ func HandleGetSector(dataDir string) http.HandlerFunc {
 				return
 			}
 		}
-		http.Error(w, "no sector with id "+id+" for model "+model+" found",
-			http.StatusNotFound)
+		http.Error(w, "no sector with id "+id+" found", http.StatusNotFound)
 	}
 }

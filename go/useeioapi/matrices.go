@@ -13,13 +13,15 @@ import (
 	"github.com/gorilla/mux"
 )
 
-// HandleGetMatrix returns the handler for GET /api/{model}/matrix/{matrix}
-func HandleGetMatrix(dataDir string) http.HandlerFunc {
+func (s *server) getMatrix() http.HandlerFunc {
 
 	return func(w http.ResponseWriter, r *http.Request) {
-		model := mux.Vars(r)["model"]
-		name := mux.Vars(r)["matrix"]
+		modelDir := s.getModelDir(w, r)
+		if modelDir == "" {
+			return
+		}
 
+		name := mux.Vars(r)["matrix"]
 		if !isValidMatrixName(name) {
 			http.Error(w, "invalid matrix name", http.StatusBadRequest)
 			return
@@ -38,7 +40,7 @@ func HandleGetMatrix(dataDir string) http.HandlerFunc {
 		// if the matrix ends with _dqi we serve it as DQI matrix
 		// from a CSV file
 		if strings.HasSuffix(name, "_dqi") {
-			file := filepath.Join(dataDir, model, name+".csv")
+			file := filepath.Join(modelDir, name+".csv")
 			if !fileExists(file) {
 				http.Error(w, "DQI matrix "+name+" does not exist",
 					http.StatusNotFound)
@@ -55,7 +57,7 @@ func HandleGetMatrix(dataDir string) http.HandlerFunc {
 		}
 
 		// otherwise we try to load it from our binary format
-		file := filepath.Join(dataDir, model, name+".bin")
+		file := filepath.Join(modelDir, name+".bin")
 		if !fileExists(file) {
 			http.Error(w, "Matrix "+name+" does not exist",
 				http.StatusNotFound)

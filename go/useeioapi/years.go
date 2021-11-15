@@ -4,14 +4,12 @@ import (
 	"net/http"
 	"path/filepath"
 	"strconv"
-
-	"github.com/gorilla/mux"
 )
 
 // Year describes a year.
 type Year struct {
-	ID          string `json:"id"`
-	Index       int    `json:"index"`
+	ID    string `json:"id"`
+	Index int    `json:"index"`
 }
 
 // ReadYears reads the years from the CSV file in the data folder. It
@@ -39,16 +37,16 @@ func ReadYears(folder string) ([]*Year, error) {
 	return years, nil
 }
 
-// HandleGetYears returns the handler for GET /api/{model}/years
-func HandleGetYears (dataDir string) http.HandlerFunc {
+func (s *server) getYears() http.HandlerFunc {
 
 	return func(w http.ResponseWriter, r *http.Request) {
-		model := mux.Vars(r)["model"]
-		folder := filepath.Join(dataDir, model)
-		years, err := ReadYears(folder)
+		modelDir := s.getModelDir(w, r)
+		if modelDir == "" {
+			return
+		}
+		years, err := ReadYears(modelDir)
 		if err != nil {
-			http.Error(w, "no years for model "+model+" found",
-				http.StatusNotFound)
+			http.Error(w, "no years found", http.StatusInternalServerError)
 			return
 		}
 		ServeJSON(years, w)

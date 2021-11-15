@@ -55,33 +55,34 @@ func ReadIndicators(folder string) ([]*Indicator, error) {
 	return indicators, nil
 }
 
-// HandleGetIndicators returns the handler for GET /api/{model}/indicators
-func HandleGetIndicators(dataDir string) http.HandlerFunc {
+func (s *server) getIndicators() http.HandlerFunc {
 
 	return func(w http.ResponseWriter, r *http.Request) {
-		model := mux.Vars(r)["model"]
-		folder := filepath.Join(dataDir, model)
-		indicators, err := ReadIndicators(folder)
+		modelDir := s.getModelDir(w, r)
+		if modelDir == "" {
+			return
+		}
+		indicators, err := ReadIndicators(modelDir)
 		if err != nil {
-			http.Error(w, "no indicators for model "+model+" found",
-				http.StatusNotFound)
+			http.Error(w, "no indicators found", http.StatusInternalServerError)
 			return
 		}
 		ServeJSON(indicators, w)
 	}
 }
 
-// HandleGetIndicator returns the handler for GET /api/{model}/indicators/{id}
-func HandleGetIndicator(dataDir string) http.HandlerFunc {
+func (s *server) getIndicator() http.HandlerFunc {
 
 	return func(w http.ResponseWriter, r *http.Request) {
-		model := mux.Vars(r)["model"]
+		modelDir := s.getModelDir(w, r)
+		if modelDir == "" {
+			return
+		}
 		id := mux.Vars(r)["id"]
-		folder := filepath.Join(dataDir, model)
-		indicators, err := ReadIndicators(folder)
+
+		indicators, err := ReadIndicators(modelDir)
 		if err != nil {
-			http.Error(w, "no indicators for model "+model+" found",
-				http.StatusNotFound)
+			http.Error(w, "no indicators found", http.StatusInternalServerError)
 			return
 		}
 		for i := range indicators {
@@ -91,7 +92,6 @@ func HandleGetIndicator(dataDir string) http.HandlerFunc {
 				return
 			}
 		}
-		http.Error(w, "no indicator with id "+id+" for model "+model+" found",
-			http.StatusNotFound)
+		http.Error(w, "no indicator with id "+id+" found", http.StatusNotFound)
 	}
 }

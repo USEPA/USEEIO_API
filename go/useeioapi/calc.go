@@ -4,8 +4,6 @@ import (
 	"encoding/json"
 	"net/http"
 	"path/filepath"
-
-	"github.com/gorilla/mux"
 )
 
 // Demand describes the final demand vector and the perspective for which a
@@ -30,10 +28,14 @@ type Result struct {
 	Totals     []float64   `json:"totals"`
 }
 
-// HandleCalculate .
-func HandleCalculate(dataDir string) http.HandlerFunc {
+func (s *server) calculate() http.HandlerFunc {
 
 	return func(w http.ResponseWriter, r *http.Request) {
+		modelDir := s.getModelDir(w, r)
+		if modelDir == "" {
+			return
+		}
+
 		decoder := json.NewDecoder(r.Body)
 		var d Demand
 		err := decoder.Decode(&d)
@@ -43,9 +45,7 @@ func HandleCalculate(dataDir string) http.HandlerFunc {
 		}
 		defer r.Body.Close()
 
-		model := mux.Vars(r)["model"]
-		dir := filepath.Join(dataDir, model)
-		result := calculate(dir, &d, w)
+		result := calculate(modelDir, &d, w)
 		if result != nil {
 			ServeJSON(result, w)
 		}

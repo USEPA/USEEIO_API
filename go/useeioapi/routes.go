@@ -14,24 +14,15 @@ func (s *server) mountRoutes() {
 	r.HandleFunc("/api/models", s.getModels()).Methods("GET")
 	r.HandleFunc("/api/{model}/demands", s.getDemands()).Methods("GET")
 	r.HandleFunc("/api/{model}/demands/{id}", s.getDemand()).Methods("GET")
-	r.HandleFunc("/api/{model}/sectors",
-		HandleGetSectors(dataDir)).Methods("GET")
-	r.HandleFunc("/api/{model}/sectors/{id:.+}",
-		HandleGetSector(dataDir)).Methods("GET")
-	r.HandleFunc("/api/{model}/flows",
-		HandleGetFlows(dataDir)).Methods("GET")
-	r.HandleFunc("/api/{model}/flows/{id:.+}",
-		HandleGetFlow(dataDir)).Methods("GET")
-	r.HandleFunc("/api/{model}/indicators",
-		HandleGetIndicators(dataDir)).Methods("GET")
-	r.HandleFunc("/api/{model}/indicators/{id:.+}",
-		HandleGetIndicator(dataDir)).Methods("GET")
-	r.HandleFunc("/api/{model}/matrix/{matrix}",
-		HandleGetMatrix(dataDir)).Methods("GET")
-	r.HandleFunc("/api/{model}/calculate",
-		HandleCalculate(dataDir)).Methods("POST")
-	r.HandleFunc("/api/{model}/years",
-		HandleGetYears(dataDir)).Methods("GET")
+	r.HandleFunc("/api/{model}/sectors", s.getSectors()).Methods("GET")
+	r.HandleFunc("/api/{model}/sectors/{id:.+}", s.getSector()).Methods("GET")
+	r.HandleFunc("/api/{model}/flows", s.getFlows()).Methods("GET")
+	r.HandleFunc("/api/{model}/flows/{id:.+}", s.getFlow()).Methods("GET")
+	r.HandleFunc("/api/{model}/indicators", s.getIndicators()).Methods("GET")
+	r.HandleFunc("/api/{model}/indicators/{id:.+}", s.getIndicator()).Methods("GET")
+	r.HandleFunc("/api/{model}/matrix/{matrix}", s.getMatrix()).Methods("GET")
+	r.HandleFunc("/api/{model}/calculate", s.calculate()).Methods("POST")
+	r.HandleFunc("/api/{model}/years", s.getYears()).Methods("GET")
 
 	// serve the crosswalk.csv file
 	r.HandleFunc("/api/sectorcrosswalk.csv",
