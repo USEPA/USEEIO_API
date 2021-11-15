@@ -52,33 +52,34 @@ func ReadDemandInfos(folder string) ([]*DemandInfo, error) {
 	return demands, nil
 }
 
-// HandleGetDemands returns the handler for GET /api/{model}/demands
-func HandleGetDemands(dataDir string) http.HandlerFunc {
+func (s *server) getDemands() http.HandlerFunc {
 
 	return func(w http.ResponseWriter, r *http.Request) {
-		model := mux.Vars(r)["model"]
-		folder := filepath.Join(dataDir, model)
-		demands, err := ReadDemandInfos(folder)
+		modelDir := s.getModelDir(w, r)
+		if modelDir == "" {
+			return
+		}
+		demands, err := ReadDemandInfos(modelDir)
 		if err != nil {
-			http.Error(w, "no demands for model "+model+" found",
-				http.StatusNotFound)
+			http.Error(w, "failed to read demands", http.StatusInternalServerError)
 			return
 		}
 		ServeJSON(demands, w)
 	}
 }
 
-// HandleGetDemand returns the handler for GET /api/{model}/demands/{id}
-func HandleGetDemand(dataDir string) http.HandlerFunc {
+func (s *server) getDemand() http.HandlerFunc {
 
 	return func(w http.ResponseWriter, r *http.Request) {
-		model := mux.Vars(r)["model"]
+		modelDir := s.getModelDir(w, r)
+		if modelDir == "" {
+			return
+		}
 		id := mux.Vars(r)["id"]
-		file := filepath.Join(dataDir, model, "demands", id+".json")
+		file := filepath.Join(modelDir, "demands", id+".json")
 		data, err := ioutil.ReadFile(file)
 		if err != nil {
-			http.Error(w, "no demand "+id+" for model "+model+" found",
-				http.StatusNotFound)
+			http.Error(w, "demand "+id+" not found", http.StatusNotFound)
 			return
 		}
 		ServeJSONBytes(data, w)

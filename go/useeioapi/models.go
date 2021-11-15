@@ -45,16 +45,9 @@ func ReadModelInfos(dataDir string) ([]*ModelInfo, error) {
 	return models, nil
 }
 
-// HandleGetModels returns the handler for GET /api/models
-func HandleGetModels(dataDir string) http.HandlerFunc {
+func (s *server) getModels() http.HandlerFunc {
 
 	return func(w http.ResponseWriter, r *http.Request) {
-		models, err := ReadModelInfos(dataDir)
-		if err != nil {
-			http.Error(w, "failed to read IO models",
-				http.StatusInternalServerError)
-			return
-		}
-		ServeJSON(models, w)
+		ServeJSON(s.models, w)
 	}
 }
