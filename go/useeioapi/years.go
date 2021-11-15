@@ -12,11 +12,11 @@ type Year struct {
 	Index int    `json:"index"`
 }
 
-// ReadYears reads the years from the CSV file in the data folder. It
+// readYears reads the years from the CSV file in the data folder. It
 // returns them in a slice where the years are sorted by their indices.
-func ReadYears(folder string) ([]*Year, error) {
+func readYears(folder string) ([]*Year, error) {
 	path := filepath.Join(folder, "years.csv")
-	records, err := ReadCSV(path)
+	records, err := readCSV(path)
 	if err != nil {
 		return nil, err
 	}
@@ -44,11 +44,11 @@ func (s *server) getYears() http.HandlerFunc {
 		if modelDir == "" {
 			return
 		}
-		years, err := ReadYears(modelDir)
+		years, err := readYears(modelDir)
 		if err != nil {
 			http.Error(w, "no years found", http.StatusInternalServerError)
 			return
 		}
-		ServeJSON(years, w)
+		serveJSON(years, w)
 	}
 }

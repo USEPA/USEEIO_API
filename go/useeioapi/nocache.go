@@ -23,9 +23,9 @@ var etagHeaders = []string{
 	"If-Unmodified-Since",
 }
 
-// NoCache adds response attributes to the response to that nothing is cached
+// noCache adds response attributes to the response to that nothing is cached
 // on the client site. TODO: remove this later
-func NoCache(wrapped http.Handler) http.Handler {
+func noCache(wrapped http.Handler) http.Handler {
 	fn := func(w http.ResponseWriter, r *http.Request) {
 		// Delete any ETag headers that may have been set
 		for _, v := range etagHeaders {

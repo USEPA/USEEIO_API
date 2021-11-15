@@ -20,11 +20,11 @@ type DemandInfo struct {
 	Location string `json:"location,omitempty"`
 }
 
-// ReadDemandInfos reads the meta-data of the available demand vectors from the
+// readDemandInfos reads the meta-data of the available demand vectors from the
 // CSV file in the data folder.
-func ReadDemandInfos(folder string) ([]*DemandInfo, error) {
+func readDemandInfos(folder string) ([]*DemandInfo, error) {
 	path := filepath.Join(folder, "demands.csv")
-	records, err := ReadCSV(path)
+	records, err := readCSV(path)
 	if err != nil {
 		return nil, err
 	}
@@ -59,12 +59,12 @@ func (s *server) getDemands() http.HandlerFunc {
 		if modelDir == "" {
 			return
 		}
-		demands, err := ReadDemandInfos(modelDir)
+		demands, err := readDemandInfos(modelDir)
 		if err != nil {
 			http.Error(w, "failed to read demands", http.StatusInternalServerError)
 			return
 		}
-		ServeJSON(demands, w)
+		serveJSON(demands, w)
 	}
 }
 
@@ -82,6 +82,6 @@ func (s *server) getDemand() http.HandlerFunc {
 			http.Error(w, "demand "+id+" not found", http.StatusNotFound)
 			return
 		}
-		ServeJSONBytes(data, w)
+		serveJSONBytes(data, w)
 	}
 }

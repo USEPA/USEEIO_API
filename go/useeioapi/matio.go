@@ -9,9 +9,9 @@ import (
 	"os"
 )
 
-// LoadMatrixColumn reads the given (zero-based) column from the given
+// loadMatrixColumn reads the given (zero-based) column from the given
 // matrix file.
-func LoadMatrixColumn(file string, column int) ([]float64, error) {
+func loadMatrixColumn(file string, column int) ([]float64, error) {
 	f, err := os.Open(file)
 	if err != nil {
 		return nil, err
@@ -42,8 +42,8 @@ func LoadMatrixColumn(file string, column int) ([]float64, error) {
 	return data, nil
 }
 
-// LoadMatrix reads a matrix from the given file.
-func LoadMatrix(file string) (*Matrix, error) {
+// loadMatrix reads a matrix from the given file.
+func loadMatrix(file string) (*Matrix, error) {
 
 	f, err := os.Open(file)
 	if err != nil {

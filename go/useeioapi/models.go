@@ -16,9 +16,9 @@ type ModelInfo struct {
 	Hash         string `json:"hash,omitempty"`
 }
 
-// ReadModelInfos reads the model information from the data folder.
-func ReadModelInfos(dataDir string) ([]*ModelInfo, error) {
-	rows, err := ReadCSV(filepath.Join(dataDir, "models.csv"))
+// readModelInfos reads the model information from the data folder.
+func readModelInfos(dataDir string) ([]*ModelInfo, error) {
+	rows, err := readCSV(filepath.Join(dataDir, "models.csv"))
 	if err != nil {
 		log.Println("ERROR: failed to read models.csv", err)
 		return nil, err
@@ -48,6 +48,6 @@ func ReadModelInfos(dataDir string) ([]*ModelInfo, error) {
 func (s *server) getModels() http.HandlerFunc {
 
 	return func(w http.ResponseWriter, r *http.Request) {
-		ServeJSON(s.models, w)
+		serveJSON(s.models, w)
 	}
 }

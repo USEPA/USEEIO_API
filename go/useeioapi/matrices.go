@@ -63,7 +63,7 @@ func (s *server) getMatrix() http.HandlerFunc {
 				http.StatusNotFound)
 			return
 		}
-		matrix, err := LoadMatrix(file)
+		matrix, err := loadMatrix(file)
 		if err != nil {
 			http.Error(w, "Failed to load matrix "+name,
 				http.StatusInternalServerError)
@@ -81,7 +81,7 @@ func serveMatrix(matrix *Matrix, row int, col int, w http.ResponseWriter) {
 			http.Error(w, "Column out of bounds", http.StatusBadRequest)
 			return
 		}
-		ServeJSON(matrix.Col(col), w)
+		serveJSON(matrix.Col(col), w)
 		return
 	}
 
@@ -91,12 +91,12 @@ func serveMatrix(matrix *Matrix, row int, col int, w http.ResponseWriter) {
 			http.Error(w, "Row out of bound", http.StatusBadRequest)
 			return
 		}
-		ServeJSON(matrix.Row(row), w)
+		serveJSON(matrix.Row(row), w)
 		return
 	}
 
 	// return the full matrix
-	ServeJSON(matrix.Slice2d(), w)
+	serveJSON(matrix.Slice2d(), w)
 }
 
 func readDqiMatrix(file string) ([][]string, error) {
@@ -124,7 +124,7 @@ func serveDqiMatrix(dqis [][]string, row int, col int, w http.ResponseWriter) {
 			}
 			vals[row] = rowVals[col]
 		}
-		ServeJSON(vals, w)
+		serveJSON(vals, w)
 		return
 	}
 
@@ -134,12 +134,12 @@ func serveDqiMatrix(dqis [][]string, row int, col int, w http.ResponseWriter) {
 			http.Error(w, "Row out of bounds", http.StatusBadRequest)
 			return
 		}
-		ServeJSON(dqis[row], w)
+		serveJSON(dqis[row], w)
 		return
 	}
 
 	// return the full matrix
-	ServeJSON(dqis, w)
+	serveJSON(dqis, w)
 }
 
 func indexParam(name string, reqURL *url.URL, w http.ResponseWriter) (int, error) {

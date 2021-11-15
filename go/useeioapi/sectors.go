@@ -18,11 +18,11 @@ type Sector struct {
 	Description string `json:"description"`
 }
 
-// ReadSectors reads the sectors from the CSV file in the data folder. It
+// readSectors reads the sectors from the CSV file in the data folder. It
 // returns them in a slice where the sectors are sorted by their indices.
-func ReadSectors(folder string) ([]*Sector, error) {
+func readSectors(folder string) ([]*Sector, error) {
 	path := filepath.Join(folder, "sectors.csv")
-	records, err := ReadCSV(path)
+	records, err := readCSV(path)
 	if err != nil {
 		return nil, err
 	}
@@ -54,12 +54,12 @@ func (s *server) getSectors() http.HandlerFunc {
 		if modelDir == "" {
 			return
 		}
-		sectors, err := ReadSectors(modelDir)
+		sectors, err := readSectors(modelDir)
 		if err != nil {
 			http.Error(w, "no sectors found", http.StatusInternalServerError)
 			return
 		}
-		ServeJSON(sectors, w)
+		serveJSON(sectors, w)
 	}
 }
 
@@ -72,7 +72,7 @@ func (s *server) getSector() http.HandlerFunc {
 		}
 
 		id := mux.Vars(r)["id"]
-		sectors, err := ReadSectors(modelDir)
+		sectors, err := readSectors(modelDir)
 		if err != nil {
 			http.Error(w, "no sectors found", http.StatusInternalServerError)
 			return
@@ -80,7 +80,7 @@ func (s *server) getSector() http.HandlerFunc {
 		for i := range sectors {
 			s := sectors[i]
 			if s.ID == id {
-				ServeJSON(s, w)
+				serveJSON(s, w)
 				return
 			}
 		}

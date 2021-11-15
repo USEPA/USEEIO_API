@@ -18,20 +18,20 @@ type server struct {
 	router    *mux.Router
 }
 
-func newServer(args *Args) (*server, error) {
-	if stat, err := os.Stat(args.DataDir); err != nil || !stat.IsDir() {
-		return nil, errors.New("invalid data folder: " + args.DataDir)
+func newServer(args *args) (*server, error) {
+	if stat, err := os.Stat(args.dataDir); err != nil || !stat.IsDir() {
+		return nil, errors.New("invalid data folder: " + args.dataDir)
 	}
-	log.Println("Load data from folder:", args.DataDir)
+	log.Println("Load data from folder:", args.dataDir)
 
-	models, err := ReadModelInfos(args.DataDir)
+	models, err := readModelInfos(args.dataDir)
 	if err != nil {
 		return nil, err
 	}
 
 	// check that there is a folder for each model
 	for _, model := range models {
-		modelDir := filepath.Join(args.DataDir, model.ID)
+		modelDir := filepath.Join(args.dataDir, model.ID)
 		stat, err := os.Stat(modelDir)
 		if err != nil || !stat.IsDir() {
 			return nil, errors.New("no model folder found for: " + model.ID)
@@ -39,9 +39,9 @@ func newServer(args *Args) (*server, error) {
 	}
 
 	server := &server{
-		dataDir:   args.DataDir,
-		staticDir: args.StaticDir,
-		port:      args.Port,
+		dataDir:   args.dataDir,
+		staticDir: args.staticDir,
+		port:      args.port,
 		models:    models,
 		router:    mux.NewRouter()}
 	return server, nil

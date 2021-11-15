@@ -21,11 +21,11 @@ type Indicator struct {
 	SimpleName string `json:"simplename"`
 }
 
-// ReadIndicators reads the indicators from the CSV file in the data folder. It
+// readIndicators reads the indicators from the CSV file in the data folder. It
 // returns them in a slice where the indicators are sorted by their indices.
-func ReadIndicators(folder string) ([]*Indicator, error) {
+func readIndicators(folder string) ([]*Indicator, error) {
 	path := filepath.Join(folder, "indicators.csv")
-	records, err := ReadCSV(path)
+	records, err := readCSV(path)
 	if err != nil {
 		return nil, err
 	}
@@ -62,12 +62,12 @@ func (s *server) getIndicators() http.HandlerFunc {
 		if modelDir == "" {
 			return
 		}
-		indicators, err := ReadIndicators(modelDir)
+		indicators, err := readIndicators(modelDir)
 		if err != nil {
 			http.Error(w, "no indicators found", http.StatusInternalServerError)
 			return
 		}
-		ServeJSON(indicators, w)
+		serveJSON(indicators, w)
 	}
 }
 
@@ -80,7 +80,7 @@ func (s *server) getIndicator() http.HandlerFunc {
 		}
 		id := mux.Vars(r)["id"]
 
-		indicators, err := ReadIndicators(modelDir)
+		indicators, err := readIndicators(modelDir)
 		if err != nil {
 			http.Error(w, "no indicators found", http.StatusInternalServerError)
 			return
@@ -88,7 +88,7 @@ func (s *server) getIndicator() http.HandlerFunc {
 		for i := range indicators {
 			indicator := indicators[i]
 			if indicator.ID == id {
-				ServeJSON(indicator, w)
+				serveJSON(indicator, w)
 				return
 			}
 		}

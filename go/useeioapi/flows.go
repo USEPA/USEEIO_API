@@ -19,12 +19,12 @@ type Flow struct {
 	UUID     string `json:"uuid"`
 }
 
-// ReadFlows reads the flows from the CSV file `flows.csv` in the data folder
+// readFlows reads the flows from the CSV file `flows.csv` in the data folder
 // of the respective model. It returns them in a slice where the flows are
 // sorted by their indices.
-func ReadFlows(folder string) ([]*Flow, error) {
+func readFlows(folder string) ([]*Flow, error) {
 	path := filepath.Join(folder, "flows.csv")
-	records, err := ReadCSV(path)
+	records, err := readCSV(path)
 	if err != nil {
 		return nil, err
 	}
@@ -61,12 +61,12 @@ func (s *server) getFlows() http.HandlerFunc {
 			return
 		}
 
-		flows, err := ReadFlows(modelDir)
+		flows, err := readFlows(modelDir)
 		if err != nil {
 			http.Error(w, "no flows found", http.StatusInternalServerError)
 			return
 		}
-		ServeJSON(flows, w)
+		serveJSON(flows, w)
 	}
 }
 
@@ -79,7 +79,7 @@ func (s *server) getFlow() http.HandlerFunc {
 		}
 
 		id := mux.Vars(r)["id"]
-		flows, err := ReadFlows(modelDir)
+		flows, err := readFlows(modelDir)
 		if err != nil {
 			http.Error(w, "no flows found", http.StatusInternalServerError)
 			return
@@ -87,7 +87,7 @@ func (s *server) getFlow() http.HandlerFunc {
 		for i := range flows {
 			flow := flows[i]
 			if flow.ID == id || flow.UUID == id {
-				ServeJSON(flow, w)
+				serveJSON(flow, w)
 				return
 			}
 		}

@@ -47,7 +47,7 @@ func (s *server) calculate() http.HandlerFunc {
 
 		result := calculate(modelDir, &d, w)
 		if result != nil {
-			ServeJSON(result, w)
+			serveJSON(result, w)
 		}
 	}
 }
@@ -59,12 +59,12 @@ func calculate(dir string, d *Demand, w http.ResponseWriter) *Result {
 	}
 
 	// read the indicators and sectors
-	indicators, err := ReadIndicators(dir)
+	indicators, err := readIndicators(dir)
 	if err != nil {
 		http.Error(w, "invalid model; no indicators", http.StatusBadRequest)
 		return nil
 	}
-	sectors, err := ReadSectors(dir)
+	sectors, err := readSectors(dir)
 	if err != nil {
 		http.Error(w, "invalid model; no sectors", http.StatusBadRequest)
 		return nil
@@ -75,7 +75,7 @@ func calculate(dir string, d *Demand, w http.ResponseWriter) *Result {
 	}
 
 	// N is used for the total result; thus, always loaded
-	N, err := LoadMatrix(filepath.Join(dir, "N.bin"))
+	N, err := loadMatrix(filepath.Join(dir, "N.bin"))
 	if err != nil {
 		http.Error(w, "could not load matrix N",
 			http.StatusInternalServerError)
@@ -86,16 +86,16 @@ func calculate(dir string, d *Demand, w http.ResponseWriter) *Result {
 	var data *Matrix
 	switch d.Perspective {
 	case "direct":
-		L, err := LoadMatrix(filepath.Join(dir, "L.bin"))
+		L, err := loadMatrix(filepath.Join(dir, "L.bin"))
 		if err == nil {
-			D, err := LoadMatrix(filepath.Join(dir, "D.bin"))
+			D, err := loadMatrix(filepath.Join(dir, "D.bin"))
 			if err == nil {
 				s := L.ScaledColumnSums(demand)
 				data = D.ScaleColumns(s)
 			}
 		}
 	case "intermediate":
-		L, err := LoadMatrix(filepath.Join(dir, "L.bin"))
+		L, err := loadMatrix(filepath.Join(dir, "L.bin"))
 		if err == nil {
 			s := L.ScaledColumnSums(demand)
 			data = N.ScaleColumns(s)

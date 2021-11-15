@@ -5,42 +5,42 @@ import (
 	"strings"
 )
 
-// Args contains the command line arguments of the server application. All
+// args contains the command line arguments of the server application. All
 // arguments are optional and should have reasonable default values.
-type Args struct {
+type args struct {
 
 	// A path to a folder that contains matrices and meta-data files.
-	DataDir string
+	dataDir string
 
 	// A path to a folder that contains the static resources (HTML, JavaScript,
 	// CSS) of the application.
-	StaticDir string
+	staticDir string
 
 	// The port that is used for the HTTP server.
-	Port string
+	port string
 }
 
 // GetArgs returns the programm arguments of the server application.
-func GetArgs() *Args {
-	args := Args{
-		DataDir:   "data",
-		StaticDir: "static",
-		Port:      "80"}
+func GetArgs() *args {
+	args := args{
+		dataDir:   "data",
+		staticDir: "static",
+		port:      "80"}
 	for flag, arg := range readArgs() {
 		switch flag {
 		case "-data":
-			args.DataDir = arg
+			args.dataDir = arg
 		case "-static":
-			args.StaticDir = arg
+			args.staticDir = arg
 		case "-port":
-			args.Port = arg
+			args.port = arg
 		}
 	}
 	// If the server runs in Cloud Foundry we need
 	// to bind the port to the PORT environment variable
 	port := os.Getenv("PORT")
 	if port != "" {
-		args.Port = port
+		args.port = port
 	}
 	return &args
 }
