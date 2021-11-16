@@ -10,11 +10,12 @@ import (
 
 // Sector describes an industry sector in an input-output model.
 type Sector struct {
-	ID          string `json:"id"`
 	Index       int    `json:"index"`
+	ID          string `json:"id"`
 	Name        string `json:"name"`
 	Code        string `json:"code"`
 	Location    string `json:"location"`
+	Category    string `json:"category"`
 	Description string `json:"description"`
 }
 
@@ -29,7 +30,7 @@ func readSectors(folder string) ([]*Sector, error) {
 
 	sectors := make([]*Sector, len(records)-1)
 	for idx, row := range records {
-		if idx == 0 {
+		if idx == 0 || len(row) < 3 {
 			continue
 		}
 		s := Sector{}
@@ -37,11 +38,12 @@ func readSectors(folder string) ([]*Sector, error) {
 		if err != nil {
 			return nil, err
 		}
-		s.ID = row[1]
-		s.Name = row[2]
-		s.Code = row[3]
-		s.Location = row[4]
-		s.Description = row[5]
+		s.ID = valueOf(row, 1)
+		s.Name = valueOf(row, 2)
+		s.Code = valueOf(row, 3)
+		s.Location = valueOf(row, 4)
+		s.Category = valueOf(row, 5)
+		s.Description = valueOf(row, 6)
 		sectors[s.Index] = &s
 	}
 	return sectors, nil

@@ -67,7 +67,7 @@ class CalculationTest(unittest.TestCase):
             demand = self.build_test_demand(model_id)
             demand['perspective'] = 'direct'
             r = client.calculate(model_id, demand)
-            self.compare_matrices(R, np.asarray(r['data'], dtype=np.float))
+            self.compare_matrices(R, np.asarray(r['data'], dtype=np.float64))
 
     def test_intermediate_perspective(self):
         """Test the calculation of a result of the intermediate perspective."""
@@ -89,7 +89,7 @@ class CalculationTest(unittest.TestCase):
             demand = self.build_test_demand(model_id)
             demand['perspective'] = 'intermediate'
             r = client.calculate(model_id, demand)
-            self.compare_matrices(R, np.asarray(r['data'], dtype=np.float))
+            self.compare_matrices(R, np.asarray(r['data'], dtype=np.float64))
 
     def test_final_perspective(self):
         """Test the calculation of a result of the final perspective."""
@@ -111,7 +111,7 @@ class CalculationTest(unittest.TestCase):
             demand = self.build_test_demand(model_id)
             demand['perspective'] = 'final'
             r = client.calculate(model_id, demand)
-            self.compare_matrices(R, np.asarray(r['data'], dtype=np.float))
+            self.compare_matrices(R, np.asarray(r['data'], dtype=np.float64))
 
     def test_total_results(self):
         """All perspectives should give the same total result."""

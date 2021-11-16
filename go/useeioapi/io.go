@@ -50,6 +50,14 @@ func readCSV(file string) ([][]string, error) {
 	return reader.ReadAll()
 }
 
+func valueOf(row []string, i int) string {
+	if len(row) <= i {
+		return ""
+	} else {
+		return row[i]
+	}
+}
+
 func fileExists(path string) bool {
 	_, err := os.Stat(path)
 	return err == nil

@@ -23,6 +23,7 @@ class SectorTest(unittest.TestCase):
                 self.assertIsNotNone(s.get('name'))
                 self.assertIsNotNone(s.get('code'))
                 self.assertIsNotNone(s.get('location'))
+                self.assertIsNotNone(s.get('category'))
 
     def test_get_sector(self):
         client = getclient()
@@ -38,3 +39,5 @@ class SectorTest(unittest.TestCase):
             self.assertEqual(same['name'], sector['name'])
             self.assertEqual(same['code'], sector['code'])
             self.assertEqual(same['location'], sector['location'])
+            self.assertEqual(same['category'], sector['category'])
+            self.assertEqual(same.get('description'), sector.get('description'))
