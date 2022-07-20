@@ -1,8 +1,13 @@
 import logging as log
-import requests
 import numpy as np
+import os
+import requests
+import sys
 
 from urllib.parse import quote
+
+_client = None
+log.basicConfig(level=log.INFO, stream=sys.stdout)
 
 
 class Client(object):
@@ -10,6 +15,28 @@ class Client(object):
     def __init__(self, endpoint: str, apikey=None):
         self.endpoint = endpoint
         self.apikey = apikey
+
+    @staticmethod
+    def get() -> 'Client':
+        """Get the API client instance for the test suite. This can be configured by
+           setting an environment variable `USEEIO_API` for the API endpoint which
+           defaults to `http://localhost:8080/api`. Also, an additional API key
+           can be configured in the same way via the `USEEIO_API_KEY` environment
+           variable."""
+        global _client
+        if _client is not None:
+            return _client
+        endpoint = os.environ.get('USEEIO_API')
+        if endpoint is None or endpoint == '':
+            endpoint = 'http://localhost:8080/api'
+        log.info('use API endpoint %s', endpoint)
+        apikey = os.environ.get('USEEIO_API_KEY')
+        if apikey == '':
+            apikey = None
+        if apikey is not None:
+            log.info('use API key %s', apikey[0] + '...' + apikey[-1])
+        _client = Client(endpoint, apikey)
+        return _client
 
     def get_models(self) -> list:
         return self.__get_json('/models')
@@ -40,21 +67,21 @@ class Client(object):
 
     def get_flow(self, model_id: str, flow_id: str):
         fid = quote(flow_id)
-        return self.__get_json('/%s/flows/%s' % (model_id, flow_id))
+        return self.__get_json('/%s/flows/%s' % (model_id, fid))
 
     def get_matrix(self, model_id: str, name: str) -> np.ndarray:
         data = self.__get_json('/%s/matrix/%s' % (model_id, name))
-        return np.asarray(data, dtype=np.float64)
+        return np.asarray(data, dtype=float)
 
     def get_matrix_column(self, model_id: str, name: str, col: int) \
             -> np.ndarray:
         data = self.__get_json('/%s/matrix/%s?col=%i' % (model_id, name, col))
-        return np.asarray(data, dtype=np.float64)
+        return np.asarray(data, dtype=float)
 
     def get_matrix_row(self, model_id: str, name: str, row: int) \
             -> np.ndarray:
         data = self.__get_json('/%s/matrix/%s?row=%i' % (model_id, name, row))
-        return np.asarray(data, dtype=np.float64)
+        return np.asarray(data, dtype=float)
 
     def calculate(self, model_id: str, demand: dict) -> dict:
         url = self.endpoint + '/' + model_id + "/calculate"

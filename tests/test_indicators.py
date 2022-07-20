@@ -5,13 +5,13 @@ import logging as log
 import random
 import unittest
 
-from config import getclient
+from client import Client
 
 
 class IndicatorTest(unittest.TestCase):
 
     def test_get_indicators(self):
-        client = getclient()
+        client = Client.get()
         for model in client.get_models():
             model_id = model['id']
             indicators = client.get_indicators(model_id)
@@ -29,7 +29,7 @@ class IndicatorTest(unittest.TestCase):
                 self.assertIsNotNone(indicator.get('simplename'))
 
     def test_get_indicator(self):
-        client = getclient()
+        client = Client.get()
         for model in client.get_models():
             model_id = model['id']
             indicators = client.get_indicators(model_id)

@@ -5,13 +5,13 @@ import logging as log
 import random
 import unittest
 
-from config import getclient
+from client import Client
 
 
 class SectorTest(unittest.TestCase):
 
     def test_get_sectors(self):
-        client = getclient()
+        client = Client.get()
         for model in client.get_models():
             model_id = model['id']
             sectors = client.get_sectors(model_id)
@@ -26,7 +26,7 @@ class SectorTest(unittest.TestCase):
                 self.assertIsNotNone(s.get('category'))
 
     def test_get_sector(self):
-        client = getclient()
+        client = Client.get()
         for model in client.get_models():
             model_id = model['id']
             sectors = client.get_sectors(model_id)

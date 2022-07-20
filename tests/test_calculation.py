@@ -5,7 +5,7 @@ import logging as log
 import numpy as np
 import unittest
 
-from config import getclient
+from client import Client
 
 
 class CalculationTest(unittest.TestCase):
@@ -14,7 +14,7 @@ class CalculationTest(unittest.TestCase):
         """Test the reproducibility of the Leontief inverse:
            L = (I - A)^{-1}
         """
-        client = getclient()
+        client = Client.get()
         for model in client.get_models():
             model_id = model['id']
             log.info('check the Leontief inverse L in model %s', model_id)
@@ -26,7 +26,7 @@ class CalculationTest(unittest.TestCase):
     def test_direct_impacts(self):
         """Test the reproducibility of the direct impact matrix:
            D = C B"""
-        client = getclient()
+        client = Client.get()
         for model in client.get_models():
             model_id = model['id']
             log.info('check the direct impact matrix D in model %s', model_id)
@@ -38,7 +38,7 @@ class CalculationTest(unittest.TestCase):
     def test_upstream_impacts(self):
         """Test the reproducibility of the upstream impact matrix:
            N = D L"""
-        client = getclient()
+        client = Client.get()
         for model in client.get_models():
             model_id = model['id']
             log.info('check the upstream impact matrix U in model %s', model_id)
@@ -49,7 +49,7 @@ class CalculationTest(unittest.TestCase):
 
     def test_direct_perspective(self):
         """Test the calculation of a result of the direct perspective."""
-        client = getclient()
+        client = Client.get()
         for model in client.get_models():
             model_id = model['id']
             log.info('test the direct perspective calculation in model %s',
@@ -67,11 +67,11 @@ class CalculationTest(unittest.TestCase):
             demand = self.build_test_demand(model_id)
             demand['perspective'] = 'direct'
             r = client.calculate(model_id, demand)
-            self.compare_matrices(R, np.asarray(r['data'], dtype=np.float64))
+            self.compare_matrices(R, np.asarray(r['data'], dtype=float))
 
     def test_intermediate_perspective(self):
         """Test the calculation of a result of the intermediate perspective."""
-        client = getclient()
+        client = Client.get()
         for model in client.get_models():
             model_id = model['id']
             log.info('test the intermediate perspective calculation in model %s',
@@ -89,11 +89,11 @@ class CalculationTest(unittest.TestCase):
             demand = self.build_test_demand(model_id)
             demand['perspective'] = 'intermediate'
             r = client.calculate(model_id, demand)
-            self.compare_matrices(R, np.asarray(r['data'], dtype=np.float64))
+            self.compare_matrices(R, np.asarray(r['data'], dtype=float))
 
     def test_final_perspective(self):
         """Test the calculation of a result of the final perspective."""
-        client = getclient()
+        client = Client.get()
         for model in client.get_models():
             model_id = model['id']
             log.info('test the final perspective calculation in model %s',
@@ -111,11 +111,11 @@ class CalculationTest(unittest.TestCase):
             demand = self.build_test_demand(model_id)
             demand['perspective'] = 'final'
             r = client.calculate(model_id, demand)
-            self.compare_matrices(R, np.asarray(r['data'], dtype=np.float64))
+            self.compare_matrices(R, np.asarray(r['data'], dtype=float))
 
     def test_total_results(self):
         """All perspectives should give the same total result."""
-        client = getclient()
+        client = Client.get()
         for model in client.get_models():
             model_id = model['id']
             log.info('test the total results in the perspectives calculation'
@@ -140,7 +140,7 @@ class CalculationTest(unittest.TestCase):
     def build_test_demand(self, model_id: str):
         """Creates a test demand for the given model. For each sector with
            index i, the demand vector d gets an entry of d[i] = i + 1.0."""
-        client = getclient()
+        client = Client.get()
         sectors = client.get_sectors(model_id)
         entries = []
         for sector in sectors:
@@ -150,17 +150,17 @@ class CalculationTest(unittest.TestCase):
             })
         return {'demand': entries}
 
-    def compare_matrices(self, M1: np.ndarray, M2: np.ndarray):
+    def compare_matrices(self, m1: np.ndarray, m2: np.ndarray):
         """Compares all values in two numeric matrices with AlmostEqual
 
-        :param M1: matrix 1, np.ndarray
-        :param M2: matrix 2, np.ndarray
+        :param m1: matrix 1, np.ndarray
+        :param m2: matrix 2, np.ndarray
         :return: pass/fail
         """
-        m, n = M1.shape
-        m_, n_ = M2.shape
+        m, n = m1.shape
+        m_, n_ = m2.shape
         self.assertEqual(m, m_)
         self.assertEqual(n, n_)
         for i in range(0, m):
             for j in range(0, n):
-                self.assertAlmostEqual(M1[i, j], M2[i, j])
+                self.assertAlmostEqual(m1[i, j], m2[i, j])
