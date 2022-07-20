@@ -4,7 +4,7 @@ Tests {model}/demands/ and {model}/demands/{demandID} endpoints
 import logging as log
 import unittest
 
-from config import getclient
+from client import getclient
 
 
 class DemandTest(unittest.TestCase):

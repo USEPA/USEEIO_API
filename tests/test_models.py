@@ -4,7 +4,7 @@ Tests /models endpoint
 import logging as log
 import unittest
 
-from config import getclient
+from client import getclient
 
 
 class ModelTest(unittest.TestCase):

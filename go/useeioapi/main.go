@@ -104,5 +104,9 @@ func main() {
 	}()
 
 	log.Println("Starting server at port:", args.Port)
-	http.ListenAndServe(":"+args.Port, r)
+	err := http.ListenAndServe(":"+args.Port, r)
+	if err != nil {
+		log.Println("ERROR: failed to start server", err)
+	}
+
 }

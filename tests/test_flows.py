@@ -6,7 +6,7 @@ import logging as log
 import random
 import unittest
 
-from config import getclient
+from client import getclient
 
 
 class FlowTest(unittest.TestCase):

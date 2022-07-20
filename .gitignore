@@ -3,3 +3,4 @@ apidoc/build/
 apidoc/cfdist
 build/
 .vscode/
+.idea/
