@@ -49,7 +49,10 @@ func newServer(args *args) (*server, error) {
 
 func (s *server) start() {
 	log.Println("Starting server at port:", s.port)
-	http.ListenAndServe(":"+s.port, s.router)
+	err := http.ListenAndServe(":"+s.port, s.router)
+	if err != nil {
+		log.Println("ERROR: failed to start server: ", err)
+	}
 }
 
 func (s *server) isModel(id string) bool {
