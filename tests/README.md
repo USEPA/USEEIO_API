@@ -23,15 +23,24 @@ instance of the USEEIO API running at `http://localhost:8080/api`.
 This can be changed by setting another endpoint via the
 `USEEIO_API` environment variable:
 
-```batch
+```bash
+# on Windows
 set USEEIO_API=http://another.end.point/api
+# otherwise
+export USEEIO_API=http://another.end.point/api
+
 python -m unittest discover
 ```
 
 Also, an API key can be set via the `USEEIO_API_KEY` environment variable.
 
 ```bash
+# on Windows
 set USEEIO_API=http://another.end.point/api
 set USEEIO_API_KEY=your_private_api_key_that_you_would_never_share
+# otherwise
+export USEEIO_API=http://another.end.point/api
+export USEEIO_API_KEY=your_private_api_key_that_you_would_never_share
+
 python -m unittest discover
 ```
