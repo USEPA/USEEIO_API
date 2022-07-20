@@ -6,13 +6,13 @@ import logging as log
 import random
 import unittest
 
-from client import getclient
+from client import Client
 
 
 class FlowTest(unittest.TestCase):
 
     def test_get_flows(self):
-        client = getclient()
+        client = Client.get()
         for model in client.get_models():
             model_id = model['id']
             flows = client.get_flows(model_id)
@@ -27,7 +27,7 @@ class FlowTest(unittest.TestCase):
                 self.assertIsNotNone(f.get('uuid'))
 
     def test_get_flow(self):
-        client = getclient()
+        client = Client.get()
         for model in client.get_models():
             model_id = model['id']
             flows = client.get_flows(model_id)

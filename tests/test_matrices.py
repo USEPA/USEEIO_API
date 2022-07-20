@@ -6,7 +6,7 @@ import logging as log
 import random
 import unittest
 
-from client import getclient
+from client import Client
 
 
 class MatrixTest(unittest.TestCase):
@@ -15,7 +15,7 @@ class MatrixTest(unittest.TestCase):
         """For each numeric matrix this test first fetches the complete matrix
            and a random row and column from the server and checks that the
            data of the matrix, row, and column data match."""
-        client = getclient()
+        client = Client.get()
         for model in client.get_models():
             model_id = model['id']
             for matrix in ['A', 'B', 'C', 'D', 'L', 'N']:

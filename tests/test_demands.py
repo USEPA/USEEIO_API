@@ -4,13 +4,13 @@ Tests {model}/demands/ and {model}/demands/{demandID} endpoints
 import logging as log
 import unittest
 
-from client import getclient
+from client import Client
 
 
 class DemandTest(unittest.TestCase):
 
     def test_get_demands(self):
-        client = getclient()
+        client = Client.get()
         for model in client.get_models():
             model_id = model['id']
             demands = client.get_demands(model_id)
@@ -26,7 +26,7 @@ class DemandTest(unittest.TestCase):
     def test_get_demand(self):
         """Test that each demand vector is a non-empty list of sector
            ID-amount-pairs with valid sector IDs."""
-        client = getclient()
+        client = Client.get()
         for model in client.get_models():
             model_id = model['id']
             sectors = client.get_sectors(model_id)
