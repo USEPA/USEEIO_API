@@ -18,7 +18,11 @@ class MatrixTest(unittest.TestCase):
         client = Client.get()
         for model in client.get_models():
             model_id = model['id']
-            for matrix in ['A', 'B', 'C', 'D', 'L', 'N']:
+            matrices = [
+                'A', 'A_d', 'B', 'C', 'D', 'L', 'L_d', 'M', 'M_d',
+                'N', 'N_d', 'Phi', 'q', 'Rho', 'U', 'U_d', 'V', 'x'
+            ]
+            for matrix in matrices:
                 log.info('check matrix %s in model %s', matrix, model_id)
                 M = client.get_matrix(model_id, matrix)
                 rows, cols = M.shape
