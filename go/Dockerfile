@@ -1,4 +1,4 @@
-FROM bash
+FROM public.ecr.aws/docker/library/bash
 
 RUN mkdir /opt/useeio_api && mkdir /opt/useeio_api/data
 COPY awsdist/app /opt/useeio_api
