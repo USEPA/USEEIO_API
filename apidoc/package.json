@@ -10,7 +10,7 @@
   "license": "MIT",
   "devDependencies": {
     "bootprint": "^1.0.2",
-    "bootprint-openapi": "^1.1.1",
+    "bootprint-openapi": "^4.0.4",
     "gulp": "^4.0.2",
     "gulp-clean": "^0.4.0"
   }
