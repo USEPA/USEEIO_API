@@ -1,3 +1,5 @@
+DEPRECATED - This repository has been archived and is no longer maintained. The code is provided for historical reference and may contain unpatched or unknown vulnerabilities. It should not be used in production systems.
+
 # USEEIO API
 
 The US Environmentally-Extended Input-Output Model Application Programming Interface (USEEIO API) is a web service that
